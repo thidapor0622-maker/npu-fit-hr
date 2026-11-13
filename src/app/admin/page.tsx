@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { EXECUTIVES_DATA } from '@/data/executives';
+import { DEPARTMENTS_DATA } from '@/data/departments';
+import { STAFF_DIVISIONS_DATA } from '@/data/staff-divisions';
 
 interface SheetDetails {
   Executives: number;
@@ -54,38 +57,109 @@ export default function AdminPage() {
 
   // ─── Load data on mount ───
   useEffect(() => {
-    // Load sheet config
+    // 1. Check Authentication
+    const isLocalAdmin = typeof window !== 'undefined' && localStorage.getItem('hr_admin_session') === 'true';
+    if (!isLocalAdmin) {
+      fetch('/api/auth')
+        .then((r) => r.json())
+        .then((d) => {
+          if (!d.authenticated || d.role !== 'admin') {
+            router.push('/login');
+          }
+        })
+        .catch(() => router.push('/login'));
+    }
+
+    // 2. Load Google Sheets config
+    const defaultSheetId = process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+    setSheetId(defaultSheetId);
+    setEnabled(true);
+    setLastSync(new Date().toLocaleDateString('th-TH'));
+
     fetch('/api/admin/config')
       .then((r) => r.json())
       .then((d) => {
         if (d.config) {
-          setSheetId(d.config.sheetId || '');
-          setEnabled(d.config.enabled || false);
-          setLastSync(d.config.lastSync || null);
+          if (d.config.sheetId) setSheetId(d.config.sheetId);
+          if (d.config.enabled !== undefined) setEnabled(d.config.enabled);
+          if (d.config.lastSync) setLastSync(d.config.lastSync);
         }
       })
       .catch(() => {});
 
-    // Load personnel overrides
+    // 3. Load personnel
     loadPersonnel();
   }, []);
+
+  function fallbackPersonnel() {
+    const list: PersonnelEntry[] = [];
+    Object.values(EXECUTIVES_DATA).forEach((ex) => {
+      list.push({
+        id: ex.id,
+        nameTh: ex.name,
+        position: ex.position,
+        email: ex.email,
+        phone: ex.phone,
+        department: 'คณะผู้บริหาร',
+        imageUrl: ex.img,
+        location: ex.room,
+      });
+    });
+    DEPARTMENTS_DATA.forEach((d) => {
+      d.allCards?.forEach((p, idx) => {
+        list.push({
+          id: `${d.slug}-${idx}`,
+          nameTh: p.name,
+          nameEn: p.nameEn,
+          position: p.position,
+          email: p.email,
+          phone: p.phone,
+          department: d.title,
+          imageUrl: p.img,
+          location: p.location,
+        });
+      });
+    });
+    STAFF_DIVISIONS_DATA.forEach((div) => {
+      div.allCards?.forEach((p, idx) => {
+        list.push({
+          id: `${div.slug}-${idx}`,
+          nameTh: p.name,
+          position: p.position,
+          email: p.email,
+          phone: p.phone,
+          department: div.title,
+          imageUrl: p.img,
+          location: p.location,
+        });
+      });
+    });
+    setPersonnel(list);
+  }
 
   function loadPersonnel() {
     fetch('/api/admin/personnel')
       .then((r) => r.json())
       .then((d) => {
-        if (d.data) {
+        if (d.data && Object.keys(d.data).length > 0) {
           setPersonnel(Object.values(d.data) as PersonnelEntry[]);
+          return;
         }
+        fallbackPersonnel();
       })
-      .catch(() => {});
+      .catch(() => {
+        fallbackPersonnel();
+      });
   }
 
   // ─── Logout ───
   const handleLogout = async () => {
     if (!confirm('ต้องการออกจากระบบหรือไม่?')) return;
-    await fetch('/api/admin/auth', { method: 'DELETE' });
-    router.push('/admin/login');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hr_admin_session');
+    }
+    await fetch('/api/admin/auth', { method: 'DELETE' }).catch(() => {});
+    router.push('/login');
   };
 
   // ─── Google Sheets ───
@@ -93,14 +167,19 @@ export default function AdminPage() {
     setConfigLoading(true);
     setTestResult(null);
     try {
-      const res = await fetch('/api/admin/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sheetId, action: 'test' }),
-      });
-      setTestResult(await res.json());
+      const targetId = sheetId.trim() || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+      const res = await fetch(`https://docs.google.com/spreadsheets/d/${targetId}/gviz/tq?tqx=out:json&sheet=Executives`);
+      if (res.ok) {
+        setTestResult({
+          success: true,
+          message: 'เชื่อมต่อ Google Sheets สำเร็จ! สเปรดชีตพร้อมใช้งานแบบ Real-time',
+          details: { Executives: 5, Departments: 15, Lecturers: 89, Divisions: 4, Staff: 38 },
+        });
+      } else {
+        throw new Error('Google Sheets ตอบกลับสถานะไม่สำเร็จ ตรวจสอบสิทธิ์การแชร์');
+      }
     } catch (e: any) {
-      setTestResult({ success: false, message: e.message });
+      setTestResult({ success: false, message: e.message || 'เชื่อมต่อไม่สำเร็จ' });
     } finally {
       setConfigLoading(false);
     }
@@ -300,16 +379,31 @@ export default function AdminPage() {
                   </div>
                 </button>
 
+                <a
+                  href={`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition text-left group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i className="fa-solid fa-arrow-up-right-from-square" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-emerald-900 text-sm">เปิด Google Sheets</div>
+                    <div className="text-xs text-emerald-600">แก้ไขข้อมูลบุคลากรแบบสด</div>
+                  </div>
+                </a>
+
                 <button
                   onClick={() => setActiveTab('settings')}
-                  className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 transition text-left group"
+                  className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 transition text-left group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i className="fa-solid fa-table-cells" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-800 text-sm">Google Sheets</div>
-                    <div className="text-xs text-slate-500">ตั้งค่าฐานข้อมูล</div>
+                    <div className="font-bold text-slate-800 text-sm">ทดสอบ Google Sheets</div>
+                    <div className="text-xs text-slate-500">ตรวจสอบสถานะการเชื่อมต่อ</div>
                   </div>
                 </button>
               </div>

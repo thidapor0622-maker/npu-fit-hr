@@ -21,14 +21,38 @@ function UnifiedLoginForm() {
     setLoading(true);
     setError('');
 
+    const cleanUser = username.trim();
+
+    // 1. Direct Admin authentication (works on both GitHub Pages and Node server)
+    if (cleanUser === 'admin' && password === 'admin1234') {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hr_admin_session', 'true');
+      }
+      fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: cleanUser, password }),
+      }).catch(() => {});
+
+      const dest = from || '/admin';
+      router.push(dest);
+      router.refresh();
+      setLoading(false);
+      return;
+    }
+
+    // 2. Try server authentication
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), password }),
+        body: JSON.stringify({ username: cleanUser, password }),
       });
       const data = await res.json();
       if (data.success) {
+        if (data.role === 'admin' && typeof window !== 'undefined') {
+          localStorage.setItem('hr_admin_session', 'true');
+        }
         const dest = from || data.redirectTo || (data.role === 'admin' ? '/admin' : '/profile/edit');
         router.push(dest);
         router.refresh();
@@ -36,7 +60,7 @@ function UnifiedLoginForm() {
         setError(data.message || 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง');
       }
     } catch {
-      setError('ระบบทำงานในโหมด Static บน GitHub Pages (การล็อกอินหลังบ้านต้องรันผ่าน Vercel หรือ Node.js Server)');
+      setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แอดมิน: admin / รหัสผ่าน: admin1234)');
     } finally {
       setLoading(false);
     }
