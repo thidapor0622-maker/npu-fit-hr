@@ -23,7 +23,7 @@ const nextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
-    NEXT_PUBLIC_GOOGLE_SHEET_ID: '1s9Cru168Qo81ImgNAd4v8xULsWt51wAuQMAY3nMg7WU',
+    NEXT_PUBLIC_GOOGLE_SHEET_ID: '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU',
   },
 };
 

@@ -16,13 +16,22 @@ async function fetchClientGViz(sheetId: string, sheetName: string): Promise<Reco
   const data = JSON.parse(jsonMatch[1]);
   if (data.status === 'error') throw new Error('GViz Error');
 
-  const cols: string[] = data.table.cols.map((col: any) => col.label || col.id || '');
-  const rows: any[] = data.table.rows || [];
+  let rows: any[] = data.table?.rows || [];
+  if (rows.length === 0) return [];
+
+  // Determine headers: if col.label is empty, row 0 contains the header names
+  let headers: string[] = (data.table.cols || []).map((col: any) => String(col.label || '').trim());
+  const hasLabels = headers.some((h) => h.length > 0);
+
+  if (!hasLabels && rows.length > 0) {
+    headers = (rows[0].c || []).map((cell: any) => String(cell?.v ?? '').trim());
+    rows = rows.slice(1);
+  }
 
   return rows.map((row: any) => {
     const item: Record<string, any> = {};
     row.c?.forEach((cell: any, index: number) => {
-      const colName = cols[index] || `col_${index}`;
+      const colName = headers[index] || `col_${index}`;
       item[colName] = cell && cell.v !== null && cell.v !== undefined ? cell.v : '';
     });
     return item;
