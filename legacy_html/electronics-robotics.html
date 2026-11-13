@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สาขาวิชาอิเล็กทรอนิกส์ - คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Sarabun) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            background-color: #e0f2fe !important;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .arrow-icon { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .dropdown-btn.active .arrow-icon { 
+            transform: rotate(180deg); 
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-sky-100 text-slate-800 min-h-screen flex flex-col justify-between antialiased" style="background-color: #e0f2fe !important;">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900 border-b border-slate-800 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center gap-4">
+            <a href="index.html" class="flex items-center gap-4 group">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 rounded-2xl flex items-center justify-center p-2 border border-white/10">
+                    <img src="img/โลโก้.png" alt="ตรามหาวิทยาลัยนครพนม" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Nakhon_Phanom_University_Logo.svg';">
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl md:text-2xl font-black text-white">คณะเทคโนโลยีอุตสาหกรรม</h1>
+                    <p class="text-xs sm:text-sm text-sky-400 font-bold flex items-center gap-2 mt-0.5">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-400"></span>
+                        </span> 
+                        มหาวิทยาลัยนครพนม
+                    </p>
+                </div>
+            </a>
+
+            <!-- Dropdown Navigation -->
+            <div class="relative">
+                <button id="navDropdownBtn" onclick="toggleNavMenu()" class="dropdown-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition shadow-sm">
+                    <i class="fa-solid fa-graduation-cap text-sky-400"></i>
+                    <span class="hidden sm:inline">เลือกสาขาวิชา</span>
+                    <i class="fa-solid fa-chevron-down arrow-icon text-xs"></i>
+                </button>
+
+                <div id="navMenuContent" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 text-slate-700 text-xs sm:text-sm max-h-[380px] overflow-y-auto custom-scrollbar">
+                    <div class="px-4 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        หลักสูตร / สาขาวิชา
+                    </div>
+                    <a href="automotive-ev.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-wrench w-5 text-slate-400"></i> สาขาวิชาช่างยนต์
+                    </a>
+                    <a href="electrical-power.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-bolt w-5 text-slate-400"></i> สาขาวิชาไฟฟ้ากำลัง
+                    </a>
+                    <a href="electronics-robotics.html" class="flex items-center gap-2 px-4 py-2.5 bg-sky-50 text-sky-900 font-bold border-l-4 border-sky-600">
+                        <i class="fa-solid fa-robot w-5 text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์
+                    </a>
+                    <a href="welding-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-fire-flame-curved w-5 text-slate-400"></i> สาขาวิชาช่างเชื่อมโลหะ
+                    </a>
+                    <a href="architecture.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-landmark w-5 text-slate-400"></i> สาขาวิชาสถาปัตยกรรม
+                    </a>
+                    <a href="construction-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-helmet-safety w-5 text-slate-400"></i> สาขาวิชาการก่อสร้าง
+                    </a>
+                    <a href="marketing.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-chart-line w-5 text-slate-400"></i> สาขาวิชาการตลาด
+                    </a>
+                    <a href="digital-office.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-display w-5 text-slate-400"></i> สาขาวิชาการจัดการสำนักงานด้วยดิจิทัล
+                    </a>
+                    <a href="accounting.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-calculator w-5 text-slate-400"></i> สาขาวิชาการบัญชี
+                    </a>
+                    <a href="hotel-management.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-utensils w-5 text-slate-400"></i> สาขาวิชาการโรงแรมและการท่องเที่ยว
+                    </a>
+                    <a href="digital-business.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-laptop-code w-5 text-slate-400"></i> สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล
+                    </a>
+                    <a href="basic-vocational.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-seedling w-5 text-slate-400"></i> สาขาวิชาชีพพื้นฐาน
+                    </a>
+                    <a href="industrial-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-apple-whole w-5 text-slate-400"></i> สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต
+                    </a>
+                    <a href="vocational-education.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-book-open w-5 text-slate-400"></i> สาขาวิชาการจัดการศึกษาและอาชีวศึกษา
+                    </a>
+                    <a href="applied-fundamentals.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-flask w-5 text-slate-400"></i> สาขาวิชาพื้นฐานประยุกต์
+                    </a>
+                    <div class="px-4 py-2 border-t border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        เมนูหลัก
+                    </div>
+                    <a href="index.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> คณะผู้บริหาร
+                    </a>
+                    <a href="lecturers.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-users w-5 text-slate-400"></i> คณะอาจารย์ประจำสาขาวิชาทั้งหมด
+                    </a>
+                    <a href="staff.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> บุคลากร/สายสนับสนุน
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero / Banner Section -->
+    <section class="bg-gradient-to-b from-slate-900 via-sky-950 to-blue-950 border-b border-sky-900/40 py-6 sm:py-7 px-4 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-3">
+                <a href="lecturers.html" class="inline-flex items-center gap-2 bg-white/10 hover:bg-sky-500 text-sky-100 hover:text-white border border-sky-400/30 hover:border-sky-400 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 shadow-md backdrop-blur-sm hover:shadow-sky-500/25">
+                    <i class="fa-solid fa-arrow-left text-[11px]"></i> กลับหน้าบุคลากร
+                </a>
+            </div>
+
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="inline-flex items-center gap-1.5 bg-sky-900/80 border border-sky-500/30 text-sky-300 text-[11px] sm:text-xs px-3.5 py-1 rounded-full font-bold uppercase mb-2">
+                     อิเล็กทรอนิกส์ / วิศวกรรมอิเล็กทรอนิกส์ และหุ่นยนต์
+                </span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-1 text-white">ทำเนียบบุคลากร</h2> 
+                <h3 class="text-xl sm:text-3xl md:text-4xl font-extrabold mb-1.5 text-white">สาขาวิชาอิเล็กทรอนิกส์ / วิศวกรรมอิเล็กทรอนิกส์ และหุ่นยนต์</h3> 
+                <p class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto mb-4">
+                    คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม
+                </p>
+                <div class="max-w-sm mx-auto relative">
+                    <input type="text" id="searchInput" onkeyup="searchPersonnel()" placeholder="ค้นหาชื่อ, ตำแหน่ง, อีเมล..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-xl text-slate-800 text-xs sm:text-sm shadow-md bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="w-full flex-grow bg-sky-100 py-10" style="background-color: #e0f2fe !important;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+            
+            <!-- ส่วนที่ 1: หัวหน้าหลักสูตรสาขาวิชา -->
+            <section id="headSection" class="flex flex-col items-center">
+                <div class="mb-4 text-center">
+                    <span class="inline-flex items-center gap-2 bg-sky-800 text-white font-bold text-xs sm:text-sm px-6 py-2 rounded-full shadow-md">
+                        หัวหน้าหลักสูตรสาขาวิชา
+                    </span>
+                </div>
+
+                <div class="flex justify-center w-full">
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/รศ.ดร.ชูธง สัมมัตตะ.jpg" alt="รศ.ดร.ชูธง สัมมัตตะ" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1">รศ.ดร.ชูธง สัมมัตตะ</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">
+                                ประธานหลักสูตร / อาจารย์ประจำสาขาวิชา
+                            </p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:choothong@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> choothong@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('รองศาสตราจารย์ ดร.ชูธง สัมมัตตะ')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr id="sectionDivider" class="border-sky-200/60 max-w-5xl mx-auto">
+
+            <!-- ==================== ส่วนที่ 2: คณาจารย์ประจำสาขาวิชา ==================== -->
+            <div id="lecturerSection" class="space-y-12">
+                <div class="text-center">
+                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 inline-block relative after:content-[''] after:block after:w-16 after:h-1 after:bg-gradient-to-r after:from-sky-500 after:to-blue-600 after:mx-auto after:mt-2.5 after:rounded-full">
+                        คณะอาจารย์ประจำสาขาวิชา
+                    </h3>
+                </div>
+
+                <!-- แถวที่ 1: สมาชิก 3 ท่าน -->
+                <div id="lecturerRow1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch justify-items-center max-w-5xl mx-auto">
+                    <!-- อาจารย์ท่านที่ 1 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/รศ.ดร.ดนุพัฒน์ ดวงมาลัย.jpg" alt="รศ.ดร.ดนุพัฒน์ ดวงมาลัย" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">รศ.ดร.ดนุพัฒน์ ดวงมาลัย</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:danupat@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> danupat@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('รศ.ดร.ดนุพัฒน์ ดวงมาลัย')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 2 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.นรเศรษฐ ไทยแท้.jpg" alt="ผศ.นรเศรษฐ ไทยแท้" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.นรเศรษฐ ไทยแท้</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:noraset@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> noraset@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.นรเศรษฐ ไทยแท้')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 3 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.ปรัชญา พนมอุปถัมภ์.jpg" alt="ผศ.ปรัชญา พนมอุปถัมภ์" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.ปรัชญา พนมอุปถัมภ์</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:pratchaya@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> pratchaya@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.ปรัชญา พนมอุปถัมภ์')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- แถวที่ 2: สมาชิก 4 ท่าน -->
+                <div id="lecturerRow2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch justify-items-center max-w-6xl mx-auto">
+                    <!-- อาจารย์ท่านที่ 4 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/นายรชต ตามา.jpg" alt="นายรชต ตามา" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">นายรชต ตามา</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:rachata@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> rachata@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('นายรชต ตามา')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 5 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/รศ.ดร.สมชาติ โสนะแสง.jpg" alt="รศ.ดร.สมชาติ โสนะแสง" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">รศ.ดร.สมชาติ โสนะแสง</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:somchart@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> somchart@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('รศ.ดร.สมชาติ โสนะแสง')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 6 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.พัชรณัฏฐ์ แสงอ่อน.jpg" alt="ผศ.พัชรณัฏฐ์ แสงอ่อน" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.พัชรณัฏฐ์ แสงอ่อน</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:patcharanat@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> patcharanat@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.พัชรณัฏฐ์ แสงอ่อน')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 7 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.พงศ์พัทธ์ มังคละคีรี.jpg" alt="ผศ.พงศ์พัทธ์ มังคละคีรี" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.พงศ์พัทธ์ มังคละคีรี</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:pongpat@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> pongpat@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.พงศ์พัทธ์ มังคละคีรี')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- แถวที่ 3: สมาชิก 4 ท่าน -->
+                <div id="lecturerRow3" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch justify-items-center max-w-6xl mx-auto">
+                    <!-- อาจารย์ท่านที่ 8 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.ธนภัทร มาลีลัย.jpg" alt="ผศ.ธนภัทร มาลีลัย" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.ธนภัทร มาลีลัย</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:thanapat@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> thanapat@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.ธนภัทร มาลีลัย')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 9 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผศ.ทศพล มานะศรี.jpg" alt="ผศ.ทศพล มานะศรี" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">ผศ.ทศพล มานะศรี</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:thotsapol@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> thotsapol@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผศ.ทศพล มานะศรี')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 10 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/นายกฤษดา สิทธิดา.jpg" alt="นายกฤษดา สิทธิดา" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">นายกฤษดา สิทธิดา</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:kritsada@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> kritsada@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('นายกฤษดา สิทธิดา')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- อาจารย์ท่านที่ 11 -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/นายมานะพันธ์ พ่อยันต์.jpg" alt="นายมานะพันธ์ พ่อยันต์" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">นายมานะพันธ์ พ่อยันต์</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:manapan@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> manapan@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com/?q=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาอิเล็กทรอนิกส์</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/80 p-3.5 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('นายมานะพันธ์ พ่อยันต์')" class="w-full bg-white hover:bg-sky-600 text-slate-700 hover:text-white border border-slate-200/80 hover:border-sky-600 py-2.5 rounded-xl transition-all duration-300 text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fa-regular fa-calendar-days text-sky-500 group-hover:text-white transition-colors"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- กล่องข้อความแจ้งเตือนเมื่อไม่พบข้อมูล -->
+        <div id="noResultFound" class="hidden text-center py-12">
+            <div class="bg-white max-w-md mx-auto p-8 rounded-2xl shadow-md border border-slate-200">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 text-4xl mb-3"></i>
+                <h3 class="text-base font-bold text-slate-800">ไม่พบข้อมูลบุคลากรที่ค้นหา</h3>
+                <p class="text-xs text-slate-500 mt-1">กรุณาตรวจสอบคำสะกดใหม่อีกครั้ง</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal ปฏิทิน -->
+    <div id="calendarModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative border border-slate-200">
+            <button onclick="closeCalendarModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <div class="mb-5 pr-8">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-sky-600 text-xl"></i> ปฏิทินปฏิบัติราชการ
+                </h3>
+                <p id="modalOfficerName" class="text-sky-700 font-bold text-sm mt-0.5">ชื่อ-นามสกุล</p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2 border border-slate-200 overflow-hidden">
+                <iframe src="https://calendar.google.com/calendar/embed?src=th.thailand%23holiday%40group.v.calendar.google.com&ctz=Asia%2FBangkok" 
+                        style="border: 0" width="100%" height="340" frameborder="0" scrolling="no" class="rounded-lg"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 text-xs w-full mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p class="font-semibold text-slate-300">© คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</p>
+            <p class="text-slate-500 font-medium">Faculty of Industrial Technology, Nakhon Phanom University</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleNavMenu() {
+            const menu = document.getElementById('navMenuContent');
+            const btn = document.getElementById('navDropdownBtn');
+            if (menu && btn) {
+                menu.classList.toggle('hidden');
+                btn.classList.toggle('active');
+            }
+        }
+
+        window.onclick = function(event) {
+            const btn = document.getElementById('navDropdownBtn');
+            const menu = document.getElementById('navMenuContent');
+            if (btn && menu && !btn.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.add('hidden');
+                btn.classList.remove('active');
+            }
+        }
+
+        function openCalendarModal(name) {
+            document.getElementById('modalOfficerName').innerText = name;
+            document.getElementById('calendarModal').classList.remove('hidden');
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+
+        function searchPersonnel() {
+            let input = document.getElementById('searchInput').value.toLowerCase().trim();
+            let cards = document.getElementsByClassName('personnel-card');
+            
+            let headSection = document.getElementById('headSection');
+            let lecturerSection = document.getElementById('lecturerSection');
+            let sectionDivider = document.getElementById('sectionDivider');
+            let noResultFound = document.getElementById('noResultFound');
+
+            let row1 = document.getElementById('lecturerRow1');
+            let row2 = document.getElementById('lecturerRow2');
+            let row3 = document.getElementById('lecturerRow3');
+
+            // สไตล์ Grid เริ่มต้น
+            const row1Default = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch justify-items-center max-w-5xl mx-auto";
+            const row2_3Default = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch justify-items-center max-w-6xl mx-auto";
+            // สไตล์ Flex จัดกึ่งกลางขณะค้นหา
+            const searchActiveFlex = "flex flex-wrap justify-center gap-6 items-stretch";
+
+            let visibleCount = 0;
+            let headVisible = false;
+            let row1Visible = false;
+            let row2Visible = false;
+            let row3Visible = false;
+
+            // การ์ด 0: หัวหน้าสาขา
+            // การ์ด 1-3: แถวที่ 1
+            // การ์ด 4-7: แถวที่ 2
+            // การ์ด 8-11: แถวที่ 3
+            for (let i = 0; i < cards.length; i++) {
+                let cardText = cards[i].innerText.toLowerCase();
+                let isMatch = cardText.includes(input);
+
+                if (isMatch) {
+                    cards[i].style.display = "";
+                    visibleCount++;
+                    if (i === 0) {
+                        headVisible = true;
+                    } else if (i >= 1 && i <= 3) {
+                        row1Visible = true;
+                    } else if (i >= 4 && i <= 7) {
+                        row2Visible = true;
+                    } else {
+                        row3Visible = true;
+                    }
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            // สลับการจัดกึ่งกลางเมื่อค้นหา
+            if (input !== "") {
+                if (row1) row1.className = searchActiveFlex;
+                if (row2) row2.className = searchActiveFlex;
+                if (row3) row3.className = searchActiveFlex;
+            } else {
+                if (row1) row1.className = row1Default;
+                if (row2) row2.className = row2_3Default;
+                if (row3) row3.className = row2_3Default;
+            }
+
+            // ซ่อน/แสดงแต่ละแถว
+            if (row1) row1.style.display = row1Visible ? "" : "none";
+            if (row2) row2.style.display = row2Visible ? "" : "none";
+            if (row3) row3.style.display = row3Visible ? "" : "none";
+
+            let anyLecturerVisible = row1Visible || row2Visible || row3Visible;
+
+            if (headSection) headSection.style.display = headVisible ? "" : "none";
+            if (lecturerSection) lecturerSection.style.display = anyLecturerVisible ? "" : "none";
+            if (sectionDivider) sectionDivider.style.display = (headVisible && anyLecturerVisible) ? "" : "none";
+
+            if (noResultFound) {
+                if (visibleCount === 0) {
+                    noResultFound.classList.remove('hidden');
+                } else {
+                    noResultFound.classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

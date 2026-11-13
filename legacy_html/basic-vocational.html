@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สาขาวิชาชีพพื้นฐาน - คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Sarabun) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            background-color: #e0f2fe !important;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .arrow-icon { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .dropdown-btn.active .arrow-icon { 
+            transform: rotate(180deg); 
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-sky-100 text-slate-800 min-h-screen flex flex-col justify-between antialiased" style="background-color: #e0f2fe !important;">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900 border-b border-slate-800 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center gap-4">
+            <a href="index.html" class="flex items-center gap-4 group">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 rounded-2xl flex items-center justify-center p-2 border border-white/10">
+                    <img src="img/โลโก้.png" alt="ตรามหาวิทยาลัยนครพนม" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Nakhon_Phanom_University_Logo.svg';">
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl md:text-2xl font-black text-white">คณะเทคโนโลยีอุตสาหกรรม</h1>
+                    <p class="text-xs sm:text-sm text-sky-400 font-bold flex items-center gap-2 mt-0.5">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-400"></span>
+                        </span> 
+                        มหาวิทยาลัยนครพนม
+                    </p>
+                </div>
+            </a>
+
+            <!-- Dropdown Navigation -->
+            <div class="relative">
+                <button id="navDropdownBtn" onclick="toggleNavMenu()" class="dropdown-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition shadow-sm">
+                    <i class="fa-solid fa-graduation-cap text-sky-400"></i>
+                    <span class="hidden sm:inline">เลือกสาขาวิชา</span>
+                    <i class="fa-solid fa-chevron-down arrow-icon text-xs"></i>
+                </button>
+
+                <div id="navMenuContent" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 text-slate-700 text-xs sm:text-sm max-h-[380px] overflow-y-auto custom-scrollbar">
+                    <div class="px-4 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        หลักสูตร / สาขาวิชา
+                    </div>
+                    <a href="automotive-ev.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-wrench w-5 text-slate-400"></i> สาขาวิชาช่างยนต์
+                    </a>
+                    <a href="electrical-power.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-bolt w-5 text-slate-400"></i> สาขาวิชาไฟฟ้ากำลัง
+                    </a>
+                    <a href="electronics-robotics.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-robot w-5 text-slate-400"></i> สาขาวิชาอิเล็กทรอนิกส์
+                    </a>
+                    <a href="welding-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-fire-flame-curved w-5 text-slate-400"></i> สาขาวิชาช่างเชื่อมโลหะ
+                    </a>
+                    <a href="architecture.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-landmark w-5 text-slate-400"></i> สาขาวิชาสถาปัตยกรรม
+                    </a>
+                    <a href="construction-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-helmet-safety w-5 text-slate-400"></i> สาขาวิชาการก่อสร้าง
+                    </a>
+                    <a href="marketing.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-chart-line w-5 text-slate-400"></i> สาขาวิชาการตลาด
+                    </a>
+                    <a href="digital-office.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-display w-5 text-slate-400"></i> สาขาวิชาการจัดการสำนักงานด้วยดิจิทัล
+                    </a>
+                    <a href="accounting.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-calculator w-5 text-slate-400"></i> สาขาวิชาการบัญชี
+                    </a>
+                    <a href="hotel-management.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-utensils w-5 text-slate-400"></i> สาขาวิชาการโรงแรมและการท่องเที่ยว
+                    </a>
+                    <a href="digital-business.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-laptop-code w-5 text-slate-400"></i> สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล
+                    </a>
+                    <a href="basic-vocational.html" class="flex items-center gap-2 px-4 py-2.5 bg-sky-50 text-sky-900 font-bold border-l-4 border-sky-600">
+                        <i class="fa-solid fa-seedling w-5 text-sky-600"></i> สาขาวิชาชีพพื้นฐาน
+                    </a>
+                    <a href="industrial-technology.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-apple-whole w-5 text-slate-400"></i> สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต
+                    </a>
+                    <a href="vocational-education.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-book-open w-5 text-slate-400"></i> สาขาวิชาการจัดการศึกษาและอาชีวศึกษา
+                    </a>
+                    <a href="applied-fundamentals.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-flask w-5 text-slate-400"></i> สาขาวิชาพื้นฐานประยุกต์
+                    </a>
+                    <div class="px-4 py-2 border-t border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        เมนูหลัก
+                    </div>
+                    <a href="index.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> คณะผู้บริหาร
+                    </a>
+                    <a href="lecturers.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-users w-5 text-slate-400"></i> คณะอาจารย์ประจำสาขาวิชาทั้งหมด
+                    </a>
+                    <a href="staff.html" class="flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 hover:text-sky-700 transition">
+                        <i class="fa-solid fa-house w-5 text-slate-400"></i> บุคคลากร/สายสนับสนุน
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero / Banner Section -->
+    <section class="bg-gradient-to-b from-slate-900 via-sky-950 to-blue-950 border-b border-sky-900/40 py-6 px-4 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- ปุ่มย้อนกลับไปหน้า lecturers.html -->
+            <div class="mb-4">
+                <a href="lecturers.html" class="inline-flex items-center gap-2 bg-white/10 hover:bg-sky-500 hover:text-white border border-white/20 text-sky-200 px-4 py-1.5 rounded-full text-xs font-semibold transition duration-200 shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-xs"></i> กลับหน้าบุคลากร
+                </a>
+            </div>
+
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="inline-flex items-center gap-2 bg-sky-900/80 border border-sky-500/30 text-sky-300 text-xs px-3.5 py-0.5 rounded-full font-bold uppercase mb-2">
+                    <i class="fa-solid fa-cubes text-sky-400"></i> สาขาวิชาชีพพื้นฐาน
+                </span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 text-white">ทำเนียบบุคลากร </h2> 
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 text-white">สาขาวิชาชีพพื้นฐาน</h2> 
+                <p class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto mb-4">
+                    คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม
+                </p>
+
+                <div class="max-w-sm mx-auto relative">
+                    <input type="text" id="searchInput" onkeyup="searchPersonnel()" autocomplete="off" placeholder="ค้นหาชื่อ, ตำแหน่ง, อีเมล..." 
+                           class="w-full pl-10 pr-4 py-2 rounded-xl text-slate-800 text-xs sm:text-sm shadow-md bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="w-full flex-grow bg-sky-100 py-8" style="background-color: #e0f2fe !important;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <!-- 1. ประธานหลักสูตร -->
+            <section id="headSection" class="flex flex-col items-center">
+                <div class="mb-4 text-center">
+                    <span class="inline-flex items-center gap-2 bg-sky-800 text-white font-bold text-xs sm:text-sm px-6 py-2 rounded-full shadow-md">
+                        หัวหน้าหลักสูตรสาขาวิชา
+                    </span>
+                </div>
+
+                <div class="flex justify-center w-full">
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์.jpg" alt="ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+
+                            <h4 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 mb-1 whitespace-nowrap">ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">
+                                หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา
+                            </p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:uraiwan@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> uraiwan@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-000-000</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาพื้นฐาน (พิกัด)</a></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์')" class="w-full bg-white hover:bg-sky-50 text-slate-700 border border-slate-200 py-2 rounded-lg transition text-xs font-bold flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-calendar-days text-sky-600"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- เส้นคั่นแบ่งกลุ่ม -->
+            <hr id="sectionDivider" class="border-sky-200/60 max-w-5xl mx-auto">
+
+            <!-- 2. อาจารย์ประจำสาขาวิชา -->
+            <div id="lecturerSection" class="space-y-10">
+                <div class="text-center">
+                    <h3 class="text-lg md:text-xl font-bold text-slate-900 inline-block relative after:content-[''] after:block after:w-12 after:h-1 after:bg-sky-600 after:mx-auto after:mt-2 after:rounded-full">
+                        อาจารย์ประจำสาขาวิชา
+                    </h3>
+                </div>
+                
+                <div id="lecturerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch justify-center max-w-5xl mx-auto justify-items-center">
+                    
+                    <!-- 1. ว่าที่ ร้อยตรีรักษิต เสียงล้ำ -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/ว่าที่ ร้อยตรีรักษิต เสียงล้ำ.jpg" alt="ว่าที่ ร้อยตรีรักษิต เสียงล้ำ" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 mb-1 leading-snug whitespace-nowrap">ว่าที่ ร้อยตรีรักษิต เสียงล้ำ</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:raikit@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> raikit@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-000-000</a></p>
+                                <p class="w-full truncate"><a href="https://maps.google.com" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาพื้นฐาน (พิกัด)</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-3 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('ว่าที่ ร้อยตรีรักษิต เสียงล้ำ')" class="w-full bg-white hover:bg-sky-50 text-slate-700 border border-slate-200 py-2 rounded-lg transition text-xs font-bold flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-calendar-days text-sky-600"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. นายกฤษฏพล คำลุน -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/นายกฤษฏพล คำลุน.jpg" alt="นายกฤษฏพล คำลุน" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 mb-1 leading-snug whitespace-nowrap">นายกฤษฏพล คำลุน</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:kritsatapol@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> kritsatapol@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://www.google.com/maps/search/?api=1&query=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาชีพพื้นฐาน</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-3 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('นายกฤษฏพล คำลุน')" class="w-full bg-white hover:bg-sky-50 text-slate-700 border border-slate-200 py-2 rounded-lg transition text-xs font-bold flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-calendar-days text-sky-600"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. นายอนันตชิน คำสุภา -->
+                    <div class="personnel-card group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all border border-sky-200 flex flex-col h-full w-full max-w-[260px] sm:max-w-[280px] overflow-hidden">
+                        <div class="p-5 flex flex-col items-center text-center flex-grow">
+                            <div class="w-[300px] h-[300px] max-w-full aspect-square rounded-xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto">
+                                <img src="img/นายอนันตชิน คำสุภา.jpg" alt="นายอนันตชิน คำสุภา" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h4 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 mb-1 leading-snug whitespace-nowrap">นายอนันตชิน คำสุภา</h4>
+                            <p class="text-sky-900 font-semibold text-xs mb-4 min-h-[40px] flex items-center justify-center bg-sky-50 w-full rounded-xl py-1.5 px-2 border border-sky-100">อาจารย์ประจำสาขาวิชา</p>
+                            
+                            <div class="w-full text-center text-[11px] space-y-2 border-t border-slate-100 pt-2.5 text-slate-600 mt-auto flex flex-col items-center">
+                                <p class="w-full truncate"><a href="mailto:anantachin@npu.ac.th" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-envelope text-sky-600"></i> anantachin@npu.ac.th</a></p>
+                                <p class="w-full"><a href="tel:042000000" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-phone text-sky-600"></i> 042-XXX-XXXX</a></p>
+                                <p class="w-full truncate"><a href="https://www.google.com/maps/search/?api=1&query=คณะเทคโนโลยีอุตสาหกรรม+มหาวิทยาลัยนครพนม" target="_blank" class="hover:text-sky-600 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-600"></i> สาขาวิชาชีพพื้นฐาน</a></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-3 border-t border-slate-100 mt-auto">
+                            <button onclick="openCalendarModal('นายอนันตชิน คำสุภา')" class="w-full bg-white hover:bg-sky-50 text-slate-700 border border-slate-200 py-2 rounded-lg transition text-xs font-bold flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-calendar-days text-sky-600"></i> ดูปฏิทินปฏิบัติราชการ
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- กล่องข้อความแจ้งเตือนเมื่อไม่พบข้อมูล -->
+            <div id="noResultFound" class="hidden text-center py-12">
+                <div class="bg-white max-w-md mx-auto p-8 rounded-2xl shadow-md border border-slate-200">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-4xl mb-3"></i>
+                    <h3 class="text-base font-bold text-slate-800">ไม่พบข้อมูลบุคลากรที่ค้นหา</h3>
+                    <p class="text-xs text-slate-500 mt-1">กรุณาตรวจสอบคำสะกดใหม่อีกครั้ง</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal ปฏิทิน -->
+    <div id="calendarModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative border border-slate-200">
+            <button onclick="closeCalendarModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <div class="mb-5 pr-8">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-sky-600 text-xl"></i> ปฏิทินปฏิบัติราชการ
+                </h3>
+                <p id="modalOfficerName" class="text-sky-700 font-bold text-sm mt-0.5">ชื่อ-นามสกุล</p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2 border border-slate-200 overflow-hidden">
+                <iframe src="https://calendar.google.com/calendar/embed?src=th.thailand%23holiday%40group.v.calendar.google.com&ctz=Asia%2FBangkok" 
+                        style="border: 0" width="100%" height="340" frameborder="0" scrolling="no" class="rounded-lg"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 text-xs w-full mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p class="font-semibold text-slate-300">© คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</p>
+            <p class="text-slate-500 font-medium">Faculty of Industrial Technology, Nakhon Phanom University</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleNavMenu() {
+            const menu = document.getElementById('navMenuContent');
+            const btn = document.getElementById('navDropdownBtn');
+            menu.classList.toggle('hidden');
+            btn.classList.toggle('active');
+        }
+
+        window.addEventListener('click', function(e) {
+            const btn = document.getElementById('navDropdownBtn');
+            const menu = document.getElementById('navMenuContent');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+                btn.classList.remove('active');
+            }
+        });
+
+        function searchPersonnel() {
+            let input = document.getElementById('searchInput').value.toLowerCase().trim();
+            let cards = document.getElementsByClassName('personnel-card');
+            
+            let headSection = document.getElementById('headSection');
+            let lecturerSection = document.getElementById('lecturerSection');
+            let lecturerGrid = document.getElementById('lecturerGrid');
+            let sectionDivider = document.getElementById('sectionDivider');
+            let noResultFound = document.getElementById('noResultFound');
+
+            let visibleCount = 0;
+            let headVisible = false;
+            let lecturerVisibleCount = 0;
+
+            // ตรวจสอบการ์ด: ใบแรก (i=0) คือหัวหน้าหลักสูตร, ใบถัดไปคืออาจารย์ประจำสาขา
+            for (let i = 0; i < cards.length; i++) {
+                let cardText = cards[i].innerText.toLowerCase();
+                let isMatch = cardText.includes(input);
+
+                if (isMatch) {
+                    cards[i].style.display = "";
+                    visibleCount++;
+                    if (i === 0) {
+                        headVisible = true;
+                    } else {
+                        lecturerVisibleCount++;
+                    }
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            // จัดการซ่อน/แสดงกลุ่มหัวหน้าหลักสูตร
+            if (headSection) headSection.style.display = headVisible ? "" : "none";
+
+            // จัดการซ่อน/แสดงกลุ่มอาจารย์ และสลับคลาสกริดเพื่อให้อยู่ตรงกลางเสมอตามจำนวนผลลัพธ์
+            if (lecturerSection) {
+                if (lecturerVisibleCount > 0) {
+                    lecturerSection.style.display = "";
+                    if (lecturerGrid) {
+                        lecturerGrid.classList.remove('grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3');
+                        
+                        if (lecturerVisibleCount === 1) {
+                            lecturerGrid.classList.add('grid-cols-1');
+                        } else if (lecturerVisibleCount === 2) {
+                            lecturerGrid.classList.add('grid-cols-1', 'sm:grid-cols-2');
+                        } else {
+                            lecturerGrid.classList.add('grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3');
+                        }
+                    }
+                } else {
+                    lecturerSection.style.display = "none";
+                }
+            }
+
+            // จัดการเส้นแบ่งกลุ่ม
+            if (sectionDivider) {
+                sectionDivider.style.display = (headVisible && lecturerVisibleCount > 0) ? "" : "none";
+            }
+
+            // แสดง/ซ่อน กล่องแจ้งเตือนเมื่อไม่พบข้อมูล
+            if (noResultFound) {
+                if (visibleCount === 0) {
+                    noResultFound.classList.remove('hidden');
+                } else {
+                    noResultFound.classList.add('hidden');
+                }
+            }
+        }
+
+        function openCalendarModal(name) {
+            document.getElementById('modalOfficerName').innerText = name;
+            document.getElementById('calendarModal').classList.remove('hidden');
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

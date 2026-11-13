@@ -1,0 +1,2571 @@
+{
+  "electrical-power.html": {
+    "file": "electrical-power.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาไฟฟ้ากำลัง"
+    ],
+    "count": 11,
+    "head": {
+      "name": "ผศ.กาญจน์ กันปัญญา",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/ผศ.กาญจน์ กันปัญญา.jpg",
+      "email": "karn@npu.ac.th",
+      "phone": "042-503-777",
+      "location": "สาขาวิชาไฟฟ้ากำลัง",
+      "calendarName": "ผู้ช่วยศาสตราจารย์กาญจน์ กันปัญญา"
+    },
+    "members": [
+      {
+        "name": "นายสมยศ สีแสนซุย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมยศ.jpg",
+        "email": "somyos@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายสมยศ สีแสนซุย"
+      },
+      {
+        "name": "นายบุญเติม อุ่นวิเศษ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/บุญเติม.jpg",
+        "email": "boonterm@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายบุญเติม อุ่นวิเศษ"
+      },
+      {
+        "name": "ผศ.ธราธิป ภู่ระหงษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ธราธิป.jpg",
+        "email": "tharathip@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ธราธิป ภู่ระหงษ์"
+      },
+      {
+        "name": "ผศ.ดร.สิทธิพงศ์ อินทรายุทธ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สิทธิพงศ์.jpg",
+        "email": "sittiphong@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ ดร.สิทธิพงศ์ อินทรายุทธ"
+      },
+      {
+        "name": "ผศ.โกวิท ยอดมงคล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/โกวิท.jpg",
+        "email": "kowit@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์โกวิท ยอดมงคล"
+      },
+      {
+        "name": "รศ.ดร.ศุภชัย ปลายเนตร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศุภชัย.jpg",
+        "email": "suphachai@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "รองศาสตราจารย์ ดร.ศุภชัย ปลายเนตร"
+      },
+      {
+        "name": "ผศ.สิริวัฒน์ นิลวัฒน์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สิริวัฒน์.jpg",
+        "email": "siriwat@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์สิริวัฒน์ นิลวัฒน์"
+      },
+      {
+        "name": "ผศ.ดร.เจษฎา สารสุข",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/เจษฎา.jpg",
+        "email": "jetsada@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ ดร.เจษฎา สารสุข"
+      },
+      {
+        "name": "นายคจรศักดิ์ สิงหันต์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/คจรศักดิ์.jpg",
+        "email": "kajornsak@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายคจรศักดิ์ สิงหันต์"
+      },
+      {
+        "name": "นายสมศักดิ์ แสนเมือง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมศักดิ์.jpg",
+        "email": "somsak@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายสมศักดิ์ แสนเมือง"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผศ.กาญจน์ กันปัญญา",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.กาญจน์ กันปัญญา.jpg",
+        "email": "karn@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์กาญจน์ กันปัญญา"
+      },
+      {
+        "name": "นายสมยศ สีแสนซุย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมยศ.jpg",
+        "email": "somyos@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายสมยศ สีแสนซุย"
+      },
+      {
+        "name": "นายบุญเติม อุ่นวิเศษ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/บุญเติม.jpg",
+        "email": "boonterm@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายบุญเติม อุ่นวิเศษ"
+      },
+      {
+        "name": "ผศ.ธราธิป ภู่ระหงษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ธราธิป.jpg",
+        "email": "tharathip@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ธราธิป ภู่ระหงษ์"
+      },
+      {
+        "name": "ผศ.ดร.สิทธิพงศ์ อินทรายุทธ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สิทธิพงศ์.jpg",
+        "email": "sittiphong@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ ดร.สิทธิพงศ์ อินทรายุทธ"
+      },
+      {
+        "name": "ผศ.โกวิท ยอดมงคล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/โกวิท.jpg",
+        "email": "kowit@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์โกวิท ยอดมงคล"
+      },
+      {
+        "name": "รศ.ดร.ศุภชัย ปลายเนตร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศุภชัย.jpg",
+        "email": "suphachai@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "รองศาสตราจารย์ ดร.ศุภชัย ปลายเนตร"
+      },
+      {
+        "name": "ผศ.สิริวัฒน์ นิลวัฒน์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สิริวัฒน์.jpg",
+        "email": "siriwat@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์สิริวัฒน์ นิลวัฒน์"
+      },
+      {
+        "name": "ผศ.ดร.เจษฎา สารสุข",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/เจษฎา.jpg",
+        "email": "jetsada@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "ผู้ช่วยศาสตราจารย์ ดร.เจษฎา สารสุข"
+      },
+      {
+        "name": "นายคจรศักดิ์ สิงหันต์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/คจรศักดิ์.jpg",
+        "email": "kajornsak@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายคจรศักดิ์ สิงหันต์"
+      },
+      {
+        "name": "นายสมศักดิ์ แสนเมือง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมศักดิ์.jpg",
+        "email": "somsak@npu.ac.th",
+        "phone": "042-503-777",
+        "location": "สาขาวิชาไฟฟ้ากำลัง",
+        "calendarName": "นายสมศักดิ์ แสนเมือง"
+      }
+    ]
+  },
+  "electronics-robotics.html": {
+    "file": "electronics-robotics.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาอิเล็กทรอนิกส์ / วิศวกรรมอิเล็กทรอนิกส์ และหุ่นยนต์"
+    ],
+    "count": 12,
+    "head": {
+      "name": "รศ.ดร.ชูธง สัมมัตตะ",
+      "position": "ประธานหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/รศ.ดร.ชูธง สัมมัตตะ.jpg",
+      "email": "choothong@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาอิเล็กทรอนิกส์",
+      "calendarName": "รองศาสตราจารย์ ดร.ชูธง สัมมัตตะ"
+    },
+    "members": [
+      {
+        "name": "รศ.ดร.ดนุพัฒน์ ดวงมาลัย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รศ.ดร.ดนุพัฒน์ ดวงมาลัย.jpg",
+        "email": "danupat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "รศ.ดร.ดนุพัฒน์ ดวงมาลัย"
+      },
+      {
+        "name": "ผศ.นรเศรษฐ ไทยแท้",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.นรเศรษฐ ไทยแท้.jpg",
+        "email": "noraset@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.นรเศรษฐ ไทยแท้"
+      },
+      {
+        "name": "ผศ.ปรัชญา พนมอุปถัมภ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ปรัชญา พนมอุปถัมภ์.jpg",
+        "email": "pratchaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ปรัชญา พนมอุปถัมภ์"
+      },
+      {
+        "name": "นายรชต ตามา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายรชต ตามา.jpg",
+        "email": "rachata@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายรชต ตามา"
+      },
+      {
+        "name": "รศ.ดร.สมชาติ โสนะแสง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รศ.ดร.สมชาติ โสนะแสง.jpg",
+        "email": "somchart@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "รศ.ดร.สมชาติ โสนะแสง"
+      },
+      {
+        "name": "ผศ.พัชรณัฏฐ์ แสงอ่อน",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.พัชรณัฏฐ์ แสงอ่อน.jpg",
+        "email": "patcharanat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.พัชรณัฏฐ์ แสงอ่อน"
+      },
+      {
+        "name": "ผศ.พงศ์พัทธ์ มังคละคีรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.พงศ์พัทธ์ มังคละคีรี.jpg",
+        "email": "pongpat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.พงศ์พัทธ์ มังคละคีรี"
+      },
+      {
+        "name": "ผศ.ธนภัทร มาลีลัย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ธนภัทร มาลีลัย.jpg",
+        "email": "thanapat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ธนภัทร มาลีลัย"
+      },
+      {
+        "name": "ผศ.ทศพล มานะศรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ทศพล มานะศรี.jpg",
+        "email": "thotsapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ทศพล มานะศรี"
+      },
+      {
+        "name": "นายกฤษดา สิทธิดา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายกฤษดา สิทธิดา.jpg",
+        "email": "kritsada@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายกฤษดา สิทธิดา"
+      },
+      {
+        "name": "นายมานะพันธ์ พ่อยันต์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายมานะพันธ์ พ่อยันต์.jpg",
+        "email": "manapan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายมานะพันธ์ พ่อยันต์"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "รศ.ดร.ชูธง สัมมัตตะ",
+        "position": "ประธานหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/รศ.ดร.ชูธง สัมมัตตะ.jpg",
+        "email": "choothong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "รองศาสตราจารย์ ดร.ชูธง สัมมัตตะ"
+      },
+      {
+        "name": "รศ.ดร.ดนุพัฒน์ ดวงมาลัย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รศ.ดร.ดนุพัฒน์ ดวงมาลัย.jpg",
+        "email": "danupat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "รศ.ดร.ดนุพัฒน์ ดวงมาลัย"
+      },
+      {
+        "name": "ผศ.นรเศรษฐ ไทยแท้",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.นรเศรษฐ ไทยแท้.jpg",
+        "email": "noraset@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.นรเศรษฐ ไทยแท้"
+      },
+      {
+        "name": "ผศ.ปรัชญา พนมอุปถัมภ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ปรัชญา พนมอุปถัมภ์.jpg",
+        "email": "pratchaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ปรัชญา พนมอุปถัมภ์"
+      },
+      {
+        "name": "นายรชต ตามา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายรชต ตามา.jpg",
+        "email": "rachata@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายรชต ตามา"
+      },
+      {
+        "name": "รศ.ดร.สมชาติ โสนะแสง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รศ.ดร.สมชาติ โสนะแสง.jpg",
+        "email": "somchart@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "รศ.ดร.สมชาติ โสนะแสง"
+      },
+      {
+        "name": "ผศ.พัชรณัฏฐ์ แสงอ่อน",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.พัชรณัฏฐ์ แสงอ่อน.jpg",
+        "email": "patcharanat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.พัชรณัฏฐ์ แสงอ่อน"
+      },
+      {
+        "name": "ผศ.พงศ์พัทธ์ มังคละคีรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.พงศ์พัทธ์ มังคละคีรี.jpg",
+        "email": "pongpat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.พงศ์พัทธ์ มังคละคีรี"
+      },
+      {
+        "name": "ผศ.ธนภัทร มาลีลัย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ธนภัทร มาลีลัย.jpg",
+        "email": "thanapat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ธนภัทร มาลีลัย"
+      },
+      {
+        "name": "ผศ.ทศพล มานะศรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ทศพล มานะศรี.jpg",
+        "email": "thotsapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "ผศ.ทศพล มานะศรี"
+      },
+      {
+        "name": "นายกฤษดา สิทธิดา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายกฤษดา สิทธิดา.jpg",
+        "email": "kritsada@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายกฤษดา สิทธิดา"
+      },
+      {
+        "name": "นายมานะพันธ์ พ่อยันต์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายมานะพันธ์ พ่อยันต์.jpg",
+        "email": "manapan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาอิเล็กทรอนิกส์",
+        "calendarName": "นายมานะพันธ์ พ่อยันต์"
+      }
+    ]
+  },
+  "automotive-ev.html": {
+    "file": "automotive-ev.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาช่างยนต์และยานยนต์ไฟฟ้า"
+    ],
+    "count": 11,
+    "head": {
+      "name": "นายภานุวัฒน์ นาคพงษ์",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/นายภานุวัฒน์ นาคพงษ์.jpg",
+      "email": "uraiwan@npu.ac.th",
+      "phone": "042-000-000",
+      "location": "สาขาวิชาช่างยนต์ (พิกัด)",
+      "calendarName": "นายภานุวัฒน์ นาคพงษ์"
+    },
+    "members": [
+      {
+        "name": "ผศ.สุจิน สุนีย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.สุจิน สุนีย์.jpg",
+        "email": "sujin@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาช่างยนต์ (พิกัด)",
+        "calendarName": "ผศ.สุจิน สุนีย์"
+      },
+      {
+        "name": "ผศ.ดร.ไพศาล ศุภิรัตนกุล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ดร.ไพศาล ศุภิรัตนกุล.jpg",
+        "email": "phaisan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "ผศ.ดร.ไพศาล ศุภิรัตนกุล"
+      },
+      {
+        "name": "นายนพฤทธิ์ พรหมลัง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นพฤทธิ์ พรหมลัง.jpg",
+        "email": "noppharit@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายนพฤทธิ์ พรหมลัง"
+      },
+      {
+        "name": "นายทรงพล วิจารณ์จักร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ทรงพล วิจารณ์จักร.jpg",
+        "email": "songphon@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายทรงพล วิจารณ์จักร"
+      },
+      {
+        "name": "นายกิติพงษ์ แซ่เฮ็ง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/กิติพงษ์ แซ่เฮ็ง.jpg",
+        "email": "kitipong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายกิติพงษ์ แซ่เฮ็ง"
+      },
+      {
+        "name": "ดร.กานต์ กอมณี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/กานต์ กอมณี.jpg",
+        "email": "karn.k@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "ดร.กานต์ กอมณี"
+      },
+      {
+        "name": "นายบุญโชค พ่อตาแสง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/บุญโชค พ่อตาแสง.jpg",
+        "email": "boonchok@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายบุญโชค พ่อตาแสง"
+      },
+      {
+        "name": "นายรณศักดิ์ วิวัฒน์ปรีชานนท์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รณศักดิ์ วิวัฒน์ปรีชานนท์.jpg",
+        "email": "ronnasak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายรณศักดิ์ วิวัฒน์ปรีชานนท์"
+      },
+      {
+        "name": "นางสาววราภรณ์ อักโขวงศ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/วราภรณ์ อักโขวงศ์.jpg",
+        "email": "waraporn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นางสาววราภรณ์ อักโขวงศ์"
+      },
+      {
+        "name": "นายอนุรักษ์ ตัณฑวรา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อนุรักษ์ ตัณฑวรา.jpg",
+        "email": "anurak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายอนุรักษ์ ตัณฑวรา"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นายภานุวัฒน์ นาคพงษ์",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายภานุวัฒน์ นาคพงษ์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาช่างยนต์ (พิกัด)",
+        "calendarName": "นายภานุวัฒน์ นาคพงษ์"
+      },
+      {
+        "name": "ผศ.สุจิน สุนีย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.สุจิน สุนีย์.jpg",
+        "email": "sujin@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาช่างยนต์ (พิกัด)",
+        "calendarName": "ผศ.สุจิน สุนีย์"
+      },
+      {
+        "name": "ผศ.ดร.ไพศาล ศุภิรัตนกุล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ดร.ไพศาล ศุภิรัตนกุล.jpg",
+        "email": "phaisan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "ผศ.ดร.ไพศาล ศุภิรัตนกุล"
+      },
+      {
+        "name": "นายนพฤทธิ์ พรหมลัง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นพฤทธิ์ พรหมลัง.jpg",
+        "email": "noppharit@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายนพฤทธิ์ พรหมลัง"
+      },
+      {
+        "name": "นายทรงพล วิจารณ์จักร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ทรงพล วิจารณ์จักร.jpg",
+        "email": "songphon@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายทรงพล วิจารณ์จักร"
+      },
+      {
+        "name": "นายกิติพงษ์ แซ่เฮ็ง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/กิติพงษ์ แซ่เฮ็ง.jpg",
+        "email": "kitipong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายกิติพงษ์ แซ่เฮ็ง"
+      },
+      {
+        "name": "ดร.กานต์ กอมณี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/กานต์ กอมณี.jpg",
+        "email": "karn.k@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "ดร.กานต์ กอมณี"
+      },
+      {
+        "name": "นายบุญโชค พ่อตาแสง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/บุญโชค พ่อตาแสง.jpg",
+        "email": "boonchok@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายบุญโชค พ่อตาแสง"
+      },
+      {
+        "name": "นายรณศักดิ์ วิวัฒน์ปรีชานนท์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/รณศักดิ์ วิวัฒน์ปรีชานนท์.jpg",
+        "email": "ronnasak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายรณศักดิ์ วิวัฒน์ปรีชานนท์"
+      },
+      {
+        "name": "นางสาววราภรณ์ อักโขวงศ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/วราภรณ์ อักโขวงศ์.jpg",
+        "email": "waraporn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นางสาววราภรณ์ อักโขวงศ์"
+      },
+      {
+        "name": "นายอนุรักษ์ ตัณฑวรา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อนุรักษ์ ตัณฑวรา.jpg",
+        "email": "anurak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างยนต์",
+        "calendarName": "นายอนุรักษ์ ตัณฑวรา"
+      }
+    ]
+  },
+  "industrial-technology.html": {
+    "file": "industrial-technology.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต"
+    ],
+    "count": 9,
+    "head": {
+      "name": "นายอภิสิทธิ์ แก้วชาลุน",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/นายอภิสิทธิ์ แก้วชาลุน.jpg",
+      "email": "apisit@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาช่างกลโรงงาน",
+      "calendarName": "นายอภิสิทธิ์ แก้วชาลุน"
+    },
+    "members": [
+      {
+        "name": "นายพฤกษ์อนันต์ สุวรรณไตรย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายพฤกษ์อนันต์ สุวรรณไตรย์.jpg",
+        "email": "phruekanan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายพฤกษ์อนันต์ สุวรรณไตรย์"
+      },
+      {
+        "name": "นายสุทัศน์ คำพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายสุทัศน์ คำพันธ์.jpg",
+        "email": "sutat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายสุทัศน์ คำพันธ์"
+      },
+      {
+        "name": "ผศ.สิทธิชัย เจริญราช",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.สิทธิชัย เจริญราช.jpg",
+        "email": "sittichai@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "ผศ.สิทธิชัย เจริญราช"
+      },
+      {
+        "name": "ผศ.ดร.สุริยา ประสมทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ดร.สุริยา ประสมทอง.jpg",
+        "email": "suriya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "ผศ.ดร.สุริยา ประสมทอง"
+      },
+      {
+        "name": "นายไพศาล เดชป้องหา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายไพศาล เดชป้องหา.jpg",
+        "email": "phaisan.d@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายไพศาล เดชป้องหา"
+      },
+      {
+        "name": "นายภาณุวัช โทษา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายภาณุวัช โทษา.jpg",
+        "email": "panuwat.t@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายภาณุวัช โทษา"
+      },
+      {
+        "name": "นายสิทธิพงษ์ อุดมบุญญานุภาพ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายสิทธิพงษ์ อุดมบุญญานุภาพ.jpg",
+        "email": "sittiphong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายสิทธิพงษ์ อุดมบุญญานุภาพ"
+      },
+      {
+        "name": "นายวิโรจน์ ฉัตรเกษ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายวิโรจน์ ฉัตรเกษ.jpg",
+        "email": "wiroj@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายวิโรจน์ ฉัตรเกษ"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นายอภิสิทธิ์ แก้วชาลุน",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายอภิสิทธิ์ แก้วชาลุน.jpg",
+        "email": "apisit@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายอภิสิทธิ์ แก้วชาลุน"
+      },
+      {
+        "name": "นายพฤกษ์อนันต์ สุวรรณไตรย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายพฤกษ์อนันต์ สุวรรณไตรย์.jpg",
+        "email": "phruekanan@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายพฤกษ์อนันต์ สุวรรณไตรย์"
+      },
+      {
+        "name": "นายสุทัศน์ คำพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายสุทัศน์ คำพันธ์.jpg",
+        "email": "sutat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายสุทัศน์ คำพันธ์"
+      },
+      {
+        "name": "ผศ.สิทธิชัย เจริญราช",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.สิทธิชัย เจริญราช.jpg",
+        "email": "sittichai@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "ผศ.สิทธิชัย เจริญราช"
+      },
+      {
+        "name": "ผศ.ดร.สุริยา ประสมทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ดร.สุริยา ประสมทอง.jpg",
+        "email": "suriya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "ผศ.ดร.สุริยา ประสมทอง"
+      },
+      {
+        "name": "นายไพศาล เดชป้องหา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายไพศาล เดชป้องหา.jpg",
+        "email": "phaisan.d@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายไพศาล เดชป้องหา"
+      },
+      {
+        "name": "นายภาณุวัช โทษา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายภาณุวัช โทษา.jpg",
+        "email": "panuwat.t@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายภาณุวัช โทษา"
+      },
+      {
+        "name": "นายสิทธิพงษ์ อุดมบุญญานุภาพ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายสิทธิพงษ์ อุดมบุญญานุภาพ.jpg",
+        "email": "sittiphong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายสิทธิพงษ์ อุดมบุญญานุภาพ"
+      },
+      {
+        "name": "นายวิโรจน์ ฉัตรเกษ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายวิโรจน์ ฉัตรเกษ.jpg",
+        "email": "wiroj@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างกลโรงงาน",
+        "calendarName": "นายวิโรจน์ ฉัตรเกษ"
+      }
+    ]
+  },
+  "vocational-education.html": {
+    "file": "vocational-education.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการจัดการศึกษาและอาชีวศึกษา"
+    ],
+    "count": 2,
+    "head": {
+      "name": "ดร.ปัณณธรณัฐ อาปะโม",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/ดร.ปัณณธรณัฐ อาปะโม.jpg",
+      "email": "pannatornnat@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาการจัดการศึกษาและอาชีวศึกษา",
+      "calendarName": "ดร.ปัณณธรณัฐ อาปะโม"
+    },
+    "members": [
+      {
+        "name": "ดร.อรอุมา นาทสีทา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ดร.อรอุมา นาทสีทา.jpg",
+        "email": "onuma@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการจัดการศึกษาและอาชีวศึกษา",
+        "calendarName": "ดร.อรอุมา นาทสีทา"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ดร.ปัณณธรณัฐ อาปะโม",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/ดร.ปัณณธรณัฐ อาปะโม.jpg",
+        "email": "pannatornnat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการจัดการศึกษาและอาชีวศึกษา",
+        "calendarName": "ดร.ปัณณธรณัฐ อาปะโม"
+      },
+      {
+        "name": "ดร.อรอุมา นาทสีทา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ดร.อรอุมา นาทสีทา.jpg",
+        "email": "onuma@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการจัดการศึกษาและอาชีวศึกษา",
+        "calendarName": "ดร.อรอุมา นาทสีทา"
+      }
+    ]
+  },
+  "welding-technology.html": {
+    "file": "welding-technology.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาช่างเชื่อมโลหะ"
+    ],
+    "count": 4,
+    "head": {
+      "name": "สิบเอกตีเพชร ไชยศล",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขา",
+      "img": "img/สิบเอกตีเพชร ไชยศล.jpg",
+      "email": "teepetch@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+      "calendarName": "สิบเอกตีเพชร ไชยศล"
+    },
+    "members": [
+      {
+        "name": "นายหาญณรงค์ บำรุงศิริ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายหาญณรงค์ บำรุงศิริ.jpg",
+        "email": "harnnarong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "นายหาญณรงค์ บำรุงศิริ"
+      },
+      {
+        "name": "นายชัยกร บางศิริ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายชัยกร บางศิริ.jpg",
+        "email": "chaikorn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "นายชัยกร บางศิริ"
+      },
+      {
+        "name": "ดร.ไชยา โฉมเฉลา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ดร.ไชยา โฉมเฉลา.jpg",
+        "email": "chaiya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "ดร.ไชยา โฉมเฉลา"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "สิบเอกตีเพชร ไชยศล",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขา",
+        "img": "img/สิบเอกตีเพชร ไชยศล.jpg",
+        "email": "teepetch@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "สิบเอกตีเพชร ไชยศล"
+      },
+      {
+        "name": "นายหาญณรงค์ บำรุงศิริ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายหาญณรงค์ บำรุงศิริ.jpg",
+        "email": "harnnarong@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "นายหาญณรงค์ บำรุงศิริ"
+      },
+      {
+        "name": "นายชัยกร บางศิริ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายชัยกร บางศิริ.jpg",
+        "email": "chaikorn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "นายชัยกร บางศิริ"
+      },
+      {
+        "name": "ดร.ไชยา โฉมเฉลา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ดร.ไชยา โฉมเฉลา.jpg",
+        "email": "chaiya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาช่างเชื่อมโลหะ (ดูพิกัด)",
+        "calendarName": "ดร.ไชยา โฉมเฉลา"
+      }
+    ]
+  },
+  "architecture.html": {
+    "file": "architecture.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาสถาปัตยกรรม"
+    ],
+    "count": 4,
+    "head": {
+      "name": "นายบรรจง ภูละคร",
+      "position": "ประธานหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/นายบรรจง ภูละคร.jpg",
+      "email": "uraiwan@npu.ac.th",
+      "phone": "042-000-000",
+      "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+      "calendarName": "นายบรรจง ภูละคร"
+    },
+    "members": [
+      {
+        "name": "นางสาววัชราภรณ์ เครือพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/วัชราภรณ์ เครือพันธ์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+        "calendarName": "นางสาววัชราภรณ์ เครือพันธ์"
+      },
+      {
+        "name": "นางสาวพัฒณิฌาย์ พูนทองอินทร์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พัฒณิฌาย์ พูนทองอินทร์.jpg",
+        "email": "pattanit@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+        "calendarName": "นางสาวพัฒณิฌาย์ พูนทองอินทร์"
+      },
+      {
+        "name": "นายศิวัช มังคละคีรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศิวัช มังคละคีรี.jpg",
+        "email": "siwat@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม",
+        "calendarName": "นายศิวัช มังคละคีรี"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นายบรรจง ภูละคร",
+        "position": "ประธานหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายบรรจง ภูละคร.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+        "calendarName": "นายบรรจง ภูละคร"
+      },
+      {
+        "name": "นางสาววัชราภรณ์ เครือพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/วัชราภรณ์ เครือพันธ์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+        "calendarName": "นางสาววัชราภรณ์ เครือพันธ์"
+      },
+      {
+        "name": "นางสาวพัฒณิฌาย์ พูนทองอินทร์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พัฒณิฌาย์ พูนทองอินทร์.jpg",
+        "email": "pattanit@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม (พิกัด)",
+        "calendarName": "นางสาวพัฒณิฌาย์ พูนทองอินทร์"
+      },
+      {
+        "name": "นายศิวัช มังคละคีรี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศิวัช มังคละคีรี.jpg",
+        "email": "siwat@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาสถาปัตยกรรม",
+        "calendarName": "นายศิวัช มังคละคีรี"
+      }
+    ]
+  },
+  "construction-technology.html": {
+    "file": "construction-technology.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการก่อสร้าง"
+    ],
+    "count": 4,
+    "head": {
+      "name": "นายวีระพล นามวงค์",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/วีระพล นามวงค์.jpg",
+      "email": "weeraphon@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาการก่อสร้าง",
+      "calendarName": "นายวีระพล นามวงค์"
+    },
+    "members": [
+      {
+        "name": "นายณธายุ ชวพัฒนโยธา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ณธายุ ชวพัฒนโยธา.jpg",
+        "email": "nathayu@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นายณธายุ ชวพัฒนโยธา"
+      },
+      {
+        "name": "นายอัครพล วะชุม",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อัครพล วะชุม.jpg",
+        "email": "akarapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นายอัครพล วะชุม"
+      },
+      {
+        "name": "นางสาวโชษิตา สุขคะนนท์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/โชษิตา สุขคะนนท์.jpg",
+        "email": "chosita@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นางสาวโชษิตา สุขคะนนท์"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นายวีระพล นามวงค์",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/วีระพล นามวงค์.jpg",
+        "email": "weeraphon@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นายวีระพล นามวงค์"
+      },
+      {
+        "name": "นายณธายุ ชวพัฒนโยธา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ณธายุ ชวพัฒนโยธา.jpg",
+        "email": "nathayu@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นายณธายุ ชวพัฒนโยธา"
+      },
+      {
+        "name": "นายอัครพล วะชุม",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อัครพล วะชุม.jpg",
+        "email": "akarapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นายอัครพล วะชุม"
+      },
+      {
+        "name": "นางสาวโชษิตา สุขคะนนท์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/โชษิตา สุขคะนนท์.jpg",
+        "email": "chosita@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการก่อสร้าง",
+        "calendarName": "นางสาวโชษิตา สุขคะนนท์"
+      }
+    ]
+  },
+  "digital-business.html": {
+    "file": "digital-business.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล"
+    ],
+    "count": 5,
+    "head": {
+      "name": "นางสาววราภรณ์ อุ้มอังวะ",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/วราภรณ์ อุ้มอังวะ.jpg",
+      "email": "waraporn@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+      "calendarName": "นางสาววราภรณ์ อุ้มอังวะ"
+    },
+    "members": [
+      {
+        "name": "นางอรุณี บุญสว่าง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อรุณี บุญสว่าง.jpg",
+        "email": "arunee@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางอรุณี บุญสว่าง"
+      },
+      {
+        "name": "นางจันทร์เพ็ญ ไตรมงคลเจริญ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/จันทร์เพ็ญ ไตรมงคลเจริญ.jpg",
+        "email": "janpen@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางจันทร์เพ็ญ ไตรมงคลเจริญ"
+      },
+      {
+        "name": "นายญาณภัทร ซองทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ญาณภัทร ซองทอง.jpg",
+        "email": "yanapat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นายญาณภัทร ซองทอง"
+      },
+      {
+        "name": "นางสาวภัทร์พิชา พานทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ภัทร์พิชา พานทอง.jpg",
+        "email": "patpicha@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางสาวภัทร์พิชา พานทอง"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นางสาววราภรณ์ อุ้มอังวะ",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/วราภรณ์ อุ้มอังวะ.jpg",
+        "email": "waraporn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางสาววราภรณ์ อุ้มอังวะ"
+      },
+      {
+        "name": "นางอรุณี บุญสว่าง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อรุณี บุญสว่าง.jpg",
+        "email": "arunee@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางอรุณี บุญสว่าง"
+      },
+      {
+        "name": "นางจันทร์เพ็ญ ไตรมงคลเจริญ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/จันทร์เพ็ญ ไตรมงคลเจริญ.jpg",
+        "email": "janpen@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางจันทร์เพ็ญ ไตรมงคลเจริญ"
+      },
+      {
+        "name": "นายญาณภัทร ซองทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ญาณภัทร ซองทอง.jpg",
+        "email": "yanapat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นายญาณภัทร ซองทอง"
+      },
+      {
+        "name": "นางสาวภัทร์พิชา พานทอง",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ภัทร์พิชา พานทอง.jpg",
+        "email": "patpicha@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาเทคโนโลยีธุรกิจดิจิทัล",
+        "calendarName": "นางสาวภัทร์พิชา พานทอง"
+      }
+    ]
+  },
+  "digital-office.html": {
+    "file": "digital-office.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการจัดการสำนักงานด้วยดิจิทัล"
+    ],
+    "count": 3,
+    "head": {
+      "name": "นางสาวศิริณ เข็มปัญญา",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/ศิริณ เข็มปัญญา.jpg",
+      "email": "sirin@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+      "calendarName": "นางสาวศิริณ เข็มปัญญา"
+    },
+    "members": [
+      {
+        "name": "นางสาวประคองศิลป์ เลิศพีรพงศกุล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ประคองศิลป์ เลิศพีรพงศกุล.jpg",
+        "email": "prakongsilp@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+        "calendarName": "นางสาวประคองศิลป์ เลิศพีรพงศกุล"
+      },
+      {
+        "name": "นางสาวประจิตรา หม่อมพะเนาว์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ประจิตรา หม่อมพะเนาว์.jpg",
+        "email": "prajitra@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+        "calendarName": "นางสาวประจิตรา หม่อมพะเนาว์"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นางสาวศิริณ เข็มปัญญา",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศิริณ เข็มปัญญา.jpg",
+        "email": "sirin@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+        "calendarName": "นางสาวศิริณ เข็มปัญญา"
+      },
+      {
+        "name": "นางสาวประคองศิลป์ เลิศพีรพงศกุล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ประคองศิลป์ เลิศพีรพงศกุล.jpg",
+        "email": "prakongsilp@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+        "calendarName": "นางสาวประคองศิลป์ เลิศพีรพงศกุล"
+      },
+      {
+        "name": "นางสาวประจิตรา หม่อมพะเนาว์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ประจิตรา หม่อมพะเนาว์.jpg",
+        "email": "prajitra@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาการจัดการสำนักงานด้วยดิจิทัล",
+        "calendarName": "นางสาวประจิตรา หม่อมพะเนาว์"
+      }
+    ]
+  },
+  "marketing.html": {
+    "file": "marketing.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการตลาด"
+    ],
+    "count": 3,
+    "head": {
+      "name": "นางภัทรอร ดวงมาลัย",
+      "position": "อาจารย์ประจำสาขาวิชา",
+      "img": "img/นางภัทรอร ดวงมาลัย.jpg",
+      "email": "pattaraon@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาการตลาด",
+      "calendarName": "นางภัทรอร ดวงมาลัย"
+    },
+    "members": [
+      {
+        "name": "นางสาวชุติภา คำพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวชุติภา คำพันธ์.jpg",
+        "email": "chutipa@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการตลาด",
+        "calendarName": "นางสาวชุติภา คำพันธ์"
+      },
+      {
+        "name": "นางสาวชุติมา บุญจงรักษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวชุติมา บุญจงรักษ์.jpg",
+        "email": "chutima@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการตลาด",
+        "calendarName": "นางสาวชุติมา บุญจงรักษ์"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นางภัทรอร ดวงมาลัย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางภัทรอร ดวงมาลัย.jpg",
+        "email": "pattaraon@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการตลาด",
+        "calendarName": "นางภัทรอร ดวงมาลัย"
+      },
+      {
+        "name": "นางสาวชุติภา คำพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวชุติภา คำพันธ์.jpg",
+        "email": "chutipa@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการตลาด",
+        "calendarName": "นางสาวชุติภา คำพันธ์"
+      },
+      {
+        "name": "นางสาวชุติมา บุญจงรักษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวชุติมา บุญจงรักษ์.jpg",
+        "email": "chutima@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการตลาด",
+        "calendarName": "นางสาวชุติมา บุญจงรักษ์"
+      }
+    ]
+  },
+  "hotel-management.html": {
+    "file": "hotel-management.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการโรงแรม"
+    ],
+    "count": 3,
+    "head": {
+      "name": "นางสาวธารารัตน์ มหาพันธ์",
+      "position": "อาจารย์ประจำสาขาวิชา",
+      "img": "img/นางสาวธารารัตน์ มหาพันธ์.jpg",
+      "email": "thararat@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาการโรงแรม",
+      "calendarName": "นางสาวธารารัตน์ มหาพันธ์"
+    },
+    "members": [
+      {
+        "name": "นางสาวกีรติกา บุษมงคล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวกีรติกา บุษมงคล.jpg",
+        "email": "keeratika@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการโรงแรม",
+        "calendarName": "นางสาวกีรติกา บุษมงคล"
+      },
+      {
+        "name": "นางนิรมล สัมมัตตะ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นิรมล.jpg",
+        "email": "niramol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการโรงแรม",
+        "calendarName": "นางนิรมล สัมมัตตะ"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นางสาวธารารัตน์ มหาพันธ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวธารารัตน์ มหาพันธ์.jpg",
+        "email": "thararat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการโรงแรม",
+        "calendarName": "นางสาวธารารัตน์ มหาพันธ์"
+      },
+      {
+        "name": "นางสาวกีรติกา บุษมงคล",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางสาวกีรติกา บุษมงคล.jpg",
+        "email": "keeratika@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการโรงแรม",
+        "calendarName": "นางสาวกีรติกา บุษมงคล"
+      },
+      {
+        "name": "นางนิรมล สัมมัตตะ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นิรมล.jpg",
+        "email": "niramol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการโรงแรม",
+        "calendarName": "นางนิรมล สัมมัตตะ"
+      }
+    ]
+  },
+  "accounting.html": {
+    "file": "accounting.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาการบัญชี"
+    ],
+    "count": 5,
+    "head": {
+      "name": "นางวันเพ็ญ อุไรวงศ์",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/นางวันเพ็ญ อุไรวงศ์.jpg",
+      "email": "wanphen@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "สาขาวิชาการบัญชี",
+      "calendarName": "นางวันเพ็ญ อุไรวงศ์"
+    },
+    "members": [
+      {
+        "name": "ผศ.ปุณยนุช ภู่ระหงษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ปุณยนุช ภู่ระหงษ์.jpg",
+        "email": "poonyanuch@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "ผศ.ปุณยนุช ภู่ระหงษ์"
+      },
+      {
+        "name": "น.ส.มงคลรัตน์ สุวรรณทรัพย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/น.ส.มงคลรัตน์ สุวรรณทรัพย์.jpg",
+        "email": "mongkonrat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "น.ส.มงคลรัตน์ สุวรรณทรัพย์"
+      },
+      {
+        "name": "น.ส.หัทยา ภูน้ำเย็น",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/น.ส.หัทยา ภูน้ำเย็น.jpg",
+        "email": "hattaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "น.ส.หัทยา ภูน้ำเย็น"
+      },
+      {
+        "name": "นายอาทิตย์ โสภา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายอาทิตย์ โสภา.jpg",
+        "email": "arthit@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "นายอาทิตย์ โสภา"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "นางวันเพ็ญ อุไรวงศ์",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/นางวันเพ็ญ อุไรวงศ์.jpg",
+        "email": "wanphen@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "นางวันเพ็ญ อุไรวงศ์"
+      },
+      {
+        "name": "ผศ.ปุณยนุช ภู่ระหงษ์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ปุณยนุช ภู่ระหงษ์.jpg",
+        "email": "poonyanuch@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "ผศ.ปุณยนุช ภู่ระหงษ์"
+      },
+      {
+        "name": "น.ส.มงคลรัตน์ สุวรรณทรัพย์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/น.ส.มงคลรัตน์ สุวรรณทรัพย์.jpg",
+        "email": "mongkonrat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "น.ส.มงคลรัตน์ สุวรรณทรัพย์"
+      },
+      {
+        "name": "น.ส.หัทยา ภูน้ำเย็น",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/น.ส.หัทยา ภูน้ำเย็น.jpg",
+        "email": "hattaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "น.ส.หัทยา ภูน้ำเย็น"
+      },
+      {
+        "name": "นายอาทิตย์ โสภา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายอาทิตย์ โสภา.jpg",
+        "email": "arthit@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาการบัญชี",
+        "calendarName": "นายอาทิตย์ โสภา"
+      }
+    ]
+  },
+  "applied-fundamentals.html": {
+    "file": "applied-fundamentals.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาพื้นฐานประยุกต์"
+    ],
+    "count": 10,
+    "head": {
+      "name": "ผศ.ดร.ธนภร วัฒนนวลสกุล",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/ผศ.ดร.ธนภร วัฒนนวลสกุล.jpg",
+      "email": "uraiwan@npu.ac.th",
+      "phone": "042-000-000",
+      "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+      "calendarName": "ผศ.ดร.ธนภร วัฒนนวลสกุล"
+    },
+    "members": [
+      {
+        "name": "นางปราณี ยตะโคตร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ปราณี ยตะโคตร.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางปราณี ยตะโคตร"
+      },
+      {
+        "name": "นายสมศักดิ์ ไชยมาโย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมศักดิ์ ไชยมาโย.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นายสมศักดิ์ ไชยมาโย"
+      },
+      {
+        "name": "ดร.สุทธิรักษ์ ไพโรจน์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สุทธิรักษ์ ไพโรจน์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "ดร.สุทธิรักษ์ ไพโรจน์"
+      },
+      {
+        "name": "ดร.เจนจิรา ตรั่นถิ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/เจนจิรา ตรั่นถิ.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "ดร.เจนจิรา ตรั่นถิ"
+      },
+      {
+        "name": "นางสาวพรพิรุณ แม้นประเสริฐ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พรพิรุณ แม้นประเสริฐ.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางสาวพรพิรุณ แม้นประเสริฐ"
+      },
+      {
+        "name": "นายพูลสวัสดิ์ โคตพรหม",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พูลสวัสดิ์ โคตพรหม.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นายพูลสวัสดิ์ โคตพรหม"
+      },
+      {
+        "name": "นางสาวอุไรวรรณ คำพิลา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อุไรวรรณ คำพิลา.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางสาวอุไรวรรณ คำพิลา"
+      },
+      {
+        "name": "นายศุภกร อุปฮาต",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศุภกร อุปฮาต.jpg",
+        "email": "yodprem@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 105",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายศุภกร อุปฮาต"
+      },
+      {
+        "name": "นายศรพิทักษ์ นาคสี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศรพิทักษ์ นาคสี.jpg",
+        "email": "sarapit@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 105",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายศรพิทักษ์ นาคสี"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผศ.ดร.ธนภร วัฒนนวลสกุล",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผศ.ดร.ธนภร วัฒนนวลสกุล.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "ผศ.ดร.ธนภร วัฒนนวลสกุล"
+      },
+      {
+        "name": "นางปราณี ยตะโคตร",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ปราณี ยตะโคตร.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางปราณี ยตะโคตร"
+      },
+      {
+        "name": "นายสมศักดิ์ ไชยมาโย",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สมศักดิ์ ไชยมาโย.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นายสมศักดิ์ ไชยมาโย"
+      },
+      {
+        "name": "ดร.สุทธิรักษ์ ไพโรจน์",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/สุทธิรักษ์ ไพโรจน์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "ดร.สุทธิรักษ์ ไพโรจน์"
+      },
+      {
+        "name": "ดร.เจนจิรา ตรั่นถิ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/เจนจิรา ตรั่นถิ.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "ดร.เจนจิรา ตรั่นถิ"
+      },
+      {
+        "name": "นางสาวพรพิรุณ แม้นประเสริฐ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พรพิรุณ แม้นประเสริฐ.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางสาวพรพิรุณ แม้นประเสริฐ"
+      },
+      {
+        "name": "นายพูลสวัสดิ์ โคตพรหม",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/พูลสวัสดิ์ โคตพรหม.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นายพูลสวัสดิ์ โคตพรหม"
+      },
+      {
+        "name": "นางสาวอุไรวรรณ คำพิลา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/อุไรวรรณ คำพิลา.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐานประยุกต์ (พิกัด)",
+        "calendarName": "นางสาวอุไรวรรณ คำพิลา"
+      },
+      {
+        "name": "นายศุภกร อุปฮาต",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศุภกร อุปฮาต.jpg",
+        "email": "yodprem@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 105",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายศุภกร อุปฮาต"
+      },
+      {
+        "name": "นายศรพิทักษ์ นาคสี",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ศรพิทักษ์ นาคสี.jpg",
+        "email": "sarapit@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 105",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายศรพิทักษ์ นาคสี"
+      }
+    ]
+  },
+  "basic-vocational.html": {
+    "file": "basic-vocational.html",
+    "badge": "",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "สาขาวิชาชีพพื้นฐาน"
+    ],
+    "count": 4,
+    "head": {
+      "name": "ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์",
+      "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+      "img": "img/ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์.jpg",
+      "email": "uraiwan@npu.ac.th",
+      "phone": "042-000-000",
+      "location": "สาขาวิชาพื้นฐาน (พิกัด)",
+      "calendarName": "ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์"
+    },
+    "members": [
+      {
+        "name": "ว่าที่ ร้อยตรีรักษิต เสียงล้ำ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ว่าที่ ร้อยตรีรักษิต เสียงล้ำ.jpg",
+        "email": "raikit@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐาน (พิกัด)",
+        "calendarName": "ว่าที่ ร้อยตรีรักษิต เสียงล้ำ"
+      },
+      {
+        "name": "นายกฤษฏพล คำลุน",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายกฤษฏพล คำลุน.jpg",
+        "email": "kritsatapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาชีพพื้นฐาน",
+        "calendarName": "นายกฤษฏพล คำลุน"
+      },
+      {
+        "name": "นายอนันตชิน คำสุภา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายอนันตชิน คำสุภา.jpg",
+        "email": "anantachin@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาชีพพื้นฐาน",
+        "calendarName": "นายอนันตชิน คำสุภา"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์",
+        "position": "หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา",
+        "img": "img/ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์.jpg",
+        "email": "uraiwan@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐาน (พิกัด)",
+        "calendarName": "ผู้ช่วยศาสตราจารย์สำเนียง ไข่มุกข์"
+      },
+      {
+        "name": "ว่าที่ ร้อยตรีรักษิต เสียงล้ำ",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/ว่าที่ ร้อยตรีรักษิต เสียงล้ำ.jpg",
+        "email": "raikit@npu.ac.th",
+        "phone": "042-000-000",
+        "location": "สาขาวิชาพื้นฐาน (พิกัด)",
+        "calendarName": "ว่าที่ ร้อยตรีรักษิต เสียงล้ำ"
+      },
+      {
+        "name": "นายกฤษฏพล คำลุน",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายกฤษฏพล คำลุน.jpg",
+        "email": "kritsatapol@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาชีพพื้นฐาน",
+        "calendarName": "นายกฤษฏพล คำลุน"
+      },
+      {
+        "name": "นายอนันตชิน คำสุภา",
+        "position": "อาจารย์ประจำสาขาวิชา",
+        "img": "img/นายอนันตชิน คำสุภา.jpg",
+        "email": "anantachin@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สาขาวิชาชีพพื้นฐาน",
+        "calendarName": "นายอนันตชิน คำสุภา"
+      }
+    ]
+  },
+  "dept-admin.html": {
+    "file": "dept-admin.html",
+    "badge": "General Administration",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "ฝ่ายงานบริหารทั่วไป"
+    ],
+    "count": 22,
+    "head": {
+      "name": "ผศ.วีรธรรม ไชยยงค์",
+      "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+      "img": "img/รอง1.png",
+      "email": "boonlert@npu.ac.th",
+      "phone": "042-XXX-XXXX ต่อ 101",
+      "location": "สำนักงานคณบดี",
+      "calendarName": "ผศ.วีรธรรม ไชยยงค์"
+    },
+    "members": [
+      {
+        "name": "นายสุวัฒน์ วงค์ตาผา",
+        "position": "เจ้าหน้าที่บริหารงานทั่วไป",
+        "img": "img/นายสุวัฒน์ วงค์ตาผา.jpg",
+        "email": "suwat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายสุวัฒน์ วงค์ตาผา"
+      },
+      {
+        "name": "นางสุนันทา เอ๊ฟวา",
+        "position": "บุคลากร",
+        "img": "img/สุนันทา เอ๊ฟวา.jpg",
+        "email": "sunanta@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสุนันทา เอ๊ฟวา"
+      },
+      {
+        "name": "นางสาววนิดา ไชยวรรณ",
+        "position": "บุคลากร",
+        "img": "img/วนิดา ไชยวรรณ.jpg",
+        "email": "wanida@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาววนิดา ไชยวรรณ"
+      },
+      {
+        "name": "นางสาวจันจิรา สีกาลัง",
+        "position": "บุคลากร",
+        "img": "img/จันจิรา สีกาลัง.jpg",
+        "email": "janjira@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวจันจิรา สีกาลัง"
+      },
+      {
+        "name": "นางสาวเจณิสตา ตรีภัทรพัฒน์",
+        "position": "บุคลากร",
+        "img": "img/เจณิสตา ตรีภัทรพัฒน์.jpg",
+        "email": "janista@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวเจณิสตา ตรีภัทรพัฒน์"
+      },
+      {
+        "name": "นางสาวคชาภรณ์ เหมือนสีเลา",
+        "position": "บุคลากร",
+        "img": "img/คชาภรณ์ เหมือนสีเลา.jpg",
+        "email": "kachaporn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวคชาภรณ์ เหมือนสีเลา"
+      },
+      {
+        "name": "นางสาวถนอมวรรณ ศรีวงษา",
+        "position": "บุคลากร",
+        "img": "img/ถนอมวรรณ ศรีวงษา.jpg",
+        "email": "thanomwan@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวถนอมวรรณ ศรีวงษา"
+      },
+      {
+        "name": "นางสาวศิรินภา ไชยกว้าง",
+        "position": "บุคลากร",
+        "img": "img/ศิรินภา ไชยกว้าง.jpg",
+        "email": "sirinapa@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวศิรินภา ไชยกว้าง"
+      },
+      {
+        "name": "นางสาวกวิสรา ศรีนาค",
+        "position": "บุคลากร",
+        "img": "img/กวิสรา ศรีนาค.jpg",
+        "email": "kawisara@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวกวิสรา ศรีนาค"
+      },
+      {
+        "name": "นางสาวอรุณรัตน์ อันเตวาสิก",
+        "position": "บุคลากร",
+        "img": "img/อรุณรัตน์ อันเตวาสิก.jpg",
+        "email": "arunrat@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวอรุณรัตน์ อันเตวาสิก"
+      },
+      {
+        "name": "นายวิชัย ล้านเอ๊ะ",
+        "position": "บุคลากร",
+        "img": "img/วิชัย ล้านเอ๊ะ.jpg",
+        "email": "wichai@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายวิชัย ล้านเอ๊ะ"
+      },
+      {
+        "name": "นายมธุกร ภาษา",
+        "position": "บุคลากร",
+        "img": "img/มธุกร ภาษา.jpg",
+        "email": "mathukorn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายมธุกร ภาษา"
+      },
+      {
+        "name": "นายเสมา พันเทศ",
+        "position": "บุคลากร",
+        "img": "img/เสมา พันเทศ.jpg",
+        "email": "sema@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายเสมา พันเทศ"
+      },
+      {
+        "name": "นายอดิศักดิ์ ขันหอม",
+        "position": "บุคลากร",
+        "img": "img/อดิศักดิ์ ขันหอม.jpg",
+        "email": "adisak@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายอดิศักดิ์ ขันหอม"
+      },
+      {
+        "name": "นายสวาด ไม่แพง",
+        "position": "บุคลากร",
+        "img": "img/สวาด ไม่แพง.jpg",
+        "email": "sawad@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายสวาด ไม่แพง"
+      },
+      {
+        "name": "นางวิลัยพร แก่นจันทร์",
+        "position": "บุคลากร",
+        "img": "img/วิลัยพร แก่นจันทร์.jpg",
+        "email": "wilaiporn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางวิลัยพร แก่นจันทร์"
+      },
+      {
+        "name": "นางศิริรัตน์ คำเพชรดี",
+        "position": "บุคลากร",
+        "img": "img/ศิริรัตน์ คำเพชรดี.jpg",
+        "email": "sirirat@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางศิริรัตน์ คำเพชรดี"
+      },
+      {
+        "name": "นางสาวบุญมี ขุนษานนท์",
+        "position": "บุคลากร",
+        "img": "img/บุญมี ขุนษานนท์.jpg",
+        "email": "boonmee@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวบุญมี ขุนษานนท์"
+      },
+      {
+        "name": "นายประเสริฐ ปัญญะ",
+        "position": "บุคลากร",
+        "img": "img/ประเสริฐ ปัญญะ.jpg",
+        "email": "prasert@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายประเสริฐ ปัญญะ"
+      },
+      {
+        "name": "นายประศาด ศรีวรรณ์",
+        "position": "บุคลากร",
+        "img": "img/ประศาด ศรีวรรณ์.jpg",
+        "email": "prasad@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายประศาด ศรีวรรณ์"
+      },
+      {
+        "name": "นายรัชพงศ์ สุนโท",
+        "position": "บุคลากร",
+        "img": "img/รัชพงศ์ สุนโท.jpg",
+        "email": "ratchapong@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายรัชพงศ์ สุนโท"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผศ.วีรธรรม ไชยยงค์",
+        "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+        "img": "img/รอง1.png",
+        "email": "boonlert@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 101",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "ผศ.วีรธรรม ไชยยงค์"
+      },
+      {
+        "name": "นายสุวัฒน์ วงค์ตาผา",
+        "position": "เจ้าหน้าที่บริหารงานทั่วไป",
+        "img": "img/นายสุวัฒน์ วงค์ตาผา.jpg",
+        "email": "suwat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายสุวัฒน์ วงค์ตาผา"
+      },
+      {
+        "name": "นางสุนันทา เอ๊ฟวา",
+        "position": "บุคลากร",
+        "img": "img/สุนันทา เอ๊ฟวา.jpg",
+        "email": "sunanta@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสุนันทา เอ๊ฟวา"
+      },
+      {
+        "name": "นางสาววนิดา ไชยวรรณ",
+        "position": "บุคลากร",
+        "img": "img/วนิดา ไชยวรรณ.jpg",
+        "email": "wanida@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาววนิดา ไชยวรรณ"
+      },
+      {
+        "name": "นางสาวจันจิรา สีกาลัง",
+        "position": "บุคลากร",
+        "img": "img/จันจิรา สีกาลัง.jpg",
+        "email": "janjira@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวจันจิรา สีกาลัง"
+      },
+      {
+        "name": "นางสาวเจณิสตา ตรีภัทรพัฒน์",
+        "position": "บุคลากร",
+        "img": "img/เจณิสตา ตรีภัทรพัฒน์.jpg",
+        "email": "janista@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวเจณิสตา ตรีภัทรพัฒน์"
+      },
+      {
+        "name": "นางสาวคชาภรณ์ เหมือนสีเลา",
+        "position": "บุคลากร",
+        "img": "img/คชาภรณ์ เหมือนสีเลา.jpg",
+        "email": "kachaporn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวคชาภรณ์ เหมือนสีเลา"
+      },
+      {
+        "name": "นางสาวถนอมวรรณ ศรีวงษา",
+        "position": "บุคลากร",
+        "img": "img/ถนอมวรรณ ศรีวงษา.jpg",
+        "email": "thanomwan@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวถนอมวรรณ ศรีวงษา"
+      },
+      {
+        "name": "นางสาวศิรินภา ไชยกว้าง",
+        "position": "บุคลากร",
+        "img": "img/ศิรินภา ไชยกว้าง.jpg",
+        "email": "sirinapa@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวศิรินภา ไชยกว้าง"
+      },
+      {
+        "name": "นางสาวกวิสรา ศรีนาค",
+        "position": "บุคลากร",
+        "img": "img/กวิสรา ศรีนาค.jpg",
+        "email": "kawisara@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวกวิสรา ศรีนาค"
+      },
+      {
+        "name": "นางสาวอรุณรัตน์ อันเตวาสิก",
+        "position": "บุคลากร",
+        "img": "img/อรุณรัตน์ อันเตวาสิก.jpg",
+        "email": "arunrat@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวอรุณรัตน์ อันเตวาสิก"
+      },
+      {
+        "name": "นายวิชัย ล้านเอ๊ะ",
+        "position": "บุคลากร",
+        "img": "img/วิชัย ล้านเอ๊ะ.jpg",
+        "email": "wichai@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายวิชัย ล้านเอ๊ะ"
+      },
+      {
+        "name": "นายมธุกร ภาษา",
+        "position": "บุคลากร",
+        "img": "img/มธุกร ภาษา.jpg",
+        "email": "mathukorn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายมธุกร ภาษา"
+      },
+      {
+        "name": "นายเสมา พันเทศ",
+        "position": "บุคลากร",
+        "img": "img/เสมา พันเทศ.jpg",
+        "email": "sema@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายเสมา พันเทศ"
+      },
+      {
+        "name": "นายอดิศักดิ์ ขันหอม",
+        "position": "บุคลากร",
+        "img": "img/อดิศักดิ์ ขันหอม.jpg",
+        "email": "adisak@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายอดิศักดิ์ ขันหอม"
+      },
+      {
+        "name": "นายสวาด ไม่แพง",
+        "position": "บุคลากร",
+        "img": "img/สวาด ไม่แพง.jpg",
+        "email": "sawad@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายสวาด ไม่แพง"
+      },
+      {
+        "name": "นางวิลัยพร แก่นจันทร์",
+        "position": "บุคลากร",
+        "img": "img/วิลัยพร แก่นจันทร์.jpg",
+        "email": "wilaiporn@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางวิลัยพร แก่นจันทร์"
+      },
+      {
+        "name": "นางศิริรัตน์ คำเพชรดี",
+        "position": "บุคลากร",
+        "img": "img/ศิริรัตน์ คำเพชรดี.jpg",
+        "email": "sirirat@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางศิริรัตน์ คำเพชรดี"
+      },
+      {
+        "name": "นางสาวบุญมี ขุนษานนท์",
+        "position": "บุคลากร",
+        "img": "img/บุญมี ขุนษานนท์.jpg",
+        "email": "boonmee@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นางสาวบุญมี ขุนษานนท์"
+      },
+      {
+        "name": "นายประเสริฐ ปัญญะ",
+        "position": "บุคลากร",
+        "img": "img/ประเสริฐ ปัญญะ.jpg",
+        "email": "prasert@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายประเสริฐ ปัญญะ"
+      },
+      {
+        "name": "นายประศาด ศรีวรรณ์",
+        "position": "บุคลากร",
+        "img": "img/ประศาด ศรีวรรณ์.jpg",
+        "email": "prasad@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายประศาด ศรีวรรณ์"
+      },
+      {
+        "name": "นายรัชพงศ์ สุนโท",
+        "position": "บุคลากร",
+        "img": "img/รัชพงศ์ สุนโท.jpg",
+        "email": "ratchapong@npu.ac.th",
+        "phone": "042-711-000",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "นายรัชพงศ์ สุนโท"
+      }
+    ]
+  },
+  "dept-academic.html": {
+    "file": "dept-academic.html",
+    "badge": "Academic Affairs",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "ฝ่ายวิชาการ"
+    ],
+    "count": 8,
+    "head": {
+      "name": "ผศ.บุญเยี่ยม ยศเรืองศักดิ์",
+      "position": "หัวหน้าฝ่ายวิชาการ",
+      "img": "img/รอง2.png",
+      "email": "boonyiem@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "ฝ่ายวิชาการ",
+      "calendarName": "ผู้ช่วยศาสตราจารย์บุญเยี่ยม ยศเรืองศักดิ์"
+    },
+    "members": [
+      {
+        "name": "นางสาวกชกร ศิลาศรี",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/กชกร ศิลาศรี.jpg",
+        "email": "kodchakorn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวกชกร ศิลาศรี"
+      },
+      {
+        "name": "ว่าที่ ร.ต.หญิงเนตรนภา แสงเชื้อพ่อ",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/เนตรนภา แสงเชื้อพ่อ.jpg",
+        "email": "netnapa@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "ว่าที่ ร.ต.หญิงเนตรนภา แสงเชื้อพ่อ"
+      },
+      {
+        "name": "นางพัชรีภรณ์ ไชยยงค์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/พัชรีภรณ์ ไชยยงค์.jpg",
+        "email": "patchareeporn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางพัชรีภรณ์ ไชยยงค์"
+      },
+      {
+        "name": "นางสาวกาญดา สุริรมย์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/กาญดา สุริรมย์.jpg",
+        "email": "kanda@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวกาญดา สุริรมย์"
+      },
+      {
+        "name": "นายสุรศักดิ์ เข็มปัญญา",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/สุรศักดิ์ เข็มปัญญา.jpg",
+        "email": "surasak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นายสุรศักดิ์ เข็มปัญญา"
+      },
+      {
+        "name": "นางสาวคณิตา จันทร์ศรีเมือง",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/คณิตา จันทร์ศรีเมือง.jpg",
+        "email": "kanita@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวคณิตา จันทร์ศรีเมือง"
+      },
+      {
+        "name": "นายพีรวิชญ์ ปารีพันธ์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/พีรวิชญ์ ปารีพันธ์.jpg",
+        "email": "peerawich@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นายพีรวิชญ์ ปารีพันธ์"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผศ.บุญเยี่ยม ยศเรืองศักดิ์",
+        "position": "หัวหน้าฝ่ายวิชาการ",
+        "img": "img/รอง2.png",
+        "email": "boonyiem@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "ผู้ช่วยศาสตราจารย์บุญเยี่ยม ยศเรืองศักดิ์"
+      },
+      {
+        "name": "นางสาวกชกร ศิลาศรี",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/กชกร ศิลาศรี.jpg",
+        "email": "kodchakorn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวกชกร ศิลาศรี"
+      },
+      {
+        "name": "ว่าที่ ร.ต.หญิงเนตรนภา แสงเชื้อพ่อ",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/เนตรนภา แสงเชื้อพ่อ.jpg",
+        "email": "netnapa@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "ว่าที่ ร.ต.หญิงเนตรนภา แสงเชื้อพ่อ"
+      },
+      {
+        "name": "นางพัชรีภรณ์ ไชยยงค์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/พัชรีภรณ์ ไชยยงค์.jpg",
+        "email": "patchareeporn@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางพัชรีภรณ์ ไชยยงค์"
+      },
+      {
+        "name": "นางสาวกาญดา สุริรมย์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/กาญดา สุริรมย์.jpg",
+        "email": "kanda@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวกาญดา สุริรมย์"
+      },
+      {
+        "name": "นายสุรศักดิ์ เข็มปัญญา",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/สุรศักดิ์ เข็มปัญญา.jpg",
+        "email": "surasak@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นายสุรศักดิ์ เข็มปัญญา"
+      },
+      {
+        "name": "นางสาวคณิตา จันทร์ศรีเมือง",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/คณิตา จันทร์ศรีเมือง.jpg",
+        "email": "kanita@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นางสาวคณิตา จันทร์ศรีเมือง"
+      },
+      {
+        "name": "นายพีรวิชญ์ ปารีพันธ์",
+        "position": "เจ้าหน้าที่ฝ่ายวิชาการ",
+        "img": "img/พีรวิชญ์ ปารีพันธ์.jpg",
+        "email": "peerawich@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิชาการ",
+        "calendarName": "นายพีรวิชญ์ ปารีพันธ์"
+      }
+    ]
+  },
+  "dept-finance.html": {
+    "file": "dept-finance.html",
+    "badge": "Research & Quality Assurance",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "ฝ่ายวิจัยและประกันฯ"
+    ],
+    "count": 5,
+    "head": {
+      "name": "รศ.ดร.วีระ รัตนงาม",
+      "position": "หัวหน้าฝ่ายวิจัยและประกันฯ",
+      "img": "img/รอง3.png",
+      "email": "weera@npu.ac.th",
+      "phone": "042-XXX-XXXX",
+      "location": "ฝ่ายวิจัยและประกันฯ",
+      "calendarName": "รองศาสตราจารย์ ดร.วีระ รัตนงาม"
+    },
+    "members": [
+      {
+        "name": "นายวิชญ อภิบาลศรี",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/วิชญ อภิบาลศรี.jpg",
+        "email": "witchaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นายวิชญ อภิบาลศรี"
+      },
+      {
+        "name": "นางรุ่งรัตน์ จรคำ",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/รุ่งรัตน์ จรคำ.jpg",
+        "email": "rungrat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นางรุ่งรัตน์ จรคำ"
+      },
+      {
+        "name": "นางสาวถนอม ขุนษานนท์",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/ถนอม ขุนษานนท์.jpg",
+        "email": "thanom@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นางสาวถนอม ขุนษานนท์"
+      },
+      {
+        "name": "นายเจษฎา หงษ์ณี",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/เจษฎา หงษ์ณี.jpg",
+        "email": "jetsada@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นายเจษฎา หงษ์ณี"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "รศ.ดร.วีระ รัตนงาม",
+        "position": "หัวหน้าฝ่ายวิจัยและประกันฯ",
+        "img": "img/รอง3.png",
+        "email": "weera@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "รองศาสตราจารย์ ดร.วีระ รัตนงาม"
+      },
+      {
+        "name": "นายวิชญ อภิบาลศรี",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/วิชญ อภิบาลศรี.jpg",
+        "email": "witchaya@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นายวิชญ อภิบาลศรี"
+      },
+      {
+        "name": "นางรุ่งรัตน์ จรคำ",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/รุ่งรัตน์ จรคำ.jpg",
+        "email": "rungrat@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นางรุ่งรัตน์ จรคำ"
+      },
+      {
+        "name": "นางสาวถนอม ขุนษานนท์",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/ถนอม ขุนษานนท์.jpg",
+        "email": "thanom@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นางสาวถนอม ขุนษานนท์"
+      },
+      {
+        "name": "นายเจษฎา หงษ์ณี",
+        "position": "เจ้าหน้าที่ฝ่ายวิจัยและประกันฯ",
+        "img": "img/เจษฎา หงษ์ณี.jpg",
+        "email": "jetsada@npu.ac.th",
+        "phone": "042-XXX-XXXX",
+        "location": "ฝ่ายวิจัยและประกันฯ",
+        "calendarName": "นายเจษฎา หงษ์ณี"
+      }
+    ]
+  },
+  "dept-facility.html": {
+    "file": "dept-facility.html",
+    "badge": "Development Affairs",
+    "titles": [
+      "ทำเนียบบุคลากร",
+      "ฝ่ายงานพัฒนา"
+    ],
+    "count": 4,
+    "head": {
+      "name": "ผศ.ยอดเปรม ภูกำเนิด",
+      "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+      "img": "img/รอง4.png",
+      "email": "boonlert@npu.ac.th",
+      "phone": "042-XXX-XXXX ต่อ 101",
+      "location": "สำนักงานคณบดี",
+      "calendarName": "ผศ.ยอดเปรม ภูกำเนิด"
+    },
+    "members": [
+      {
+        "name": "นางสาวประณีวัน วงค์รุ่งเรืองโชค",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/ประณีวัน วงค์รุ่งเรืองโชค.jpg",
+        "email": "praneewan@npu.ac.th",
+        "phone": "042-532-477 ต่อ 102",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางสาวประณีวัน วงค์รุ่งเรืองโชค"
+      },
+      {
+        "name": "นางสาวเสาวรส โพธิ์ชัยเจริญ",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/เสาวรส โพธิ์ชัยเจริญ.jpg",
+        "email": "saowaros@npu.ac.th",
+        "phone": "042-532-477 ต่อ 103",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางสาวเสาวรส โพธิ์ชัยเจริญ"
+      },
+      {
+        "name": "นางรุ่งฤดี โพธิ์ขำ",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/รุ่งฤดี โพธิ์ขำ.jpg",
+        "email": "rungrudee@npu.ac.th",
+        "phone": "042-532-477 ต่อ 104",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางรุ่งฤดี โพธิ์ขำ"
+      }
+    ],
+    "allCards": [
+      {
+        "name": "ผศ.ยอดเปรม ภูกำเนิด",
+        "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+        "img": "img/รอง4.png",
+        "email": "boonlert@npu.ac.th",
+        "phone": "042-XXX-XXXX ต่อ 101",
+        "location": "สำนักงานคณบดี",
+        "calendarName": "ผศ.ยอดเปรม ภูกำเนิด"
+      },
+      {
+        "name": "นางสาวประณีวัน วงค์รุ่งเรืองโชค",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/ประณีวัน วงค์รุ่งเรืองโชค.jpg",
+        "email": "praneewan@npu.ac.th",
+        "phone": "042-532-477 ต่อ 102",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางสาวประณีวัน วงค์รุ่งเรืองโชค"
+      },
+      {
+        "name": "นางสาวเสาวรส โพธิ์ชัยเจริญ",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/เสาวรส โพธิ์ชัยเจริญ.jpg",
+        "email": "saowaros@npu.ac.th",
+        "phone": "042-532-477 ต่อ 103",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางสาวเสาวรส โพธิ์ชัยเจริญ"
+      },
+      {
+        "name": "นางรุ่งฤดี โพธิ์ขำ",
+        "position": "เจ้าหน้าที่งานบริการการศึกษา",
+        "img": "img/รุ่งฤดี โพธิ์ขำ.jpg",
+        "email": "rungrudee@npu.ac.th",
+        "phone": "042-532-477 ต่อ 104",
+        "location": "งานบริการการศึกษา ชั้น 1",
+        "calendarName": "นางรุ่งฤดี โพธิ์ขำ"
+      }
+    ]
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "departments": [
+    {
+      "slug": "electrical-power",
+      "title": "สาขาวิชาไฟฟ้ากำลัง",
+      "titleEn": "Electrical Power / Industrial Electrical Tech",
+      "icon": "fa-solid fa-bolt",
+      "searchKeywords": "สาขาวิชาไฟฟ้ากำลัง ไฟฟ้า electrical power industrial electrical tech"
+    },
+    {
+      "slug": "electronics-robotics",
+      "title": "สาขาวิชาอิเล็กทรอนิกส์ฯ",
+      "titleEn": "Electronics & Robotics Engineering",
+      "icon": "fa-solid fa-robot",
+      "searchKeywords": "สาขาวิชาอิเล็กทรอนิกส์ หุ่นยนต์ electronics robotics engineering"
+    },
+    {
+      "slug": "automotive-ev",
+      "title": "สาขาวิชายานยนต์และเครื่องกล",
+      "titleEn": "Automotive & EV Technology",
+      "icon": "fa-solid fa-car-battery",
+      "searchKeywords": "สาขาวิชายานยนต์และเครื่องกล ช่างยนต์ ยานยนต์ เครื่องกล automotive ev technology"
+    },
+    {
+      "slug": "industrial-technology",
+      "title": "สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต",
+      "titleEn": "Industrial & Machine Shop Tech",
+      "icon": "fa-solid fa-industry",
+      "searchKeywords": "สาขาวิชาช่างกลโรงงาน สาขาวิชาเทคนิคการผลิต ช่างกล ช่างกลโรงงาน เทคนิคการผลิต เทคโนโลยีอุตสาหการ industrial machine shop tech mechanical"
+    },
+    {
+      "slug": "vocational-education",
+      "title": "สาขาวิชาการจัดการอาชีวศึกษา",
+      "titleEn": "Educational & Vocational Management",
+      "icon": "fa-solid fa-graduation-cap",
+      "searchKeywords": "สาขาวิชาการจัดการอาชีวศึกษา สาขาการจัดการอาชีวศึกษา การจัดการ อาชีวศึกษา educational vocational management"
+    },
+    {
+      "slug": "welding-technology",
+      "title": "สาขาวิชาช่างเชื่อมโลหะ",
+      "titleEn": "Welding & Metal Technology",
+      "icon": "fa-solid fa-fire-burner",
+      "searchKeywords": "สาขาวิชาช่างเชื่อมโลหะ ช่างเชื่อม เชื่อมโลหะ welding metal technology"
+    },
+    {
+      "slug": "basic-vocational",
+      "title": "สาขาวิชาชีพพื้นฐาน",
+      "titleEn": "Basic Vocational Subjects",
+      "icon": "fa-solid fa-toolbox",
+      "searchKeywords": "สาขาวิชาชีพพื้นฐาน วิชาชีพพื้นฐาน basic vocational subjects"
+    },
+    {
+      "slug": "construction-technology",
+      "title": "สาขาวิชาการก่อสร้างและสถาปัตยกรรม",
+      "titleEn": "Construction & Architecture Tech",
+      "icon": "fa-solid fa-helmet-safety",
+      "searchKeywords": "สาขาวิชาการก่อสร้างและสถาปัตยกรรม การก่อสร้าง ก่อสร้าง construction architecture tech"
+    },
+    {
+      "slug": "architecture",
+      "title": "สาขาวิชาสถาปัตยกรรม",
+      "titleEn": "Architecture",
+      "icon": "fa-solid fa-building",
+      "searchKeywords": "สาขาวิชาสถาปัตยกรรม สถาปัตย์ architecture"
+    },
+    {
+      "slug": "accounting",
+      "title": "สาขาวิชาการบัญชี",
+      "titleEn": "Accounting",
+      "icon": "fa-solid fa-calculator",
+      "searchKeywords": "สาขาวิชาการบัญชี บัญชี accounting"
+    },
+    {
+      "slug": "digital-office",
+      "title": "สาขาวิชาการจัดการสำนักงานดิจิทัล",
+      "titleEn": "Digital Office Management",
+      "icon": "fa-solid fa-file-invoice",
+      "searchKeywords": "สาขาวิชาการจัดการสำนักงานดิจิทัล สาขาการจัดการสำนักงานด้วยดิจิทัล การจัดการ สำนักงาน ดิจิทัล digital office management"
+    },
+    {
+      "slug": "marketing",
+      "title": "สาขาวิชาการตลาด",
+      "titleEn": "Marketing",
+      "icon": "fa-solid fa-bullhorn",
+      "searchKeywords": "สาขาวิชาการตลาด การตลาด marketing"
+    },
+    {
+      "slug": "digital-business",
+      "title": "สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล",
+      "titleEn": "Digital Business Technology",
+      "icon": "fa-solid fa-laptop-code",
+      "searchKeywords": "สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล ธุรกิจดิจิทัล digital business technology"
+    },
+    {
+      "slug": "hotel-management",
+      "title": "สาขาวิชาการโรงแรม",
+      "titleEn": "Hotel Management",
+      "icon": "fa-solid fa-hotel",
+      "searchKeywords": "สาขาวิชาการโรงแรม การโรงแรม ท่องเที่ยว การท่องเที่ยว การจัดการ hotel management tourism"
+    },
+    {
+      "slug": "applied-fundamentals",
+      "title": "สาขาวิชาพื้นฐานประยุกต์",
+      "titleEn": "Applied Fundamental Sciences",
+      "icon": "fa-solid fa-book-bookmark",
+      "searchKeywords": "สาขาวิชาพื้นฐานประยุกต์ พื้นฐานประยุกต์ วิทยาศาสตร์ applied fundamental sciences"
+    }
+  ],
+  "divisions": [
+    {
+      "slug": "dept-admin",
+      "title": "ฝ่ายบริหารทั่วไป",
+      "description": "กำกับดูแลงานสารบรรณ งานสารสนเทศ ประชาสัมพันธ์ และงานบริหารงานทั่วไปของคณะ",
+      "icon": "fa-solid fa-briefcase"
+    },
+    {
+      "slug": "dept-academic",
+      "title": "ฝ่ายวิชาการ",
+      "description": "ดูแลการเรียนการสอน งานหลักสูตร ทะเบียนนักศึกษา และสนับสนุนกิจการนักศึกษา",
+      "icon": "fa-solid fa-graduation-cap"
+    },
+    {
+      "slug": "dept-finance",
+      "title": "ฝ่ายวิจัย",
+      "description": "บริหารงบประมาณ งานการเงินและบัญชี งานพัสดุ และการวางแผนยุทธศาสตร์",
+      "icon": "fa-solid fa-coins"
+    },
+    {
+      "slug": "dept-facility",
+      "title": "ฝ่ายพัฒนา",
+      "description": "ดูแลและซ่อมบำรุงอาคารสถานที่ จัดระบบยานพาหนะ และพัฒนาภูมิทัศน์",
+      "icon": "fa-solid fa-wrench"
+    }
+  ]
+}

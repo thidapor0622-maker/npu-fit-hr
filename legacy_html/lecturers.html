@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อาจารย์ประจำสาขาวิชา - คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Sarabun & Prompt) -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        npu: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            dark: '#002855',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Prompt', sans-serif; }
+        
+        .glass-header {
+            background: rgba(0, 40, 85, 0.95);
+            backdrop-filter: blur(12px);
+        }
+        .arrow-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dropdown-btn.active .arrow-icon { transform: rotate(180deg); }
+        
+        /* สไตล์กรอบการ์ด */
+        .academic-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #cbd5e1;
+        }
+        .academic-card:hover {
+            transform: translateY(-6px);
+            border-color: #0284c7;
+            box-shadow: 0 12px 24px -4px rgba(2, 132, 199, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 relative min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="glass-header text-white shadow-md sticky top-0 z-50 border-b border-sky-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center gap-4">
+            
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3.5 group">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center p-1.5 shadow-md group-hover:scale-105 transition-transform overflow-hidden flex-shrink-0 border border-sky-100">
+                        <img src="img/โลโก้.png" alt="ตรามหาวิทยาลัยนครพนม" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Nakhon_Phanom_University_Logo.svg';">
+                    </div>
+                    <div class="block">
+                        <h1 class="text-lg sm:text-xl font-bold leading-tight tracking-wide group-hover:text-sky-200 transition-colors">คณะเทคโนโลยีอุตสาหกรรม</h1>
+                        <p class="text-xs sm:text-sm text-sky-300 font-light">มหาวิทยาลัยนครพนม</p>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- เมนูนำทาง -->
+            <nav class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 p-1.5 rounded-2xl border border-slate-700/60 w-full md:w-auto overflow-x-auto justify-center">
+                <a href="index.html" class="flex-1 md:flex-none px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700/70 whitespace-nowrap">
+                    <i class="fa-solid fa-user-tie text-sky-400"></i>
+                    <span>คณะผู้บริหาร</span>
+                </a>
+
+                <a href="lecturers.html" class="flex-1 md:flex-none px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all bg-sky-600 text-white shadow-md border border-sky-400/30 whitespace-nowrap">
+                    <i class="fa-solid fa-chalkboard-user text-white"></i>
+                    <span>อาจารย์ประจำสาขาวิชา</span>
+                </a>
+
+                <a href="staff.html" class="flex-1 md:flex-none px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700/70 whitespace-nowrap">
+                    <i class="fa-solid fa-users text-sky-400"></i>
+                    <span>บุคลากร / สายสนับสนุน</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="relative bg-gradient-to-b from-npu-dark via-npu-900 to-slate-900 text-white py-14 px-4 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+
+        <div class="relative max-w-4xl mx-auto text-center space-y-3">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-medium tracking-wide">
+                <i class="fa-solid fa-graduation-cap"></i> Faculty of Industrial Technology
+            </span>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white font-heading">
+                ทำเนียบคณะอาจารย์ประจำสาขาวิชา
+            </h2>
+            <p class="text-sky-100/80 text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed">
+                เลือกสาขาวิชาเพื่อเข้าชมข้อมูล รายชื่อ และบุคลากรผู้สอนประจำสาขา
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+        
+        <!-- Controls & Search Bar Section -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b-2 border-slate-300">
+            <div>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-800 font-heading">สาขาวิชาทั้งหมด</h3>
+                <p class="text-xs sm:text-sm text-slate-500">เลือกสาขาวิชาเพื่อดูข้อมูลอาจารย์ประจำหลักสูตร</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <!-- Search Input Field -->
+                <div class="relative w-full sm:w-80">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <input type="text" id="searchInput" onkeyup="filterCards()" autocomplete="off" placeholder="ค้นหาสาขาวิชา..." class="w-full pl-10 pr-9 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition shadow-sm font-medium">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Department Counter -->
+                <span id="departmentCount" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-sky-800 bg-sky-100 px-3.5 py-2.5 rounded-xl border border-sky-300 shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-layer-group"></i> <span id="countNum">15</span> สาขาวิชา
+                </span>
+            </div>
+        </div>
+
+        <!-- Course Cards Grid -->
+        <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- สาขาที่ 1 -->
+            <a href="electrical-power.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาไฟฟ้ากำลัง ไฟฟ้า" data-name-en="electrical power industrial electrical tech">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาไฟฟ้ากำลัง</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Electrical Power / Industrial Electrical Tech</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 2 -->
+            <a href="electronics-robotics.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาอิเล็กทรอนิกส์ หุ่นยนต์" data-name-en="electronics robotics engineering">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาอิเล็กทรอนิกส์ฯ</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Electronics & Robotics Engineering</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 3 -->
+            <a href="automotive-ev.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชายานยนต์และเครื่องกล ช่างยนต์ ยานยนต์ เครื่องกล" data-name-en="automotive ev technology">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-car-battery"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชายานยนต์และเครื่องกล</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Automotive & EV Technology</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 4 -->
+            <a href="industrial-technology.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาช่างกลโรงงาน สาขาวิชาเทคนิคการผลิต ช่างกล ช่างกลโรงงาน เทคนิคการผลิต เทคโนโลยีอุตสาหการ" data-name-en="industrial machine shop tech mechanical">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-industry"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Industrial & Machine Shop Tech</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 5 -->
+            <a href="vocational-education.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการจัดการอาชีวศึกษา สาขาการจัดการอาชีวศึกษา การจัดการ อาชีวศึกษา" data-name-en="educational vocational management">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการจัดการอาชีวศึกษา</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Educational & Vocational Management</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 6 -->
+            <a href="welding-technology.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาช่างเชื่อมโลหะ ช่างเชื่อม เชื่อมโลหะ" data-name-en="welding metal technology">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-fire-burner"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาช่างเชื่อมโลหะ</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Welding & Metal Technology</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 7 -->
+            <a href="basic-vocational.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาชีพพื้นฐาน วิชาชีพพื้นฐาน" data-name-en="basic vocational subjects">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-toolbox"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาชีพพื้นฐาน</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Basic Vocational Subjects</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 8 -->
+            <a href="construction-technology.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการก่อสร้างและสถาปัตยกรรม การก่อสร้าง ก่อสร้าง" data-name-en="construction architecture tech">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-helmet-safety"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการก่อสร้างและสถาปัตยกรรม</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Construction & Architecture Tech</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 9 -->
+            <a href="architecture.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาสถาปัตยกรรม สถาปัตย์" data-name-en="architecture">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาสถาปัตยกรรม</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Architecture</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 10 -->
+            <a href="accounting.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการบัญชี บัญชี" data-name-en="accounting">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการบัญชี</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Accounting</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 11 -->
+            <a href="digital-office.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการจัดการสำนักงานดิจิทัล สาขาการจัดการสำนักงานด้วยดิจิทัล การจัดการ สำนักงาน ดิจิทัล" data-name-en="digital office management">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการจัดการสำนักงานดิจิทัล</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Digital Office Management</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 12 -->
+            <a href="marketing.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการตลาด การตลาด" data-name-en="marketing">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการตลาด</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Marketing</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 13 -->
+            <a href="digital-business.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล ธุรกิจดิจิทัล" data-name-en="digital business technology">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Digital Business Technology</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 14 -->
+            <a href="hotel-management.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาการโรงแรม การโรงแรม ท่องเที่ยว การท่องเที่ยว การจัดการ" data-name-en="hotel management tourism">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-hotel"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาการโรงแรม</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Hotel Management</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- สาขาที่ 15 -->
+            <a href="applied-fundamentals.html" class="academic-card group bg-white rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden" data-name="สาขาวิชาพื้นฐานประยุกต์ พื้นฐานประยุกต์ วิทยาศาสตร์" data-name-en="applied fundamental sciences">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-npu-500"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-all group-hover:scale-110 group-hover:bg-sky-100/60"></div>
+                <div class="relative z-10 pt-1">
+                    <div class="w-14 h-14 bg-sky-100 text-npu-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-npu-600 group-hover:text-white transition-all shadow-sm border border-sky-200">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-npu-600 transition font-heading">สาขาวิชาพื้นฐานประยุกต์</h4>
+                    <p class="text-slate-500 text-xs font-medium mb-6">Applied Fundamental Sciences</p>
+                </div>
+                <div class="relative z-10 pt-3 border-t border-slate-200 flex items-center justify-between text-npu-600 font-bold text-xs group-hover:text-npu-800">
+                    <span>เข้าสู่ทำเนียบอาจารย์</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- No Results Found State -->
+        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+            <div class="w-16 h-16 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <h4 class="text-lg font-bold text-slate-700 font-heading">ไม่พบสาขาวิชาที่คุณค้นหา</h4>
+            <p class="text-sm text-slate-400 mt-1 mb-4">โปรดตรวจสอบคำค้นหา หรือลองค้นหาด้วยคำใหม่อีกครั้ง</p>
+            <button onclick="clearSearch()" class="px-4 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold rounded-xl text-xs transition border border-sky-200">
+                ล้างการค้นหาทั้งหมด
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-npu-dark text-slate-400 py-8 text-center text-xs sm:text-sm border-t border-sky-900 w-full mt-auto">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-light text-sky-200/70">© คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม</p>
+            <p class="text-slate-500 text-xs">Faculty of Industrial Technology, Nakhon Phanom University</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // เคลียร์ค่าค้นหาเมื่อโหลดหน้าใหม่
+        window.onload = function() {
+            const input = document.getElementById('searchInput');
+            if (input) {
+                input.value = '';
+                filterCards();
+            }
+        };
+
+        // สลับเปิด-ปิดเมนู Dropdown
+        function toggleNavMenu() {
+            const menu = document.getElementById('navMenuContent');
+            const btn = document.getElementById('navDropdownBtn');
+            if (menu && btn) {
+                menu.classList.toggle('hidden');
+                btn.classList.toggle('active');
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            const btn = document.getElementById('navDropdownBtn');
+            const menu = document.getElementById('navMenuContent');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+                btn.classList.remove('active');
+            }
+        });
+
+        // ฟังก์ชันกรองการ์ดสาขาวิชาแบบเรียลไทม์
+        function filterCards() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.academic-card');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const noResults = document.getElementById('noResults');
+            const countNum = document.getElementById('countNum');
+
+            let visibleCount = 0;
+
+            if (filter !== '') {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            cards.forEach(card => {
+                const nameTh = (card.getAttribute('data-name') || '').toLowerCase();
+                const nameEn = (card.getAttribute('data-name-en') || '').toLowerCase();
+                // นำข้อความทั้งหมดในการ์ดมาค้นหาด้วย เพื่อครอบคลุมคำที่แสดงบนหน้าจอ
+                const cardText = card.innerText.toLowerCase();
+
+                const isMatch = nameTh.includes(filter) || nameEn.includes(filter) || cardText.includes(filter);
+
+                if (isMatch) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            countNum.innerText = visibleCount;
+
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        // ฟังก์ชันล้างคำค้นหา
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            filterCards();
+            input.focus();
+        }
+    </script>
+</body>
+</html>
