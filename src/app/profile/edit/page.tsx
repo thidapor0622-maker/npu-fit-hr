@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getAssetPath } from '@/lib/assetHelper';
+import { fetchClientGViz } from '@/hooks/usePersonnelData';
 
 interface ProfileData {
   nameEn?: string;
@@ -27,28 +29,89 @@ export default function TeacherEditPage() {
   const [msg, setMsg] = useState({ text: '', ok: true });
   const [educationText, setEducationText] = useState('');
   const [skillsText, setSkillsText] = useState('');
+  const [sheetId, setSheetId] = useState('1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU');
 
   useEffect(() => {
-    fetch('/api/teacher/profile')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) {
-          setProfile(d.profile || {});
-          setEmail(d.email || '');
-          setEducationText((d.profile?.education || []).join('\n'));
-          setSkillsText((d.profile?.skills || []).join('\n'));
-        } else {
-          // Not logged in
-          router.push('/profile/login');
+    const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('hr_user_session') : null;
+    const isAdmin = typeof window !== 'undefined' && localStorage.getItem('hr_admin_session') === 'true';
+
+    if (!userSessionStr && !isAdmin) {
+      window.location.href = getAssetPath('/login/');
+      return;
+    }
+
+    const u = userSessionStr ? JSON.parse(userSessionStr) : { email: 'admin@npu.ac.th', name: 'admin' };
+    const userEmail = (u.email || '').trim().toLowerCase();
+    setEmail(userEmail);
+
+    const targetSheetId = (typeof window !== 'undefined' && localStorage.getItem('hr_custom_sheet_id')) || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+    setSheetId(targetSheetId);
+
+    // Check localStorage custom profile first
+    const savedCustom = typeof window !== 'undefined' ? localStorage.getItem(`hr_custom_profile_${userEmail}`) : null;
+    if (savedCustom) {
+      try {
+        const parsed = JSON.parse(savedCustom);
+        setProfile(parsed);
+        setEducationText((parsed.education || []).join('\n'));
+        setSkillsText((parsed.skills || []).join('\n'));
+      } catch {}
+    }
+
+    // Load from Google Sheets live data
+    Promise.all([
+      fetchClientGViz(targetSheetId, 'Executives').catch(() => []),
+      fetchClientGViz(targetSheetId, 'Lecturers').catch(() => []),
+      fetchClientGViz(targetSheetId, 'Staff').catch(() => []),
+    ])
+      .then(([execs, lecs, staffs]) => {
+        const all = [...execs, ...lecs, ...staffs];
+        const found = all.find((item) => {
+          const itemEmail = String(item.email || '').toLowerCase().trim();
+          const itemName = String(item.name || '').trim();
+          const itemId = String(item.id || '').toLowerCase().trim();
+          return (
+            (userEmail && itemEmail === userEmail) ||
+            (u.name && itemName.includes(u.name)) ||
+            (u.user && itemId === u.user.toLowerCase())
+          );
+        });
+
+        if (found) {
+          setProfile((prev) => ({
+            nameTh: prev.nameTh || found.name || '',
+            nameEn: prev.nameEn || found.calendarName || found.nameEn || '',
+            position: prev.position || found.position || '',
+            email: prev.email || found.email || userEmail,
+            phone: prev.phone || found.phone || '',
+            location: prev.location || found.location || found.room || '',
+            imageUrl: prev.imageUrl || found.img || '',
+            researchInterests: prev.researchInterests || found.researchInterests || '',
+            education: prev.education && prev.education.length > 0 ? prev.education : (found.education ? String(found.education).split('|').map((s: string) => s.trim()).filter(Boolean) : []),
+            skills: prev.skills && prev.skills.length > 0 ? prev.skills : (found.skills ? String(found.skills).split('|').map((s: string) => s.trim()).filter(Boolean) : []),
+          }));
+
+          if (!savedCustom) {
+            if (found.education) {
+              setEducationText(String(found.education).split('|').map((s: string) => s.trim()).filter(Boolean).join('\n'));
+            }
+            if (found.skills) {
+              setSkillsText(String(found.skills).split('|').map((s: string) => s.trim()).filter(Boolean).join('\n'));
+            }
+          }
         }
       })
-      .catch(() => router.push('/profile/login'))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/teacher/auth', { method: 'DELETE' });
-    router.push('/profile/login');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hr_admin_session');
+      localStorage.removeItem('hr_user_session');
+    }
+    await fetch('/api/teacher/auth', { method: 'DELETE' }).catch(() => {});
+    window.location.href = getAssetPath('/login/');
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -58,18 +121,26 @@ export default function TeacherEditPage() {
     try {
       const payload: ProfileData = {
         ...profile,
-        education: educationText.split('\n').filter(Boolean),
-        skills: skillsText.split('\n').filter(Boolean),
+        education: educationText.split('\n').map((s) => s.trim()).filter(Boolean),
+        skills: skillsText.split('\n').map((s) => s.trim()).filter(Boolean),
       };
-      const res = await fetch('/api/teacher/profile', {
+
+      if (typeof window !== 'undefined' && email) {
+        localStorage.setItem(`hr_custom_profile_${email}`, JSON.stringify(payload));
+      }
+
+      fetch('/api/teacher/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+      }).catch(() => {});
+
+      setMsg({
+        text: 'บันทึกโปรไฟล์เรียบร้อยแล้ว! (หากต้องการอัปเดตไปยังระบบส่วนกลางของคณะและให้แอดมินเห็นทันที สามารถกดปุ่ม "เปิด Google Sheets เพื่อแก้ไขข้อมูล" ด้านบนได้เลยครับ)',
+        ok: true,
       });
-      const d = await res.json();
-      setMsg({ text: d.message || (d.success ? 'บันทึกสำเร็จ' : 'เกิดข้อผิดพลาด'), ok: d.success });
     } catch (e: any) {
-      setMsg({ text: e.message, ok: false });
+      setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
     } finally {
       setSaving(false);
     }
@@ -129,6 +200,28 @@ export default function TeacherEditPage() {
 
       {/* Form */}
       <main className="max-w-3xl mx-auto px-4 py-8 w-full flex-grow">
+        {/* Live Sheets Notification Banner */}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <i className="fa-solid fa-file-excel text-lg" />
+            </div>
+            <div>
+              <h3 className="font-bold text-emerald-950 text-sm">ข้อมูลบุคลากรเชื่อมโยงสดกับ Google Sheets (Real-time)</h3>
+              <p className="text-xs text-emerald-700 mt-0.5">ทุกการเปลี่ยนแปลงใน Google Sheets จะแสดงบนเว็บไซต์และหน้าแอดมินทันที</p>
+            </div>
+          </div>
+          <a
+            href={`https://docs.google.com/spreadsheets/d/${sheetId}/edit`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap"
+          >
+            <i className="fa-solid fa-arrow-up-right-from-square" />
+            เปิด Google Sheets เพื่อแก้ไขข้อมูล
+          </a>
+        </div>
+
         <form onSubmit={handleSave} className="space-y-6">
           {/* Success / Error */}
           {msg.text && (

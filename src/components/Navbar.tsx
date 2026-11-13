@@ -31,6 +31,20 @@ export default function Navbar() {
       setAuth({ authenticated: true, role: 'admin', user: 'admin' });
       return;
     }
+    const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('hr_user_session') : null;
+    if (userSessionStr) {
+      try {
+        const u = JSON.parse(userSessionStr);
+        setAuth({
+          authenticated: true,
+          role: u.role || 'teacher',
+          email: u.email,
+          name: u.name,
+          user: u.user,
+        });
+        return;
+      } catch {}
+    }
     fetch('/api/auth')
       .then((r) => r.json())
       .then((d) => setAuth(d))
@@ -40,12 +54,12 @@ export default function Navbar() {
   const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('hr_admin_session');
+      localStorage.removeItem('hr_user_session');
     }
     await fetch('/api/auth', { method: 'DELETE' }).catch(() => {});
     setAuth({ authenticated: false });
     setDropdownOpen(false);
-    router.push('/');
-    router.refresh();
+    window.location.href = getAssetPath('/');
   };
 
   return (

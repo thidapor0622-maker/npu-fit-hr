@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAssetPath } from '@/lib/assetHelper';
+import { fetchClientGViz } from '@/hooks/usePersonnelData';
 import { EXECUTIVES_DATA } from '@/data/executives';
 import { DEPARTMENTS_DATA } from '@/data/departments';
 import { STAFF_DIVISIONS_DATA } from '@/data/staff-divisions';
@@ -141,19 +142,79 @@ export default function AdminPage() {
     setPersonnel(list);
   }
 
-  function loadPersonnel() {
-    fetch('/api/admin/personnel')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.data && Object.keys(d.data).length > 0) {
-          setPersonnel(Object.values(d.data) as PersonnelEntry[]);
-          return;
-        }
-        fallbackPersonnel();
-      })
-      .catch(() => {
-        fallbackPersonnel();
-      });
+  async function loadPersonnel() {
+    const targetSheetId = (typeof window !== 'undefined' && localStorage.getItem('hr_custom_sheet_id')) || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+    try {
+      const [execRows, lecRows, staffRows] = await Promise.all([
+        fetchClientGViz(targetSheetId, 'Executives').catch(() => null),
+        fetchClientGViz(targetSheetId, 'Lecturers').catch(() => null),
+        fetchClientGViz(targetSheetId, 'Staff').catch(() => null),
+      ]);
+
+      const list: PersonnelEntry[] = [];
+
+      if (execRows && execRows.length > 0) {
+        execRows.forEach((r) => {
+          if (!r.name && !r.id) return;
+          list.push({
+            id: String(r.id || r.name),
+            nameTh: String(r.name || ''),
+            position: String(r.position || ''),
+            email: String(r.email || ''),
+            phone: String(r.phone || ''),
+            department: 'คณะผู้บริหาร',
+            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            location: String(r.room || ''),
+            education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            updatedAt: new Date().toISOString(),
+          });
+        });
+      }
+
+      if (lecRows && lecRows.length > 0) {
+        lecRows.forEach((r, idx) => {
+          if (!r.name && !r.email) return;
+          list.push({
+            id: String(r.email || `lec-${idx}`),
+            nameTh: String(r.name || ''),
+            nameEn: String(r.calendarName || ''),
+            position: String(r.position || 'อาจารย์ประจำ'),
+            email: String(r.email || ''),
+            phone: String(r.phone || ''),
+            department: String(r.departmentSlug || r.location || 'อาจารย์ประจำสาขาวิชา'),
+            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            location: String(r.location || ''),
+            updatedAt: new Date().toISOString(),
+          });
+        });
+      }
+
+      if (staffRows && staffRows.length > 0) {
+        staffRows.forEach((r, idx) => {
+          if (!r.name && !r.email) return;
+          list.push({
+            id: String(r.email || `staff-${idx}`),
+            nameTh: String(r.name || ''),
+            nameEn: String(r.calendarName || ''),
+            position: String(r.position || 'บุคลากร'),
+            email: String(r.email || ''),
+            phone: String(r.phone || ''),
+            department: String(r.divisionSlug || r.location || 'สายสนับสนุน'),
+            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            location: String(r.location || ''),
+            updatedAt: new Date().toISOString(),
+          });
+        });
+      }
+
+      if (list.length > 0) {
+        setPersonnel(list);
+        return;
+      }
+    } catch {}
+
+    fallbackPersonnel();
   }
 
   // ─── Logout ───
@@ -306,10 +367,10 @@ export default function AdminPage() {
             {/* Stats grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'ผู้บริหาร', value: '5', icon: 'fa-user-tie', color: 'sky' },
+                { label: 'ผู้บริหาร', value: String(personnel.filter((p) => p.department === 'คณะผู้บริหาร').length || 5), icon: 'fa-user-tie', color: 'sky' },
                 { label: 'สาขาวิชา', value: '15', icon: 'fa-building-columns', color: 'indigo' },
-                { label: 'อาจารย์ประจำ', value: '90+', icon: 'fa-chalkboard-user', color: 'violet' },
-                { label: 'บุคลากรสายสนับสนุน', value: '39+', icon: 'fa-users', color: 'emerald' },
+                { label: 'อาจารย์ประจำ', value: `${personnel.filter((p) => p.department !== 'คณะผู้บริหาร' && !p.department?.includes('dept-') && !p.department?.includes('สายสนับสนุน')).length || 89} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
+                { label: 'บุคลากรสายสนับสนุน', value: `${personnel.filter((p) => p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length || 38} ท่าน`, icon: 'fa-users', color: 'emerald' },
               ].map((s) => (
                 <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
                   <div className={`w-10 h-10 rounded-xl bg-${s.color}-100 text-${s.color}-600 flex items-center justify-center mb-3`}>

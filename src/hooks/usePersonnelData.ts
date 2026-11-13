@@ -6,7 +6,7 @@ import { DEPARTMENTS_DATA, Department, Personnel } from '@/data/departments';
 import { STAFF_DIVISIONS_DATA, StaffDivision } from '@/data/staff-divisions';
 
 // Parse GViz response from Google Sheets directly in browser (CORS-friendly)
-async function fetchClientGViz(sheetId: string, sheetName: string): Promise<Record<string, any>[]> {
+export async function fetchClientGViz(sheetId: string, sheetName: string): Promise<Record<string, any>[]> {
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Fetch failed');

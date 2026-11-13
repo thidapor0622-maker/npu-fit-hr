@@ -23,10 +23,11 @@ function UnifiedLoginForm() {
 
     const cleanUser = username.trim().toLowerCase();
 
-    // 1. Direct Admin authentication (works on both GitHub Pages and Node server)
+    // 1. Direct Admin authentication
     if (cleanUser === 'admin' && password === 'admin1234') {
       if (typeof window !== 'undefined') {
         localStorage.setItem('hr_admin_session', 'true');
+        localStorage.removeItem('hr_user_session');
       }
       fetch('/api/auth', {
         method: 'POST',
@@ -40,29 +41,32 @@ function UnifiedLoginForm() {
       return;
     }
 
-    // 2. Try server authentication
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: cleanUser, password }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        if (data.role === 'admin' && typeof window !== 'undefined') {
-          localStorage.setItem('hr_admin_session', 'true');
+    // 2. Personnel / Teacher authentication
+    if (cleanUser.includes('@') || cleanUser.length >= 2) {
+      if (password && password.length >= 3) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('hr_admin_session');
+          localStorage.setItem('hr_user_session', JSON.stringify({
+            role: 'teacher',
+            email: cleanUser.includes('@') ? cleanUser : `${cleanUser}@npu.ac.th`,
+            user: cleanUser,
+            name: cleanUser.includes('@') ? cleanUser.split('@')[0] : cleanUser,
+            loginAt: new Date().toISOString(),
+          }));
         }
-        const dest = from || data.redirectTo || (data.role === 'admin' ? '/admin' : '/profile/edit');
-        router.push(dest);
-        router.refresh();
+        const dest = from || '/profile/edit/';
+        const targetUrl = getAssetPath(dest.endsWith('/') ? dest : `${dest}/`);
+        window.location.href = targetUrl;
+        return;
       } else {
-        setError(data.message || 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง');
+        setError('กรุณาระบุรหัสผ่านอย่างน้อย 4 ตัวอักษร (รหัสเริ่มต้น: 123456)');
+        setLoading(false);
+        return;
       }
-    } catch {
-      setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แอดมิน: admin / รหัสผ่าน: admin1234)');
-    } finally {
-      setLoading(false);
     }
+
+    setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แอดมิน: admin / รหัสผ่าน: admin1234)');
+    setLoading(false);
   };
 
   return (
@@ -154,8 +158,8 @@ function UnifiedLoginForm() {
               <div className="flex items-center gap-1.5 font-bold text-sky-300">
                 <i className="fa-solid fa-circle-info" /> ข้อมูลสำหรับการเข้าสู่ระบบ:
               </div>
-              <p>• <b>Admin:</b> บัญชี <code>admin</code> (รหัสเริ่มต้น: <code>admin1234</code>)</p>
-              <p>• <b>อาจารย์:</b> อีเมลมหาวิทยาลัย (รหัสเริ่มต้น: รหัส 6 ตัวหน้า @)</p>
+              <p>• <b>ผู้ดูแลระบบ (Admin):</b> ชื่อผู้ใช้ <code>admin</code> (รหัส: <code>admin1234</code>)</p>
+              <p>• <b>อาจารย์ / บุคลากร:</b> ใช้อีเมลมหาวิทยาลัย (เช่น <code>yourname@npu.ac.th</code>) หรือชื่อผู้ใช้ (รหัสเริ่มต้น: <code>123456</code> หรือรหัสอย่างน้อย 4 ตัว)</p>
             </div>
 
             {/* Submit */}
