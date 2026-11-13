@@ -273,25 +273,106 @@ export default function AdminPage() {
     finally { setConfigLoading(false); }
   };
 
-  // ─── CRUD (Connected to Google Sheets) ───
+  // ─── Direct In-Website CRUD ───
   const openCreate = () => {
-    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
+    setEditEntry(null);
+    setFormData({
+      nameTh: '',
+      nameEn: '',
+      email: '',
+      phone: '',
+      position: 'อาจารย์ประจำสาขาวิชา',
+      department: 'วิศวกรรมไฟฟ้ากำลัง',
+      location: '',
+      imageUrl: '/img/avatar-placeholder.svg',
+      education: [],
+      skills: [],
+    });
+    setShowForm(true);
+    setCrudMsg('');
   };
 
   const openEdit = (p: PersonnelEntry) => {
-    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
+    setEditEntry(p);
+    setFormData({ ...p });
+    setShowForm(true);
+    setCrudMsg('');
   };
 
   const handleDelete = async (id: string, name: string) => {
-    alert(`ข้อมูล "${name}" เชื่อมต่อแบบสดกับ Google Sheets\nกรุณาลบหรือแก้ไขที่ Google Sheets ได้โดยตรง แล้วหน้าเว็บจะอัปเดตทันที`);
-    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
+    if (!confirm(`ต้องการลบ "${name}" ออกจากระบบหน้าเว็บใช่หรือไม่?`)) return;
+    setCrudLoading(true);
+
+    const updated = personnel.filter((p) => p.id !== id && p.email !== id);
+    setPersonnel(updated);
+
+    if (typeof window !== 'undefined') {
+      let overrides: Record<string, any> = {};
+      try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+      overrides[id] = { deleted: true };
+      localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
+      window.dispatchEvent(new Event('hr_personnel_updated'));
+    }
+
+    setCrudMsg(`ลบ "${name}" สำเร็จเรียบร้อยแล้ว`);
+    setCrudLoading(false);
   };
 
   const handleSavePersonnel = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('ระบบเชื่อมต่อกับ Google Sheets โดยตรง กรุณาเพิ่มหรือแก้ไขข้อมูลใน Google Sheets เพื่อให้อัปเดตทันที');
-    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
+    setCrudLoading(true);
+    setCrudMsg('');
+
+    const targetId = editEntry?.id || formData.email || `custom-${Date.now()}`;
+    const newEntry: PersonnelEntry = {
+      id: targetId,
+      nameTh: formData.nameTh || '',
+      nameEn: formData.nameEn || '',
+      email: formData.email || '',
+      phone: formData.phone || '',
+      position: formData.position || '',
+      department: formData.department || '',
+      location: formData.location || '',
+      imageUrl: formData.imageUrl || '/img/avatar-placeholder.svg',
+      calendarUrl: formData.calendarUrl || '',
+      researchInterests: formData.researchInterests || '',
+      education: Array.isArray(formData.education) ? formData.education : String(formData.education || '').split('\n').filter(Boolean),
+      skills: Array.isArray(formData.skills) ? formData.skills : String(formData.skills || '').split('\n').filter(Boolean),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (editEntry) {
+      setPersonnel((prev) => prev.map((p) => (p.id === editEntry.id ? { ...p, ...newEntry } : p)));
+    } else {
+      setPersonnel((prev) => [newEntry, ...prev]);
+    }
+
+    if (typeof window !== 'undefined') {
+      let overrides: Record<string, any> = {};
+      try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+      overrides[targetId] = newEntry;
+      if (formData.email) overrides[formData.email.toLowerCase()] = newEntry;
+      if (formData.nameTh) overrides[formData.nameTh.trim()] = newEntry;
+      localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
+      window.dispatchEvent(new Event('hr_personnel_updated'));
+    }
+
+    const scriptUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
+    if (scriptUrl) {
+      fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateProfile',
+          email: formData.email,
+          data: newEntry,
+        }),
+      }).catch(() => {});
+    }
+
+    setCrudLoading(false);
     setShowForm(false);
+    setCrudMsg('✓ บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว ข้อมูลหน้าเว็บอัปเดตทันที!');
   };
 
   const filteredPersonnel = personnel.filter(
@@ -488,11 +569,11 @@ export default function AdminPage() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <i className="fa-solid fa-file-excel text-lg" />
+                  <i className="fa-solid fa-users-gear text-lg" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-emerald-950 text-sm">ข้อมูลบุคลากรเชื่อมต่อสดกับ Google Sheets (Real-time)</h3>
-                  <p className="text-xs text-emerald-700 mt-0.5">ท่านสามารถเพิ่ม แก้ไข หรือลบข้อมูลใน Google Sheets แล้วหน้าเว็บจะอัปเดตทันที</p>
+                  <h3 className="font-bold text-emerald-950 text-sm">จัดการข้อมูลบุคลากรได้โดยตรงจากหน้านี้</h3>
+                  <p className="text-xs text-emerald-700 mt-0.5">ท่านสามารถกดปุ่ม "เพิ่มบุคลากรใหม่" หรือกด "แก้ไข" ที่รายชื่อ เพื่อปรับปรุงข้อมูลหน้าเว็บได้ทันที</p>
                 </div>
               </div>
               <a
@@ -502,7 +583,7 @@ export default function AdminPage() {
                 className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap"
               >
                 <i className="fa-solid fa-arrow-up-right-from-square" />
-                เปิด Google Sheets เพื่อจัดการข้อมูล
+                เปิด Google Sheets (สำรอง)
               </a>
             </div>
 
@@ -512,13 +593,13 @@ export default function AdminPage() {
                 <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
                   <i className="fa-solid fa-users-gear text-sky-600" /> จัดการข้อมูลบุคลากร
                 </h2>
-                <p className="text-slate-500 text-sm mt-0.5">ค้นหาและตรวจสอบข้อมูลบุคลากรในระบบ</p>
+                <p className="text-slate-500 text-sm mt-0.5">ค้นหา เพิ่ม และแก้ไขข้อมูลบุคลากรในระบบ</p>
               </div>
               <button
                 onClick={openCreate}
-                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-sm"
+                className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-sm"
               >
-                <i className="fa-solid fa-plus" /> เพิ่มบุคลากรใน Google Sheets
+                <i className="fa-solid fa-plus" /> เพิ่มบุคลากรใหม่
               </button>
             </div>
 

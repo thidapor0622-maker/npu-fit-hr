@@ -127,6 +127,27 @@ export default function TeacherEditPage() {
 
       if (typeof window !== 'undefined' && email) {
         localStorage.setItem(`hr_custom_profile_${email}`, JSON.stringify(payload));
+
+        // Save into unified personnel overrides so website updates everywhere
+        let overrides: Record<string, any> = {};
+        try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+        overrides[email.toLowerCase()] = {
+          id: email,
+          nameTh: profile.nameTh,
+          nameEn: profile.nameEn,
+          position: profile.position,
+          email,
+          phone: profile.phone,
+          location: profile.location,
+          imageUrl: profile.imageUrl,
+          calendarUrl: profile.calendarUrl,
+          researchInterests: profile.researchInterests,
+          education: educationText.split('\n').map((s) => s.trim()).filter(Boolean),
+          skills: skillsText.split('\n').map((s) => s.trim()).filter(Boolean),
+          updatedAt: new Date().toISOString(),
+        };
+        localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
+        window.dispatchEvent(new Event('hr_personnel_updated'));
       }
 
       // 1. Try sending to Google Apps Script Web App if configured
@@ -171,12 +192,12 @@ export default function TeacherEditPage() {
 
       if (syncedToGoogle) {
         setMsg({
-          text: '✓ บันทึกข้อมูลและส่งไปอัปเดตลง Google Sheets ของคณะสำเร็จเรียบร้อยแล้ว! ข้อมูลจะเปลี่ยนบนหน้าเว็บทันที',
+          text: '✓ บันทึกข้อมูลและส่งไปอัปเดตลง Google Sheets เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
           ok: true,
         });
       } else {
         setMsg({
-          text: '✓ บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว! (หากต้องการให้อัปเดตไปที่ Google Sheets สามารถคลิกปุ่ม "เปิด Google Sheets เพื่อแก้ไขข้อมูล" ด้านบนได้เลยครับ)',
+          text: '✓ บันทึกข้อมูลโปรไฟล์จากหน้าเว็บไซต์เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
           ok: true,
         });
       }
@@ -241,26 +262,28 @@ export default function TeacherEditPage() {
 
       {/* Form */}
       <main className="max-w-3xl mx-auto px-4 py-8 w-full flex-grow">
-        {/* Live Sheets Notification Banner */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Profile Edit Banner */}
+        <div className="bg-sky-50 border border-sky-200 rounded-3xl p-5 mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-              <i className="fa-solid fa-file-excel text-lg" />
+            <div className="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <i className="fa-solid fa-pen-to-square text-lg" />
             </div>
             <div>
-              <h3 className="font-bold text-emerald-950 text-sm">ข้อมูลบุคลากรเชื่อมโยงสดกับ Google Sheets (Real-time)</h3>
-              <p className="text-xs text-emerald-700 mt-0.5">ทุกการเปลี่ยนแปลงใน Google Sheets จะแสดงบนเว็บไซต์และหน้าแอดมินทันที</p>
+              <h3 className="font-bold text-sky-950 text-sm">แก้ไขข้อมูลโปรไฟล์ของท่านได้จากหน้านี้โดยตรง</h3>
+              <p className="text-xs text-sky-700 mt-0.5">กรอกข้อมูลในช่องด้านล่าง แล้วกดปุ่ม "บันทึกโปรไฟล์" ด้านล่าง ข้อมูลบนหน้าเว็บจะเปลี่ยนทันที</p>
             </div>
           </div>
-          <a
-            href={`https://docs.google.com/spreadsheets/d/${sheetId}/edit`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap"
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('save-profile-btn');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap"
           >
-            <i className="fa-solid fa-arrow-up-right-from-square" />
-            เปิด Google Sheets เพื่อแก้ไขข้อมูล
-          </a>
+            <i className="fa-solid fa-arrow-down" />
+            เลื่อนไปปุ่มบันทึก
+          </button>
         </div>
 
         <form onSubmit={handleSave} className="space-y-6">
@@ -362,6 +385,7 @@ export default function TeacherEditPage() {
           {/* Save button */}
           <div className="flex gap-3 pb-6">
             <button
+              id="save-profile-btn"
               type="submit"
               disabled={saving}
               className="flex-1 bg-sky-600 hover:bg-sky-500 disabled:opacity-60 text-white font-black py-4 rounded-2xl text-base transition-all shadow-lg flex items-center justify-center gap-2"

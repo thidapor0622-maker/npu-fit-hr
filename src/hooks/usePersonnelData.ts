@@ -38,6 +38,60 @@ export async function fetchClientGViz(sheetId: string, sheetName: string): Promi
   });
 }
 
+function getLocalOverrides(): Record<string, any> {
+  if (typeof window === 'undefined') return {};
+  try {
+    return JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function applyOverridesToExecs(execMap: Record<string, ExecutiveDetail>, overrides: Record<string, any>): Record<string, ExecutiveDetail> {
+  const result: Record<string, ExecutiveDetail> = {};
+  for (const [key, ex] of Object.entries(execMap)) {
+    const ov = overrides[ex.id] || (ex.email ? overrides[ex.email.toLowerCase()] : null) || (ex.name ? overrides[ex.name.trim()] : null);
+    if (ov && ov.deleted) continue;
+    if (ov) {
+      result[key] = {
+        ...ex,
+        name: ov.nameTh || ex.name,
+        position: ov.position || ex.position,
+        phone: ov.phone || ex.phone,
+        email: ov.email || ex.email,
+        room: ov.location || ex.room,
+        img: ov.imageUrl || ex.img,
+        education: ov.education || ex.education,
+        skills: ov.skills || ex.skills,
+      };
+    } else {
+      result[key] = ex;
+    }
+  }
+  return result;
+}
+
+function applyOverridesToPersonnel(list: Personnel[], overrides: Record<string, any>): Personnel[] {
+  return list
+    .filter((p) => {
+      const ov = (p.email ? overrides[p.email.toLowerCase()] : null) || (p.name ? overrides[p.name.trim()] : null);
+      return !(ov && ov.deleted);
+    })
+    .map((p) => {
+      const ov = (p.email ? overrides[p.email.toLowerCase()] : null) || (p.name ? overrides[p.name.trim()] : null);
+      if (!ov) return p;
+      return {
+        ...p,
+        name: ov.nameTh || p.name,
+        position: ov.position || p.position,
+        phone: ov.phone || p.phone,
+        email: ov.email || p.email,
+        location: ov.location || p.location,
+        img: ov.imageUrl || p.img,
+      };
+    });
+}
+
 export function usePersonnelData() {
   const [executives, setExecutives] = useState<Record<string, ExecutiveDetail>>(EXECUTIVES_DATA);
   const [departments, setDepartments] = useState<Department[]>(DEPARTMENTS_DATA);
@@ -50,6 +104,39 @@ export function usePersonnelData() {
     let isMounted = true;
     const customSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
     const sheetId = customSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+
+    const handleUpdate = () => {
+      const ov = getLocalOverrides();
+      setExecutives((prev) => applyOverridesToExecs(prev, ov));
+      setDepartments((prev) =>
+        prev.map((d) => {
+          const allCards = applyOverridesToPersonnel(d.allCards, ov);
+          return {
+            ...d,
+            allCards,
+            head: allCards.length > 0 ? allCards[0] : null,
+            members: allCards.length > 1 ? allCards.slice(1) : [],
+          };
+        })
+      );
+      setStaffDivisions((prev) =>
+        prev.map((div) => {
+          const allCards = applyOverridesToPersonnel(div.allCards, ov);
+          return {
+            ...div,
+            allCards,
+            head: allCards.length > 0 ? allCards[0] : null,
+            members: allCards.length > 1 ? allCards.slice(1) : [],
+          };
+        })
+      );
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('hr_personnel_updated', handleUpdate);
+      // Apply existing overrides on mount
+      handleUpdate();
+    }
 
     // 1. If Google Sheet ID is provided via env, fetch directly in browser
     if (sheetId) {
@@ -86,8 +173,9 @@ export function usePersonnelData() {
                 works: String(r.works || '').split('|').map((s) => s.trim()).filter(Boolean),
               };
             }
+            const ov = getLocalOverrides();
             if (Object.keys(execMap).length > 0) {
-              setExecutives(execMap);
+              setExecutives(applyOverridesToExecs(execMap, ov));
               setIsLiveSheet(true);
               setSource('google_sheets');
             }
@@ -111,9 +199,11 @@ export function usePersonnelData() {
               });
             }
 
+            const ov = getLocalOverrides();
             const parsedDepts: Department[] = deptRows.map((d: any) => {
               const slug = String(d.slug || '').trim();
-              const allCards = lecByDept[slug] || [];
+              const rawCards = lecByDept[slug] || [];
+              const allCards = applyOverridesToPersonnel(rawCards, ov);
               return {
                 slug,
                 title: String(d.title || slug),
@@ -152,9 +242,11 @@ export function usePersonnelData() {
               });
             }
 
+            const ov = getLocalOverrides();
             const parsedDivs: StaffDivision[] = divRows.map((d: any) => {
               const slug = String(d.slug || '').trim();
-              const allCards = staffByDiv[slug] || [];
+              const rawCards = staffByDiv[slug] || [];
+              const allCards = applyOverridesToPersonnel(rawCards, ov);
               return {
                 slug,
                 title: String(d.title || slug),
@@ -184,6 +276,9 @@ export function usePersonnelData() {
 
     return () => {
       isMounted = false;
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('hr_personnel_updated', handleUpdate);
+      }
     };
   }, []);
 
