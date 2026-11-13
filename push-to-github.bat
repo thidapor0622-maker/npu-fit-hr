@@ -1,29 +1,18 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul
-echo ========================================================
-echo   กำลังอัปโหลดโปรเจกต์ทั้งหมดขึ้น GitHub (npu-fit-hr)...
-echo ========================================================
+cls
+echo ===================================================
+echo   Uploading HR_SITE to GitHub (npu-fit-hr)...
+echo ===================================================
 echo.
 
-cd /d "%~dp0"
+cd /d "c:\Users\asth6\OneDrive - Nakhon Phanom University\เดสก์ท็อป\HR_SITE - สำเนา"
 set "PATH=%PATH%;C:\Users\asth6\MinGit\cmd;C:\Users\asth6\MinGit\mingw64\bin"
 
 git push -u origin main --force
 
 echo.
-if %ERRORLEVEL% EQU 0 (
-    echo ========================================================
-    echo   [สำเร็จ!] อัปโหลดไฟล์ครบทั้งหมด 100%% เรียบร้อยแล้ว!
-    echo.
-    echo   ขั้นตอนต่อไป:
-    echo   1. สลับไปที่หน้าเว็บ GitHub ในบราวเซอร์ของคุณ
-    echo   2. รอระบบบิลด์เว็บประมาณ 1-2 นาที
-    echo   3. รีเฟรชหน้าเว็บ https://thidapor0622-maker.github.io/npu-fit-hr/
-    echo ========================================================
-) else (
-    echo ========================================================
-    echo   หากมีหน้าต่างเด้งขึ้นมา ให้กด "Sign in with your browser"
-    echo ========================================================
-)
-echo.
+echo ===================================================
+echo   Upload complete!
+echo ===================================================
 pause
