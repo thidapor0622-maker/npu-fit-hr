@@ -6,9 +6,9 @@ echo ========================================================
 echo.
 
 cd /d "%~dp0"
-set "PATH=%PATH%;C:\Users\asth6\MinGit\cmd"
+set "PATH=%PATH%;C:\Users\asth6\MinGit\cmd;C:\Users\asth6\MinGit\mingw64\bin"
 
-git push -u origin main
+git push -u origin main --force
 
 echo.
 if %ERRORLEVEL% EQU 0 (
@@ -16,13 +16,13 @@ if %ERRORLEVEL% EQU 0 (
     echo   [สำเร็จ!] อัปโหลดไฟล์ครบทั้งหมด 100%% เรียบร้อยแล้ว!
     echo.
     echo   ขั้นตอนต่อไป:
-    echo   1. เปิดหน้าเว็บ GitHub ของคุณ
-    echo   2. ไปที่ Settings -^> Pages
-    echo   3. ในช่อง Source เลือกเป็น "GitHub Actions"
+    echo   1. สลับไปที่หน้าเว็บ GitHub ในบราวเซอร์ของคุณ
+    echo   2. รอระบบบิลด์เว็บประมาณ 1-2 นาที
+    echo   3. รีเฟรชหน้าเว็บ https://thidapor0622-maker.github.io/npu-fit-hr/
     echo ========================================================
 ) else (
     echo ========================================================
-    echo   หากมีหน้าต่างถามรหัส ให้กด Sign in with browser เพื่อยืนยัน
+    echo   หากมีหน้าต่างเด้งขึ้นมา ให้กด "Sign in with your browser"
     echo ========================================================
 )
 echo.
