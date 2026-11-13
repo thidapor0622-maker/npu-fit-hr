@@ -21,7 +21,7 @@ function UnifiedLoginForm() {
     setLoading(true);
     setError('');
 
-    const cleanUser = username.trim();
+    const cleanUser = username.trim().toLowerCase();
 
     // 1. Direct Admin authentication (works on both GitHub Pages and Node server)
     if (cleanUser === 'admin' && password === 'admin1234') {
@@ -34,10 +34,9 @@ function UnifiedLoginForm() {
         body: JSON.stringify({ username: cleanUser, password }),
       }).catch(() => {});
 
-      const dest = from || '/admin';
-      router.push(dest);
-      router.refresh();
-      setLoading(false);
+      const dest = from || '/admin/';
+      const targetUrl = getAssetPath(dest.endsWith('/') ? dest : `${dest}/`);
+      window.location.href = targetUrl;
       return;
     }
 

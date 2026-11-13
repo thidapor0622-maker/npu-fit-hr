@@ -22,7 +22,7 @@ function LoginForm() {
     setLoading(true);
     setError('');
 
-    const cleanUser = username.trim();
+    const cleanUser = username.trim().toLowerCase();
 
     if (cleanUser === 'admin' && password === 'admin1234') {
       if (typeof window !== 'undefined') {
@@ -34,9 +34,7 @@ function LoginForm() {
         body: JSON.stringify({ username: cleanUser, password }),
       }).catch(() => {});
 
-      router.push('/admin');
-      router.refresh();
-      setLoading(false);
+      window.location.href = getAssetPath('/admin/');
       return;
     }
 

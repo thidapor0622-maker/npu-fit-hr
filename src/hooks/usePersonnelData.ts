@@ -48,7 +48,8 @@ export function usePersonnelData() {
 
   useEffect(() => {
     let isMounted = true;
-    const sheetId = process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID;
+    const customSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
+    const sheetId = customSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
 
     // 1. If Google Sheet ID is provided via env, fetch directly in browser
     if (sheetId) {

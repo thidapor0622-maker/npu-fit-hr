@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getAssetPath } from '@/lib/assetHelper';
 import { EXECUTIVES_DATA } from '@/data/executives';
 import { DEPARTMENTS_DATA } from '@/data/departments';
 import { STAFF_DIVISIONS_DATA } from '@/data/staff-divisions';
@@ -64,14 +65,17 @@ export default function AdminPage() {
         .then((r) => r.json())
         .then((d) => {
           if (!d.authenticated || d.role !== 'admin') {
-            router.push('/login');
+            window.location.href = getAssetPath('/login/');
           }
         })
-        .catch(() => router.push('/login'));
+        .catch(() => {
+          window.location.href = getAssetPath('/login/');
+        });
     }
 
     // 2. Load Google Sheets config
-    const defaultSheetId = process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+    const savedSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
+    const defaultSheetId = savedSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
     setSheetId(defaultSheetId);
     setEnabled(true);
     setLastSync(new Date().toLocaleDateString('th-TH'));
@@ -159,7 +163,7 @@ export default function AdminPage() {
       localStorage.removeItem('hr_admin_session');
     }
     await fetch('/api/admin/auth', { method: 'DELETE' }).catch(() => {});
-    router.push('/login');
+    window.location.href = getAssetPath('/login/');
   };
 
   // ─── Google Sheets ───
@@ -189,70 +193,40 @@ export default function AdminPage() {
     setConfigLoading(true);
     setSaveSuccess(false);
     try {
-      const res = await fetch('/api/admin/config', {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hr_custom_sheet_id', sheetId.trim());
+      }
+      fetch('/api/admin/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sheetId, action: 'save', enabled }),
-      });
-      const d = await res.json();
-      if (d.success) {
-        setSaveSuccess(true);
-        setLastSync(new Date().toISOString());
-        setTimeout(() => setSaveSuccess(false), 4000);
-      }
+      }).catch(() => {});
+      setSaveSuccess(true);
+      setLastSync(new Date().toISOString());
+      setTimeout(() => setSaveSuccess(false), 4000);
     } catch {}
     finally { setConfigLoading(false); }
   };
 
-  // ─── CRUD ───
+  // ─── CRUD (Connected to Google Sheets) ───
   const openCreate = () => {
-    setEditEntry(null);
-    setFormData({});
-    setShowForm(true);
-    setCrudMsg('');
+    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
   };
 
   const openEdit = (p: PersonnelEntry) => {
-    setEditEntry(p);
-    setFormData({ ...p });
-    setShowForm(true);
-    setCrudMsg('');
+    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`ลบ "${name}" ออกจากระบบหรือไม่?`)) return;
-    setCrudLoading(true);
-    try {
-      await fetch(`/api/admin/personnel/${id}`, { method: 'DELETE' });
-      loadPersonnel();
-      setCrudMsg('ลบข้อมูลสำเร็จ');
-    } catch { setCrudMsg('เกิดข้อผิดพลาด'); }
-    finally { setCrudLoading(false); }
+    alert(`ข้อมูล "${name}" เชื่อมต่อแบบสดกับ Google Sheets\nกรุณาลบหรือแก้ไขที่ Google Sheets ได้โดยตรง แล้วหน้าเว็บจะอัปเดตทันที`);
+    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
   };
 
   const handleSavePersonnel = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCrudLoading(true);
-    setCrudMsg('');
-    try {
-      const id = editEntry?.id;
-      const url = id ? `/api/admin/personnel/${id}` : '/api/admin/personnel';
-      const method = id ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const d = await res.json();
-      if (d.success) {
-        setCrudMsg(d.message);
-        setShowForm(false);
-        loadPersonnel();
-      } else {
-        setCrudMsg(d.message || 'เกิดข้อผิดพลาด');
-      }
-    } catch (e: any) { setCrudMsg(e.message); }
-    finally { setCrudLoading(false); }
+    alert('ระบบเชื่อมต่อกับ Google Sheets โดยตรง กรุณาเพิ่มหรือแก้ไขข้อมูลใน Google Sheets เพื่อให้อัปเดตทันที');
+    window.open(`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`, '_blank');
+    setShowForm(false);
   };
 
   const filteredPersonnel = personnel.filter(
@@ -445,19 +419,41 @@ export default function AdminPage() {
         ════════════════════════════════════════ */}
         {activeTab === 'personnel' && (
           <div className="space-y-5">
+            {/* Live Sheets Notification Banner */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <i className="fa-solid fa-file-excel text-lg" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-emerald-950 text-sm">ข้อมูลบุคลากรเชื่อมต่อสดกับ Google Sheets (Real-time)</h3>
+                  <p className="text-xs text-emerald-700 mt-0.5">ท่านสามารถเพิ่ม แก้ไข หรือลบข้อมูลใน Google Sheets แล้วหน้าเว็บจะอัปเดตทันที</p>
+                </div>
+              </div>
+              <a
+                href={`https://docs.google.com/spreadsheets/d/${sheetId || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU'}/edit`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm transition whitespace-nowrap"
+              >
+                <i className="fa-solid fa-arrow-up-right-from-square" />
+                เปิด Google Sheets เพื่อจัดการข้อมูล
+              </a>
+            </div>
+
             {/* Header + Add button */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
                   <i className="fa-solid fa-users-gear text-sky-600" /> จัดการข้อมูลบุคลากร
                 </h2>
-                <p className="text-slate-500 text-sm mt-0.5">สร้าง แก้ไข และลบข้อมูลบุคลากร</p>
+                <p className="text-slate-500 text-sm mt-0.5">ค้นหาและตรวจสอบข้อมูลบุคลากรในระบบ</p>
               </div>
               <button
                 onClick={openCreate}
-                className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-sm"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-sm"
               >
-                <i className="fa-solid fa-plus" /> เพิ่มบุคลากรใหม่
+                <i className="fa-solid fa-plus" /> เพิ่มบุคลากรใน Google Sheets
               </button>
             </div>
 
