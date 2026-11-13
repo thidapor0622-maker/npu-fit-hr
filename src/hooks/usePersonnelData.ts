@@ -123,6 +123,46 @@ export function usePersonnelData() {
               setSource('google_sheets');
             }
           }
+
+          // Parse Staff Divisions & Staff
+          if (divRows && divRows.length > 0 && staffRows) {
+            const staffByDiv: Record<string, Personnel[]> = {};
+            for (const r of staffRows) {
+              const divSlug = String(r.divisionSlug || '').trim();
+              if (!divSlug) continue;
+              if (!staffByDiv[divSlug]) staffByDiv[divSlug] = [];
+              staffByDiv[divSlug].push({
+                name: String(r.name || ''),
+                position: String(r.position || ''),
+                img: String(r.img || '/img/avatar-placeholder.svg'),
+                email: String(r.email || ''),
+                phone: String(r.phone || ''),
+                location: String(r.location || ''),
+                calendarName: String(r.calendarName || r.name || ''),
+              });
+            }
+
+            const parsedDivs: StaffDivision[] = divRows.map((d: any) => {
+              const slug = String(d.slug || '').trim();
+              const allCards = staffByDiv[slug] || [];
+              return {
+                slug,
+                title: String(d.title || slug),
+                description: String(d.description || ''),
+                icon: String(d.icon || 'fa-solid fa-briefcase'),
+                badge: String(d.badge || d.title || ''),
+                head: allCards.length > 0 ? allCards[0] : null,
+                members: allCards.length > 1 ? allCards.slice(1) : [],
+                allCards,
+              };
+            });
+
+            if (parsedDivs.length > 0) {
+              setStaffDivisions(parsedDivs);
+              setIsLiveSheet(true);
+              setSource('google_sheets');
+            }
+          }
         })
         .catch((err) => {
           console.warn('Google Sheets client sync error, using fallback:', err);
