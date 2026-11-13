@@ -129,16 +129,57 @@ export default function TeacherEditPage() {
         localStorage.setItem(`hr_custom_profile_${email}`, JSON.stringify(payload));
       }
 
+      // 1. Try sending to Google Apps Script Web App if configured
+      const scriptUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
+      let syncedToGoogle = false;
+
+      if (scriptUrl) {
+        try {
+          const res = await fetch(scriptUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'updateProfile',
+              email,
+              data: {
+                nameTh: profile.nameTh,
+                nameEn: profile.nameEn,
+                position: profile.position,
+                phone: profile.phone,
+                location: profile.location,
+                imageUrl: profile.imageUrl,
+                education: educationText.split('\n').map((s) => s.trim()).filter(Boolean),
+                skills: skillsText.split('\n').map((s) => s.trim()).filter(Boolean),
+                researchInterests: profile.researchInterests,
+              },
+            }),
+          });
+          const result = await res.json().catch(() => null);
+          if (result && result.success) {
+            syncedToGoogle = true;
+          }
+        } catch (scriptErr) {
+          console.log('Sync to Google Apps Script:', scriptErr);
+        }
+      }
+
       fetch('/api/teacher/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       }).catch(() => {});
 
-      setMsg({
-        text: 'บันทึกโปรไฟล์เรียบร้อยแล้ว! (หากต้องการอัปเดตไปยังระบบส่วนกลางของคณะและให้แอดมินเห็นทันที สามารถกดปุ่ม "เปิด Google Sheets เพื่อแก้ไขข้อมูล" ด้านบนได้เลยครับ)',
-        ok: true,
-      });
+      if (syncedToGoogle) {
+        setMsg({
+          text: '✓ บันทึกข้อมูลและส่งไปอัปเดตลง Google Sheets ของคณะสำเร็จเรียบร้อยแล้ว! ข้อมูลจะเปลี่ยนบนหน้าเว็บทันที',
+          ok: true,
+        });
+      } else {
+        setMsg({
+          text: '✓ บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว! (หากต้องการให้อัปเดตไปที่ Google Sheets สามารถคลิกปุ่ม "เปิด Google Sheets เพื่อแก้ไขข้อมูล" ด้านบนได้เลยครับ)',
+          ok: true,
+        });
+      }
     } catch (e: any) {
       setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
     } finally {

@@ -42,6 +42,7 @@ export default function AdminPage() {
 
   // ─── Google Sheets Config ───
   const [sheetId, setSheetId] = useState('');
+  const [sheetApiUrl, setSheetApiUrl] = useState('');
   const [enabled, setEnabled] = useState(false);
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [configLoading, setConfigLoading] = useState(false);
@@ -78,6 +79,8 @@ export default function AdminPage() {
     const savedSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
     const defaultSheetId = savedSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
     setSheetId(defaultSheetId);
+    const savedApiUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
+    if (savedApiUrl) setSheetApiUrl(savedApiUrl);
     setEnabled(true);
     setLastSync(new Date().toLocaleDateString('th-TH'));
 
@@ -256,11 +259,12 @@ export default function AdminPage() {
     try {
       if (typeof window !== 'undefined') {
         localStorage.setItem('hr_custom_sheet_id', sheetId.trim());
+        localStorage.setItem('hr_sheet_api_url', sheetApiUrl.trim());
       }
       fetch('/api/admin/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sheetId, action: 'save', enabled }),
+        body: JSON.stringify({ sheetId, sheetApiUrl, action: 'save', enabled }),
       }).catch(() => {});
       setSaveSuccess(true);
       setLastSync(new Date().toISOString());
@@ -744,6 +748,23 @@ export default function AdminPage() {
                   className="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 transition font-mono"
                 />
                 <p className="text-xs text-slate-400 mt-1.5">วาง URL หรือ Sheet ID จาก Google Sheets</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">
+                  <i className="fa-solid fa-cloud-arrow-up mr-1.5 text-emerald-600" />
+                  URL ของ Google Apps Script (Web App สำหรับให้อาจารย์กดบันทึกแล้วเข้าชีตอัตโนมัติ)
+                </label>
+                <input
+                  type="text"
+                  value={sheetApiUrl}
+                  onChange={(e) => setSheetApiUrl(e.target.value)}
+                  placeholder="https://script.google.com/macros/s/.../exec"
+                  className="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition font-mono"
+                />
+                <p className="text-xs text-slate-400 mt-1.5">
+                  เมื่อใส่ URL นี้ บุคลากรจะสามารถกดบันทึกโปรไฟล์ผ่านหน้าเว็บแล้วข้อมูลจะวิ่งเข้า Google Sheets ทันที
+                </p>
               </div>
 
               <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">

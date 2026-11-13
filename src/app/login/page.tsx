@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { getAssetPath } from '@/lib/assetHelper';
+import { fetchClientGViz } from '@/hooks/usePersonnelData';
 
 function UnifiedLoginForm() {
   const router = useRouter();
@@ -41,9 +42,61 @@ function UnifiedLoginForm() {
       return;
     }
 
-    // 2. Personnel / Teacher authentication
-    if (cleanUser.includes('@') || cleanUser.length >= 2) {
-      if (password && password.length >= 3) {
+    // 2. Personnel / Teacher authentication with Google Sheets Password Check
+    const targetSheetId = (typeof window !== 'undefined' && localStorage.getItem('hr_custom_sheet_id')) || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
+    try {
+      const [execs, lecs, staffs] = await Promise.all([
+        fetchClientGViz(targetSheetId, 'Executives').catch(() => []),
+        fetchClientGViz(targetSheetId, 'Lecturers').catch(() => []),
+        fetchClientGViz(targetSheetId, 'Staff').catch(() => []),
+      ]);
+      const allPersonnel = [...execs, ...lecs, ...staffs];
+      const matched = allPersonnel.find((p) => {
+        const pEmail = String(p.email || '').toLowerCase().trim();
+        const pId = String(p.id || '').toLowerCase().trim();
+        const pName = String(p.name || '').trim();
+        return pEmail === cleanUser || pId === cleanUser || (cleanUser.includes('@') && pEmail === cleanUser) || pName.toLowerCase() === cleanUser;
+      });
+
+      if (matched) {
+        const sheetPassword = String(matched.password || '').trim();
+        const defaultSuffixPass = cleanUser.includes('@') ? cleanUser.split('@')[0].slice(-6) : cleanUser;
+
+        // If admin set password in Google Sheets, verify strictly
+        const isPassCorrect = sheetPassword
+          ? password === sheetPassword
+          : password === '123456' || password === defaultSuffixPass || password === 'admin1234' || password.length >= 4;
+
+        if (isPassCorrect) {
+          const userEmail = matched.email || (cleanUser.includes('@') ? cleanUser : `${cleanUser}@npu.ac.th`);
+          const displayName = matched.name || matched.calendarName || cleanUser;
+
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('hr_admin_session');
+            localStorage.setItem('hr_user_session', JSON.stringify({
+              role: 'teacher',
+              email: userEmail,
+              user: matched.id || cleanUser,
+              name: displayName,
+              currentPassword: password,
+              loginAt: new Date().toISOString(),
+            }));
+          }
+          const dest = from || '/profile/edit/';
+          const targetUrl = getAssetPath(dest.endsWith('/') ? dest : `${dest}/`);
+          window.location.href = targetUrl;
+          return;
+        } else {
+          setError('รหัสผ่านไม่ถูกต้อง (กรุณาใช้รหัสที่แอดมินตั้งใน Google ชีต หรือติดต่อแอดมิน)');
+          setLoading(false);
+          return;
+        }
+      }
+    } catch {}
+
+    // Fallback: If not found in sheet or offline, allow email login
+    if (cleanUser.includes('@') || cleanUser.length >= 3) {
+      if (password && password.length >= 4) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('hr_admin_session');
           localStorage.setItem('hr_user_session', JSON.stringify({
@@ -58,14 +111,10 @@ function UnifiedLoginForm() {
         const targetUrl = getAssetPath(dest.endsWith('/') ? dest : `${dest}/`);
         window.location.href = targetUrl;
         return;
-      } else {
-        setError('กรุณาระบุรหัสผ่านอย่างน้อย 4 ตัวอักษร (รหัสเริ่มต้น: 123456)');
-        setLoading(false);
-        return;
       }
     }
 
-    setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แอดมิน: admin / รหัสผ่าน: admin1234)');
+    setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (สำหรับแอดมิน: admin / admin1234)');
     setLoading(false);
   };
 
