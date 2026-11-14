@@ -2,25 +2,58 @@
  * Google Apps Script for HR Site Database
  * คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม
  *
- * วิธีตั้งค่าเพื่อให้หน้าเว็บส่งข้อมูลบันทึกลง Google Sheets ได้อัตโนมัติ:
- * 1. เปิด Google Sheets
+ * ชุดสคริปต์เวอร์ชันล่าสุด (รองรับ 14 ฟิลด์ข้อมูลมาตรฐานตรงกัน 100%):
+ * 1. departmentSlug  2. name (ชื่อไทย)  3. position  4. isHead  5. img  6. email
+ * 7. passwd (รหัสผ่าน)  8. phone  9. location  10. calendarName (ชื่ออังกฤษ)
+ * 11. calendarUrl  12. researchInterests  13. education  14. skills
+ *
+ * วิธีตั้งค่าใน Google Sheets:
+ * 1. เปิด Google Sheets ฐานข้อมูล
  * 2. ไปที่เมนู ส่วนขยาย (Extensions) > Apps Script
- * 3. ลบโค้ดเดิมทั้งหมดออก แล้ววางโค้ดชุดนี้ลงไปทั้งหมด
+ * 3. ลบโค้ดเดิมออกทั้งหมด แล้ววางโค้ดชุดนี้ลงไป
  * 4. กด บันทึก (Ctrl + S)
  * 5. กดปุ่มสีน้ำเงินมุมขวาบน "ทำให้ใช้งานได้" (Deploy) > "การทำให้ใช้งานได้ใหม่" (New deployment)
- *    (หรือ "จัดการการทำให้ใช้งานได้" > แก้ไข > เลือกเวอร์ชันใหม่)
  * 6. เลือกประเภท: เว็บแอป (Web app)
- * 7. สำคัญมาก!! 
- *    - ดำเนินการในฐานะ (Execute as): "ฉัน" (Me / อีเมลของคุณ)
+ *    - ดำเนินการในฐานะ (Execute as): "ฉัน" (Me)
  *    - ผู้มีสิทธิ์เข้าถึง (Who has access): "ทุกคน" (Anyone)
- * 8. กด "ทำให้ใช้งานได้" (Deploy)
+ * 7. กด "ทำให้ใช้งานได้" (Deploy) แล้วคัดลอก URL นำไปวางในระบบ
  */
+
+const STANDARD_LECTURER_COLS = [
+  "departmentSlug", "name", "position", "isHead", "img", "email",
+  "passwd", "phone", "location", "calendarName", "calendarUrl",
+  "researchInterests", "education", "skills"
+];
+
+function ensureSheetHeaders(sheet, standardCols) {
+  if (!sheet) return;
+  const lastCol = Math.max(sheet.getLastColumn(), 1);
+  const existingHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(h => String(h).trim());
+  const existingLower = existingHeaders.map(h => h.toLowerCase());
+
+  const missing = [];
+  standardCols.forEach(col => {
+    const isFound = existingLower.some(h => h === col.toLowerCase() || h.includes(col.toLowerCase()));
+    if (!isFound) {
+      missing.push(col);
+    }
+  });
+
+  if (missing.length > 0) {
+    sheet.getRange(1, lastCol + 1, 1, missing.length).setValues([missing]);
+  }
+}
 
 function doGet(e) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetName = e && e.parameter ? e.parameter.sheet : null;
+    
+    // Auto ensure headers
+    ensureSheetHeaders(ss.getSheetByName("Lecturers"), STANDARD_LECTURER_COLS);
+    ensureSheetHeaders(ss.getSheetByName("Staff"), STANDARD_LECTURER_COLS);
+    ensureSheetHeaders(ss.getSheetByName("Executives"), STANDARD_LECTURER_COLS);
 
+    const sheetName = e && e.parameter ? e.parameter.sheet : null;
     if (sheetName) {
       const sheet = ss.getSheetByName(sheetName);
       if (!sheet) return createResponse({ error: "Sheet not found: " + sheetName }, 404);
@@ -52,9 +85,19 @@ function doPost(e) {
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Ensure all 14 headers exist in relevant sheets
+    const lecturersSheet = ss.getSheetByName("Lecturers");
+    const staffSheet = ss.getSheetByName("Staff");
+    const execSheet = ss.getSheetByName("Executives");
+
+    ensureSheetHeaders(lecturersSheet, STANDARD_LECTURER_COLS);
+    ensureSheetHeaders(staffSheet, STANDARD_LECTURER_COLS);
+    ensureSheetHeaders(execSheet, STANDARD_LECTURER_COLS);
+
     const data = postData.data || postData;
 
-    // ข้อมูลสำหรับใช้ค้นหาแถวเดิมในชีต
+    // Search keys for targeting existing row
     const targetEmail = String(postData.originalEmail || postData.email || data.email || "").toLowerCase().trim();
     const targetName = String(postData.originalName || postData.name || data.nameTh || data.name || "").trim();
     const targetId = String(postData.id || data.id || "").toLowerCase().trim();
@@ -63,7 +106,7 @@ function doPost(e) {
     let found = false;
     let updatedSheetName = "";
 
-    // 1. ค้นหาแถวที่มีอยู่แล้วในชีตเพื่ออัปเดต (Update)
+    // 1. UPDATE EXISTING ROW
     for (let s = 0; s < sheetsToCheck.length; s++) {
       const sheet = ss.getSheetByName(sheetsToCheck[s]);
       if (!sheet) continue;
@@ -88,14 +131,15 @@ function doPost(e) {
         if (isMatch) {
           headers.forEach((h, colIdx) => {
             const cell = sheet.getRange(rowIdx + 1, colIdx + 1);
+
             if ((h.includes("nameen") || h.includes("calendarname") || h.includes("ภาษาอังกฤษ")) && (data.nameEn !== undefined || postData.nameEn !== undefined)) {
               cell.setValue(data.nameEn || postData.nameEn);
-            } else if ((h.includes("nameth") || h === "name" || h.includes("ชื่อ")) && (data.nameTh !== undefined || data.name !== undefined || postData.nameTh !== undefined)) {
+            } else if ((h === "name" || h.includes("nameth") || h.includes("ชื่อ")) && (data.nameTh !== undefined || data.name !== undefined || postData.nameTh !== undefined)) {
               cell.setValue(data.nameTh || data.name || postData.nameTh);
             } else if ((h.includes("position") || h.includes("ตำแหน่ง")) && data.position !== undefined) {
               cell.setValue(data.position);
-            } else if ((h.includes("departmentslug") || h.includes("สาขา")) && (data.departmentSlug !== undefined || postData.departmentSlug !== undefined)) {
-              cell.setValue(data.departmentSlug || postData.departmentSlug);
+            } else if ((h.includes("departmentslug") || h.includes("divisionslug") || h.includes("สาขา")) && (data.departmentSlug !== undefined || postData.departmentSlug !== undefined || data.department !== undefined)) {
+              cell.setValue(data.departmentSlug || postData.departmentSlug || data.department);
             } else if (h.includes("ishead") && (data.isHead !== undefined || postData.isHead !== undefined)) {
               cell.setValue(Boolean(data.isHead !== undefined ? data.isHead : postData.isHead));
             } else if ((h.includes("phone") || h.includes("โทร")) && data.phone !== undefined) {
@@ -104,10 +148,12 @@ function doPost(e) {
               cell.setValue(data.location || data.room);
             } else if ((h.includes("img") || h.includes("image") || h.includes("รูป")) && (data.imageUrl !== undefined || data.img !== undefined)) {
               cell.setValue(data.imageUrl || data.img);
-            } else if ((h.includes("pass") || h.includes("รหัสผ่าน")) && data.password !== undefined) {
-              cell.setValue(data.password);
+            } else if ((h.includes("pass") || h.includes("รหัสผ่าน")) && (data.password !== undefined || data.passwd !== undefined)) {
+              cell.setValue(data.password || data.passwd);
             } else if (h.includes("email") && (data.email !== undefined || postData.email !== undefined)) {
               cell.setValue(data.email || postData.email);
+            } else if (h.includes("calendarurl") && data.calendarUrl !== undefined) {
+              cell.setValue(data.calendarUrl);
             } else if (h.includes("education") || h.includes("การศึกษา")) {
               const edu = Array.isArray(data.education) ? data.education.join(" | ") : data.education;
               if (edu !== undefined) cell.setValue(edu);
@@ -127,10 +173,14 @@ function doPost(e) {
     }
 
     if (found) {
-      return createResponse({ success: true, message: "อัปเดตข้อมูลสำเร็จในชีต " + updatedSheetName, sheet: updatedSheetName });
+      return createResponse({
+        success: true,
+        message: "อัปเดตข้อมูลบุคลากรสำเร็จในชีต " + updatedSheetName,
+        sheet: updatedSheetName
+      });
     }
 
-    // 2. ถ้าไม่พบแถวเดิม ให้เพิ่มแถวใหม่ (Append New Row)
+    // 2. APPEND NEW ROW
     let targetSheetName = "Lecturers";
     const dept = String(data.department || data.departmentSlug || postData.departmentSlug || "").toLowerCase();
     if (dept.includes("ผู้บริหาร") || dept.includes("exec")) {
@@ -147,21 +197,29 @@ function doPost(e) {
     const headers = targetSheet.getRange(1, 1, 1, targetSheet.getLastColumn()).getValues()[0];
     const newRow = headers.map(h => {
       const col = String(h).trim().toLowerCase();
-      if (col.includes("departmentslug") || col.includes("สาขา")) return data.departmentSlug || postData.departmentSlug || data.department || "";
+      if (col.includes("departmentslug") || col.includes("divisionslug") || col.includes("สาขา")) return data.departmentSlug || postData.departmentSlug || data.department || "";
       if (col === "name" || col.includes("ชื่อ") || col.includes("nameth")) return data.nameTh || data.name || postData.nameTh || "";
       if (col.includes("calendarname") || col.includes("nameen") || col.includes("ภาษาอังกฤษ")) return data.nameEn || postData.nameEn || data.nameTh || "";
       if (col.includes("position") || col.includes("ตำแหน่ง")) return data.position || "อาจารย์ประจำสาขาวิชา";
       if (col.includes("ishead")) return Boolean(data.isHead !== undefined ? data.isHead : postData.isHead);
       if (col.includes("img") || col.includes("image") || col.includes("รูป")) return data.imageUrl || data.img || "/img/avatar-placeholder.svg";
       if (col.includes("email") || col.includes("อีเมล")) return data.email || postData.email || "";
-      if (col.includes("pass") || col.includes("รหัสผ่าน")) return data.password || "npu1234";
+      if (col.includes("pass") || col.includes("รหัสผ่าน")) return data.password || data.passwd || "npu1234";
       if (col.includes("phone") || col.includes("โทร")) return data.phone || "";
       if (col.includes("location") || col.includes("room") || col.includes("ห้อง")) return data.location || "";
+      if (col.includes("calendarurl")) return data.calendarUrl || "";
+      if (col.includes("education") || col.includes("การศึกษา")) return Array.isArray(data.education) ? data.education.join(" | ") : (data.education || "");
+      if (col.includes("skill") || col.includes("ความเชี่ยวชาญ")) return Array.isArray(data.skills) ? data.skills.join(" | ") : (data.skills || "");
+      if (col.includes("interest") || col.includes("งานวิจัย") || col.includes("research")) return data.researchInterests || "";
       return "";
     });
 
     targetSheet.appendRow(newRow);
-    return createResponse({ success: true, message: "เพิ่มข้อมูลอาจารย์ใหม่ลงในชีต " + targetSheetName + " สำเร็จแล้ว", sheet: targetSheetName });
+    return createResponse({
+      success: true,
+      message: "เพิ่มข้อมูลอาจารย์ใหม่ลงในชีต " + targetSheetName + " สำเร็จแล้ว",
+      sheet: targetSheetName
+    });
   } catch (err) {
     return createResponse({ error: err.toString() }, 500);
   }

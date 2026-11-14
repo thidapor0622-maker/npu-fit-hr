@@ -24,6 +24,7 @@ interface PersonnelEntry {
   nameEn?: string;
   nameTh?: string;
   email?: string;
+  password?: string;
   position?: string;
   department?: string;
   departmentSlug?: string;
@@ -165,12 +166,18 @@ export default function AdminPage() {
           list.push({
             id: String(r.id || r.name),
             nameTh: String(r.name || ''),
+            nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || ''),
             email: String(r.email || ''),
+            password: String(r.passwd || r.password || 'admin1234'),
             phone: String(r.phone || ''),
             department: 'คณะผู้บริหาร',
+            departmentSlug: 'executives',
+            isHead: true,
             imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
-            location: String(r.room || ''),
+            location: String(r.room || r.location || ''),
+            calendarUrl: String(r.calendarUrl || ''),
+            researchInterests: String(r.researchInterests || r.interest || ''),
             education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             updatedAt: new Date().toISOString(),
@@ -184,13 +191,20 @@ export default function AdminPage() {
           list.push({
             id: String(r.email || `lec-${idx}`),
             nameTh: String(r.name || ''),
-            nameEn: String(r.calendarName || ''),
+            nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || 'อาจารย์ประจำ'),
             email: String(r.email || ''),
+            password: String(r.passwd || r.password || 'npu1234'),
             phone: String(r.phone || ''),
             department: String(r.departmentSlug || r.location || 'อาจารย์ประจำสาขาวิชา'),
+            departmentSlug: String(r.departmentSlug || ''),
+            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
             imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
             location: String(r.location || ''),
+            calendarUrl: String(r.calendarUrl || ''),
+            researchInterests: String(r.researchInterests || r.interest || ''),
+            education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             updatedAt: new Date().toISOString(),
           });
         });
@@ -202,13 +216,20 @@ export default function AdminPage() {
           list.push({
             id: String(r.email || `staff-${idx}`),
             nameTh: String(r.name || ''),
-            nameEn: String(r.calendarName || ''),
+            nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || 'บุคลากร'),
             email: String(r.email || ''),
+            password: String(r.passwd || r.password || 'npu1234'),
             phone: String(r.phone || ''),
             department: String(r.divisionSlug || r.location || 'สายสนับสนุน'),
+            departmentSlug: String(r.divisionSlug || ''),
+            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
             imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
             location: String(r.location || ''),
+            calendarUrl: String(r.calendarUrl || ''),
+            researchInterests: String(r.researchInterests || ''),
+            education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             updatedAt: new Date().toISOString(),
           });
         });
@@ -283,11 +304,16 @@ export default function AdminPage() {
       nameTh: '',
       nameEn: '',
       email: '',
+      password: 'npu' + Math.floor(1000 + Math.random() * 9000),
       phone: '',
       position: 'อาจารย์ประจำสาขาวิชา',
-      department: 'วิศวกรรมไฟฟ้ากำลัง',
+      department: 'สาขาวิชาไฟฟ้ากำลัง',
+      departmentSlug: 'electrical-power',
+      isHead: false,
       location: '',
       imageUrl: '/img/avatar-placeholder.svg',
+      calendarUrl: '',
+      researchInterests: '',
       education: [],
       skills: [],
     });
@@ -297,7 +323,13 @@ export default function AdminPage() {
 
   const openEdit = (p: PersonnelEntry) => {
     setEditEntry(p);
-    setFormData({ ...p });
+    setFormData({
+      ...p,
+      password: p.password || 'npu1234',
+      isHead: Boolean(p.isHead),
+      education: p.education || [],
+      skills: p.skills || [],
+    });
     setShowForm(true);
     setCrudMsg('');
   };
@@ -754,31 +786,125 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  <form onSubmit={handleSavePersonnel} className="p-6 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { key: 'nameEn', label: 'ชื่อ-นามสกุล (ภาษาอังกฤษ)', placeholder: 'Assoc. Prof. Somchai Chai' },
-                        { key: 'nameTh', label: 'ชื่อ-นามสกุล (ภาษาไทย)', placeholder: 'รศ.ดร. สมชาย ใจดี' },
-                        { key: 'email', label: 'อีเมล', placeholder: 'somchai@npu.ac.th' },
-                        { key: 'phone', label: 'โทรศัพท์', placeholder: '042-500000' },
-                        { key: 'position', label: 'ตำแหน่ง', placeholder: 'อาจารย์ประจำ' },
-                        { key: 'department', label: 'สาขาวิชา / ฝ่าย', placeholder: 'วิศวกรรมไฟฟ้ากำลัง' },
-                        { key: 'location', label: 'ห้องทำงาน / สถานที่', placeholder: 'อาคาร 1 ชั้น 2' },
-                        { key: 'imageUrl', label: 'URL รูปภาพ', placeholder: 'https://...' },
-                        { key: 'calendarUrl', label: 'Google Calendar URL', placeholder: 'https://calendar.google.com/...' },
-                      ].map(({ key, label, placeholder }) => (
-                        <div key={key} className={key === 'imageUrl' || key === 'calendarUrl' ? 'md:col-span-2' : ''}>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">{label}</label>
+                  <form onSubmit={handleSavePersonnel} className="p-6 space-y-6">
+                    {/* Section 1: Basic Information */}
+                    <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <i className="fa-solid fa-id-card text-sky-600" /> ข้อมูลทั่วไป
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ชื่อ-นามสกุล (ภาษาไทย) <span className="text-red-500">*</span>
+                          </label>
                           <input
                             type="text"
-                            list={key === 'department' ? 'dept-options' : undefined}
-                            value={(formData as any)[key] || ''}
-                            onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                            placeholder={placeholder}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                            required
+                            value={formData.nameTh || ''}
+                            onChange={(e) => setFormData({ ...formData, nameTh: e.target.value })}
+                            placeholder="ผศ.กาญจน์ กันปัญญา"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
                           />
                         </div>
-                      ))}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ชื่อ-นามสกุล (ภาษาอังกฤษ)
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.nameEn || ''}
+                            onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                            placeholder="Asst. Prof. Karn Kanpanya"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            อีเมล <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            value={formData.email || ''}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="karn@npu.ac.th"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            รหัสผ่านเข้าใช้งาน (Password)
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.password || ''}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="npu1234"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white font-mono"
+                          />
+                          <p className="text-[10px] text-slate-400 mt-0.5">ใช้สำหรับให้อาจารย์ล็อกอินแก้ไขโปรไฟล์ตนเอง</p>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            เบอร์โทรศัพท์
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.phone || ''}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            placeholder="042-503-777"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ตำแหน่ง / ตำแหน่งทางวิชาการ
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.position || ''}
+                            onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                            placeholder="หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            สาขาวิชา / ฝ่ายงาน
+                          </label>
+                          <input
+                            type="text"
+                            list="dept-options"
+                            value={formData.department || ''}
+                            onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                            placeholder="สาขาวิชาไฟฟ้ากำลัง"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ห้องทำงาน / สถานที่
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.location || ''}
+                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                            placeholder="สาขาวิชาไฟฟ้ากำลัง คณะเทคโนโลยีอุตสาหกรรม"
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        <div className="md:col-span-2 pt-1">
+                          <label className="inline-flex items-center gap-2.5 cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(formData.isHead)}
+                              onChange={(e) => setFormData({ ...formData, isHead: e.target.checked })}
+                              className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                            />
+                            <span>หัวหน้าหลักสูตร / ประธานสาขาวิชา / หัวหน้าฝ่าย (แสดงเด่นด้านบนสุดของสาขา)</span>
+                          </label>
+                        </div>
+                      </div>
 
                       <datalist id="dept-options">
                         <option value="สาขาวิชาไฟฟ้ากำลัง" />
@@ -799,36 +925,112 @@ export default function AdminPage() {
                         <option value="คณะผู้บริหาร" />
                         <option value="สายสนับสนุน" />
                       </datalist>
+                    </div>
 
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-slate-700 mb-1">ความสนใจในการวิจัย</label>
-                        <textarea
-                          value={(formData as any).researchInterests || ''}
-                          onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
-                          placeholder="วิศวกรรมระบบไฟฟ้า, พลังงานทดแทน, ..."
-                          rows={2}
-                          className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 transition resize-none"
-                        />
+                    {/* Section 2: Media & Calendar */}
+                    <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <i className="fa-solid fa-image text-indigo-600" /> รูปภาพและปฏิทินปฏิบัติราชการ
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            URL รูปภาพโปรไฟล์
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.imageUrl || ''}
+                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                            placeholder="img/ผศ.กาญจน์ กันปัญญา.jpg หรือ https://..."
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                          />
+                        </div>
+                        {formData.imageUrl && (
+                          <div className="md:col-span-2 flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200">
+                            <img
+                              src={formData.imageUrl}
+                              alt="Preview"
+                              className="w-14 h-14 rounded-lg object-cover border border-slate-200"
+                              onError={(e) => { (e.target as HTMLImageElement).src = '/img/avatar-placeholder.svg'; }}
+                            />
+                            <div className="text-xs text-slate-500">
+                              <span className="font-semibold text-slate-700 block">ตัวอย่างรูปภาพ</span>
+                              รูปจะแสดงบนการ์ดและป๊อปอัปหน้าเว็บ
+                            </div>
+                          </div>
+                        )}
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Google Calendar URL (ปฏิทิน/ตารางนัดหมาย)
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.calendarUrl || ''}
+                            onChange={(e) => setFormData({ ...formData, calendarUrl: e.target.value })}
+                            placeholder="https://calendar.google.com/calendar/embed?src=..."
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white font-mono"
+                          />
+                        </div>
                       </div>
+                    </div>
 
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-slate-700 mb-1">ประวัติการศึกษา (คั่นด้วยบรรทัดใหม่)</label>
-                        <textarea
-                          value={
-                            Array.isArray((formData as any).education)
-                              ? (formData as any).education.join('\n')
-                              : (formData as any).education || ''
-                          }
-                          onChange={(e) => setFormData({ ...formData, education: e.target.value.split('\n') })}
-                          placeholder="Ph.D. Electrical Engineering, Khon Kaen University, 2010&#10;M.Eng. ..., 2005"
-                          rows={3}
-                          className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 transition resize-none"
-                        />
+                    {/* Section 3: Expertise, Education & Skills */}
+                    <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <i className="fa-solid fa-graduation-cap text-emerald-600" /> ความเชี่ยวชาญ การศึกษา และทักษะ
+                      </h4>
+                      <div className="space-y-3.5">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)
+                          </label>
+                          <textarea
+                            value={formData.researchInterests || ''}
+                            onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
+                            placeholder="วิศวกรรมระบบไฟฟ้ากำลัง, การจัดการพลังงานหมุนเวียน (Renewable Energy Systems)"
+                            rows={2}
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)
+                          </label>
+                          <textarea
+                            value={
+                              Array.isArray(formData.education)
+                                ? formData.education.join('\n')
+                                : formData.education || ''
+                            }
+                            onChange={(e) => setFormData({ ...formData, education: e.target.value.split('\n') })}
+                            placeholder="Ph.D. Electrical Engineering, Khon Kaen University, 2010&#10;M.Eng. Power Systems, KMUTT, 2005"
+                            rows={3}
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)
+                          </label>
+                          <textarea
+                            value={
+                              Array.isArray(formData.skills)
+                                ? formData.skills.join('\n')
+                                : formData.skills || ''
+                            }
+                            onChange={(e) => setFormData({ ...formData, skills: e.target.value.split('\n') })}
+                            placeholder="Power System Analysis&#10;PLC Programming&#10;Energy Management"
+                            rows={3}
+                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                          />
+                        </div>
                       </div>
                     </div>
 
                     {crudMsg && (
-                      <div className="text-sm text-red-600 font-medium flex items-center gap-1.5">
+                      <div className="text-sm text-red-600 font-medium flex items-center gap-1.5 p-3 bg-red-50 rounded-xl border border-red-200">
                         <i className="fa-solid fa-circle-exclamation" /> {crudMsg}
                       </div>
                     )}
@@ -981,6 +1183,52 @@ export default function AdminPage() {
                 >
                   <i className="fa-solid fa-floppy-disk" /> บันทึกการตั้งค่า
                 </button>
+              </div>
+            </div>
+
+            {/* 14 Unified Columns Guide & Table */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <h3 className="font-black text-slate-900 flex items-center gap-2">
+                  <i className="fa-solid fa-table-list text-sky-600" />
+                  โครงสร้าง 14 คอลัมน์มาตรฐาน Google Sheets (ตรงกันทุกหน้า 100%)
+                </h3>
+                <a
+                  href="/google-apps-script.js"
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-bold border border-sky-200 transition"
+                >
+                  <i className="fa-solid fa-code" /> ดูโค้ด Apps Script ทั้งหมด
+                </a>
+              </div>
+              <p className="text-xs text-slate-500">
+                ตารางข้อมูลใน Google Sheets (แท็บ Lecturers, Staff, Executives) จะใช้คอลัมน์มาตรฐาน 14 ฟิลด์นี้ตรงกันกับหน้าแก้ไขแอดมิน และหน้าแก้ไขโปรไฟล์อาจารย์:
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs">
+                {[
+                  { col: 'A', name: 'departmentSlug', label: 'รหัสสาขา/ฝ่าย' },
+                  { col: 'B', name: 'name', label: 'ชื่อ-นามสกุล (ไทย)' },
+                  { col: 'C', name: 'position', label: 'ตำแหน่ง' },
+                  { col: 'D', name: 'isHead', label: 'หัวหน้าหลักสูตร (TRUE/FALSE)' },
+                  { col: 'E', name: 'img', label: 'URL หรือ path รูปภาพ' },
+                  { col: 'F', name: 'email', label: 'อีเมล' },
+                  { col: 'G', name: 'passwd', label: 'รหัสผ่านเข้าสู่ระบบ' },
+                  { col: 'H', name: 'phone', label: 'เบอร์โทรศัพท์' },
+                  { col: 'I', name: 'location', label: 'ห้องทำงาน/สถานที่' },
+                  { col: 'J', name: 'calendarName', label: 'ชื่อ-นามสกุล (อังกฤษ)' },
+                  { col: 'K', name: 'calendarUrl', label: 'Google Calendar URL' },
+                  { col: 'L', name: 'researchInterests', label: 'ความเชี่ยวชาญ/งานวิจัย' },
+                  { col: 'M', name: 'education', label: 'ประวัติการศึกษา' },
+                  { col: 'N', name: 'skills', label: 'ทักษะความเชี่ยวชาญ' },
+                ].map((item) => (
+                  <div key={item.col} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <span className="inline-block px-1.5 py-0.5 rounded bg-sky-600 text-white font-mono text-[10px] font-bold mr-1.5">
+                      คอลัมน์ {item.col}
+                    </span>
+                    <div className="font-mono text-slate-800 font-bold text-[11px] mt-1">{item.name}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{item.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
 

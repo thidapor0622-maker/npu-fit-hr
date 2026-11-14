@@ -93,10 +93,12 @@ function applyOverridesToPersonnel(list: Personnel[], overrides: Record<string, 
         location: ov.location || p.location,
         img: ov.imageUrl || p.img,
         calendarName: ov.nameEn || p.calendarName || ov.nameTh || p.name,
-        education: ov.education || p.education,
-        skills: ov.skills || p.skills,
-        researchInterests: ov.researchInterests || p.researchInterests,
+        calendarUrl: ov.calendarUrl || (p as any).calendarUrl || '',
+        education: ov.education || p.education || [],
+        skills: ov.skills || p.skills || [],
+        researchInterests: ov.researchInterests || p.researchInterests || '',
         isHead: ov.isHead !== undefined ? ov.isHead : (p as any).isHead,
+        departmentSlug: ov.departmentSlug || (p as any).departmentSlug,
       });
     } else {
       result.push(p);
@@ -120,10 +122,12 @@ function applyOverridesToPersonnel(list: Personnel[], overrides: Record<string, 
           phone: ov.phone || '',
           location: ov.location || deptOrDivSlug,
           calendarName: ov.nameEn || ov.nameTh || '',
+          calendarUrl: ov.calendarUrl || '',
           education: ov.education || [],
           skills: ov.skills || [],
           researchInterests: ov.researchInterests || '',
           isHead: Boolean(ov.isHead),
+          departmentSlug: ov.departmentSlug || deptOrDivSlug,
         } as any);
       }
     });
@@ -232,15 +236,25 @@ export function usePersonnelData() {
               const dSlug = String(r.departmentSlug || '').trim();
               if (!dSlug) continue;
               if (!lecByDept[dSlug]) lecByDept[dSlug] = [];
+              const edu = r.education ? String(r.education).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
+              const sk = r.skills ? String(r.skills).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
+              const research = String(r.researchInterests || r.interest || '');
+              const calUrl = String(r.calendarUrl || '');
               lecByDept[dSlug].push({
                 name: String(r.name || ''),
+                nameEn: String(r.calendarName || r.nameEn || ''),
                 position: String(r.position || ''),
                 img: String(r.img || '/img/avatar-placeholder.svg'),
                 email: String(r.email || ''),
                 phone: String(r.phone || ''),
                 location: String(r.location || ''),
                 calendarName: String(r.calendarName || r.name || ''),
+                calendarUrl: calUrl,
+                researchInterests: research,
+                education: edu,
+                skills: sk,
                 isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
+                departmentSlug: dSlug,
               } as any);
             }
 
@@ -278,14 +292,22 @@ export function usePersonnelData() {
               const divSlug = String(r.divisionSlug || '').trim();
               if (!divSlug) continue;
               if (!staffByDiv[divSlug]) staffByDiv[divSlug] = [];
+              const edu = r.education ? String(r.education).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
+              const sk = r.skills ? String(r.skills).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
               staffByDiv[divSlug].push({
                 name: String(r.name || ''),
+                nameEn: String(r.calendarName || r.nameEn || ''),
                 position: String(r.position || ''),
                 img: String(r.img || '/img/avatar-placeholder.svg'),
                 email: String(r.email || ''),
                 phone: String(r.phone || ''),
                 location: String(r.location || ''),
                 calendarName: String(r.calendarName || r.name || ''),
+                calendarUrl: String(r.calendarUrl || ''),
+                researchInterests: String(r.researchInterests || ''),
+                education: edu,
+                skills: sk,
+                isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
               });
             }
 

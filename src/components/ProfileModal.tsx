@@ -149,6 +149,36 @@ export default function ProfileModal({
             </p>
           </div>
 
+          {/* Education (if available) */}
+          {person.education && person.education.length > 0 && (
+            <div className="space-y-2">
+              <h5 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <i className="fa-solid fa-graduation-cap text-emerald-600"></i> ประวัติการศึกษา
+              </h5>
+              <ul className="text-xs text-slate-600 space-y-1 list-disc list-inside bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                {person.education.map((edu, idx) => (
+                  <li key={idx} className="leading-relaxed">{edu}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Skills (if available) */}
+          {person.skills && person.skills.length > 0 && (
+            <div className="space-y-2">
+              <h5 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <i className="fa-solid fa-star text-amber-500"></i> ทักษะและความเชี่ยวชาญ
+              </h5>
+              <div className="flex flex-wrap gap-1.5">
+                {person.skills.map((skill, idx) => (
+                  <span key={idx} className="px-2.5 py-1 bg-sky-50 text-sky-800 border border-sky-200 rounded-xl text-xs font-medium">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Office Location & Details */}
           {person.location && (
             <div className="space-y-2">

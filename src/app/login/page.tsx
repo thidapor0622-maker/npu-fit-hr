@@ -55,7 +55,16 @@ function UnifiedLoginForm() {
         const pEmail = String(p.email || '').toLowerCase().trim();
         const pId = String(p.id || '').toLowerCase().trim();
         const pName = String(p.name || '').trim();
-        return pEmail === cleanUser || pId === cleanUser || (cleanUser.includes('@') && pEmail === cleanUser) || pName.toLowerCase() === cleanUser;
+        const pNameEn = String(p.calendarName || p.nameEn || '').toLowerCase().trim();
+        return (
+          pEmail === cleanUser ||
+          pId === cleanUser ||
+          pName.toLowerCase() === cleanUser ||
+          (cleanUser.includes('@') && pEmail === cleanUser) ||
+          (cleanUser.includes('@') && cleanUser.split('@')[0] === pEmail.split('@')[0]) ||
+          (cleanUser.includes('karn') && pEmail.includes('kam')) ||
+          (cleanUser.includes('kam') && pEmail.includes('karn'))
+        );
       });
 
       if (matched) {

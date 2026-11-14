@@ -7,6 +7,7 @@ export interface Personnel {
   phone: string;
   location: string;
   calendarName: string;
+  calendarUrl?: string;
   researchInterests?: string;
   education?: string[];
   skills?: string[];
