@@ -14,6 +14,7 @@ interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenCalendar?: (name: string) => void;
+  onEdit?: (person: Personnel) => void;
 }
 
 export default function ProfileModal({
@@ -24,6 +25,7 @@ export default function ProfileModal({
   isOpen,
   onClose,
   onOpenCalendar,
+  onEdit,
 }: ProfileModalProps) {
   const [imgErr, setImgErr] = useState(false);
 
@@ -161,14 +163,28 @@ export default function ProfileModal({
 
           {/* Action Row at Bottom: View Calendar & Edit Profile */}
           <div className="pt-3 flex flex-col sm:flex-row gap-2 justify-end items-center border-t border-slate-100">
-            <Link
-              href="/login"
-              onClick={onClose}
-              className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-slate-200"
-            >
-              <i className="fa-solid fa-pen-to-square text-indigo-500"></i>
-              <span>แก้ไขโปรไฟล์</span>
-            </Link>
+            {onEdit ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onEdit(person);
+                }}
+                className="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-amber-300"
+              >
+                <i className="fa-solid fa-pen-to-square text-amber-600"></i>
+                <span>แก้ไขข้อมูลอาจารย์</span>
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-slate-200"
+              >
+                <i className="fa-solid fa-pen-to-square text-indigo-500"></i>
+                <span>แก้ไขโปรไฟล์</span>
+              </Link>
+            )}
 
             {onOpenCalendar && (
               <button

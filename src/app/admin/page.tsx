@@ -324,6 +324,26 @@ export default function AdminPage() {
     setCrudLoading(true);
     setCrudMsg('');
 
+    const DEPT_SLUG_MAP: Record<string, string> = {
+      'สาขาวิชาไฟฟ้ากำลัง': 'electrical-power',
+      'สาขาวิชาอิเล็กทรอนิกส์': 'electronics-robotics',
+      'สาขาวิชายานยนต์และเครื่องกล': 'automotive-ev',
+      'สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต': 'industrial-technology',
+      'สาขาวิชาการจัดการอาชีวศึกษา': 'vocational-education',
+      'สาขาวิชาช่างเชื่อมโลหะ': 'welding-technology',
+      'สาขาวิชาชีพพื้นฐาน': 'basic-vocational',
+      'สาขาวิชาการก่อสร้างและสถาปัตยกรรม': 'construction-technology',
+      'สาขาวิชาสถาปัตยกรรม': 'architecture',
+      'สาขาวิชาการบัญชี': 'accounting',
+      'สาขาวิชาการจัดการสำนักงานดิจิทัล': 'digital-office',
+      'สาขาวิชาการตลาด': 'marketing',
+      'สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล': 'digital-business',
+      'สาขาวิชาการโรงแรม': 'hotel-management',
+      'สาขาวิชาพื้นฐานประยุกต์': 'applied-fundamentals',
+    };
+    const deptInput = String(formData.department || '').trim();
+    const resolvedSlug = DEPT_SLUG_MAP[deptInput] || deptInput;
+
     const targetId = editEntry?.id || formData.email || `custom-${Date.now()}`;
     const newEntry: PersonnelEntry = {
       id: targetId,
@@ -333,6 +353,7 @@ export default function AdminPage() {
       phone: formData.phone || '',
       position: formData.position || '',
       department: formData.department || '',
+      departmentSlug: resolvedSlug,
       location: formData.location || '',
       imageUrl: formData.imageUrl || '/img/avatar-placeholder.svg',
       calendarUrl: formData.calendarUrl || '',
@@ -351,9 +372,9 @@ export default function AdminPage() {
     if (typeof window !== 'undefined') {
       let overrides: Record<string, any> = {};
       try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
-      overrides[targetId] = newEntry;
-      if (formData.email) overrides[formData.email.toLowerCase()] = newEntry;
-      if (formData.nameTh) overrides[formData.nameTh.trim()] = newEntry;
+      overrides[targetId] = { ...newEntry, departmentSlug: resolvedSlug };
+      if (formData.email) overrides[formData.email.toLowerCase()] = { ...newEntry, departmentSlug: resolvedSlug };
+      if (formData.nameTh) overrides[formData.nameTh.trim()] = { ...newEntry, departmentSlug: resolvedSlug };
       localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
       window.dispatchEvent(new Event('hr_personnel_updated'));
     }
@@ -369,12 +390,14 @@ export default function AdminPage() {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
-            action: 'updateProfile',
+            action: editEntry ? 'updateProfile' : 'savePersonnel',
             email: formData.email,
             name: formData.nameTh,
             nameTh: formData.nameTh,
             nameEn: formData.nameEn,
-            data: newEntry,
+            departmentSlug: resolvedSlug,
+            department: formData.department,
+            data: { ...newEntry, departmentSlug: resolvedSlug },
           }),
         });
         const textRes = await res.text();
@@ -744,6 +767,7 @@ export default function AdminPage() {
                           <label className="block text-xs font-bold text-slate-700 mb-1">{label}</label>
                           <input
                             type="text"
+                            list={key === 'department' ? 'dept-options' : undefined}
                             value={(formData as any)[key] || ''}
                             onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                             placeholder={placeholder}
@@ -751,6 +775,26 @@ export default function AdminPage() {
                           />
                         </div>
                       ))}
+
+                      <datalist id="dept-options">
+                        <option value="สาขาวิชาไฟฟ้ากำลัง" />
+                        <option value="สาขาวิชาอิเล็กทรอนิกส์" />
+                        <option value="สาขาวิชายานยนต์และเครื่องกล" />
+                        <option value="สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต" />
+                        <option value="สาขาวิชาการจัดการอาชีวศึกษา" />
+                        <option value="สาขาวิชาช่างเชื่อมโลหะ" />
+                        <option value="สาขาวิชาชีพพื้นฐาน" />
+                        <option value="สาขาวิชาการก่อสร้างและสถาปัตยกรรม" />
+                        <option value="สาขาวิชาสถาปัตยกรรม" />
+                        <option value="สาขาวิชาการบัญชี" />
+                        <option value="สาขาวิชาการจัดการสำนักงานดิจิทัล" />
+                        <option value="สาขาวิชาการตลาด" />
+                        <option value="สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล" />
+                        <option value="สาขาวิชาการโรงแรม" />
+                        <option value="สาขาวิชาพื้นฐานประยุกต์" />
+                        <option value="คณะผู้บริหาร" />
+                        <option value="สายสนับสนุน" />
+                      </datalist>
 
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold text-slate-700 mb-1">ความสนใจในการวิจัย</label>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Department, DEPARTMENTS_DATA, Personnel } from '@/data/departments';
 import { usePersonnelData } from '@/hooks/usePersonnelData';
@@ -20,6 +20,44 @@ export default function DepartmentDetailClient({
   const [calendarModalName, setCalendarModalName] = useState<string | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<Personnel | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Auth State
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+
+  // Edit / Add Modal State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPerson, setEditingPerson] = useState<Personnel | null>(null);
+  const [formData, setFormData] = useState({
+    nameTh: '',
+    nameEn: '',
+    position: 'อาจารย์ประจำสาขาวิชา',
+    isHead: false,
+    email: '',
+    phone: '',
+    location: '',
+    imageUrl: '',
+    calendarUrl: '',
+    researchInterests: '',
+    education: '',
+    skills: '',
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState({ text: '', ok: true });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const admin = localStorage.getItem('hr_admin_session') === 'true';
+      setIsAdmin(admin);
+      const userStr = localStorage.getItem('hr_user_session');
+      if (userStr) {
+        try {
+          const u = JSON.parse(userStr);
+          setUserEmail((u.email || '').toLowerCase().trim());
+        } catch {}
+      }
+    }
+  }, []);
 
   // If live data has this department, use it; otherwise fallback to initial
   const department =
@@ -44,10 +82,139 @@ export default function DepartmentDetailClient({
   const isMembersVisible = matchedMembers.length > 0;
   const hasResults = isHeadVisible || isMembersVisible;
 
+  // ─── Modal Openers ───
+  const openAddLecturer = () => {
+    setEditingPerson(null);
+    setFormData({
+      nameTh: '',
+      nameEn: '',
+      position: 'อาจารย์ประจำสาขาวิชา',
+      isHead: false,
+      email: '',
+      phone: '042-503-777',
+      location: department.title,
+      imageUrl: '/img/avatar-placeholder.svg',
+      calendarUrl: '',
+      researchInterests: '',
+      education: '',
+      skills: '',
+    });
+    setSaveMsg({ text: '', ok: true });
+    setShowEditModal(true);
+  };
+
+  const openEditLecturer = (p: Personnel) => {
+    setEditingPerson(p);
+    const isHead = department.head?.name === p.name || (p as any).isHead === true;
+    setFormData({
+      nameTh: p.name || '',
+      nameEn: p.nameEn || p.calendarName || '',
+      position: p.position || 'อาจารย์ประจำสาขาวิชา',
+      isHead: Boolean(isHead),
+      email: p.email || '',
+      phone: p.phone || '',
+      location: p.location || department.title,
+      imageUrl: p.img || '',
+      calendarUrl: '',
+      researchInterests: p.researchInterests || '',
+      education: Array.isArray(p.education) ? p.education.join('\n') : p.education || '',
+      skills: Array.isArray(p.skills) ? p.skills.join('\n') : p.skills || '',
+    });
+    setSaveMsg({ text: '', ok: true });
+    setShowEditModal(true);
+  };
+
+  // ─── Save to Local Overrides & Google Sheets ───
+  const handleSaveLecturer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setSaveMsg({ text: '', ok: true });
+
+    const key = formData.email ? formData.email.toLowerCase().trim() : (formData.nameTh.trim() || `lec-${Date.now()}`);
+    const originalKey = editingPerson ? (editingPerson.email ? editingPerson.email.toLowerCase().trim() : editingPerson.name.trim()) : key;
+
+    const payload = {
+      id: key,
+      nameTh: formData.nameTh.trim(),
+      name: formData.nameTh.trim(),
+      nameEn: formData.nameEn.trim(),
+      calendarName: formData.nameEn.trim() || formData.nameTh.trim(),
+      position: formData.position.trim(),
+      departmentSlug: department.slug,
+      department: department.title,
+      isHead: formData.isHead,
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      location: formData.location.trim(),
+      imageUrl: formData.imageUrl.trim() || '/img/avatar-placeholder.svg',
+      img: formData.imageUrl.trim() || '/img/avatar-placeholder.svg',
+      researchInterests: formData.researchInterests.trim(),
+      education: formData.education.split('\n').map((s) => s.trim()).filter(Boolean),
+      skills: formData.skills.split('\n').map((s) => s.trim()).filter(Boolean),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // 1. Update localStorage overrides
+    if (typeof window !== 'undefined') {
+      let overrides: Record<string, any> = {};
+      try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+      overrides[key] = payload;
+      if (originalKey && originalKey !== key) {
+        overrides[originalKey] = payload;
+      }
+      if (formData.nameTh) {
+        overrides[formData.nameTh.trim()] = payload;
+      }
+      localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
+      window.dispatchEvent(new Event('hr_personnel_updated'));
+    }
+
+    // 2. Sync to Google Apps Script Web App
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
+    let syncedToGoogle = false;
+
+    if (scriptUrl) {
+      try {
+        const res = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: editingPerson ? 'updateProfile' : 'savePersonnel',
+            email: formData.email,
+            name: formData.nameTh,
+            nameTh: formData.nameTh,
+            nameEn: formData.nameEn,
+            departmentSlug: department.slug,
+            data: payload,
+          }),
+        });
+        const textRes = await res.text();
+        try {
+          const r = JSON.parse(textRes);
+          if (r && r.success) syncedToGoogle = true;
+        } catch {}
+      } catch (err) {
+        console.error('Failed to sync to Apps Script:', err);
+      }
+    }
+
+    setSaving(false);
+    if (syncedToGoogle) {
+      setSaveMsg({ text: '✓ บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว! ข้อมูลหน้าเว็บเปลี่ยนทันที', ok: true });
+    } else {
+      setSaveMsg({ text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลหน้าเว็บเปลี่ยนทันที', ok: true });
+    }
+
+    setTimeout(() => {
+      setShowEditModal(false);
+    }, 1500);
+  };
+
   return (
     <div className="w-full flex-grow flex flex-col">
       {/* Sub-header navigation with Department Dropdown */}
-      <div className="bg-slate-900 border-b border-slate-800 text-white py-2 px-4">
+      <div className="bg-slate-900 border-b border-slate-800 text-white py-2.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <Link
             href="/lecturers"
@@ -57,45 +224,57 @@ export default function DepartmentDetailClient({
             <span>กลับหน้ารายชื่อสาขาวิชา</span>
           </Link>
 
-          {/* Department switcher dropdown */}
-          <div className="relative">
+          <div className="flex items-center gap-2.5">
+            {/* Add Lecturer Button (Always visible to Admin or users) */}
             <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-sm"
+              onClick={openAddLecturer}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm"
+              title="เพิ่มอาจารย์ประจำสาขาวิชานี้"
             >
-              <i className="fa-solid fa-graduation-cap text-sky-400"></i>
-              <span className="hidden sm:inline">เปลี่ยนสาขาวิชา</span>
-              <i
-                className={`fa-solid fa-chevron-down text-[10px] transition-transform ${
-                  dropdownOpen ? 'rotate-180' : ''
-                }`}
-              ></i>
+              <i className="fa-solid fa-user-plus text-xs"></i>
+              <span>เพิ่มอาจารย์ในสาขานี้</span>
             </button>
 
-            {dropdownOpen && (
-              <div
-                className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 text-slate-700 text-xs max-h-[380px] overflow-y-auto"
-                onClick={() => setDropdownOpen(false)}
+            {/* Department switcher dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-sm"
               >
-                <div className="px-4 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  สาขาวิชาทั้งหมด
+                <i className="fa-solid fa-graduation-cap text-sky-400"></i>
+                <span className="hidden sm:inline">เปลี่ยนสาขาวิชา</span>
+                <i
+                  className={`fa-solid fa-chevron-down text-[10px] transition-transform ${
+                    dropdownOpen ? 'rotate-180' : ''
+                  }`}
+                ></i>
+              </button>
+
+              {dropdownOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 text-slate-700 text-xs max-h-[380px] overflow-y-auto"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <div className="px-4 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    สาขาวิชาทั้งหมด
+                  </div>
+                  {(liveDepartments.length > 0 ? liveDepartments : DEPARTMENTS_DATA).map((d) => (
+                    <Link
+                      key={d.slug}
+                      href={`/lecturers/${d.slug}`}
+                      className={`flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 transition ${
+                        d.slug === department.slug
+                          ? 'bg-sky-50 text-sky-900 font-bold border-l-4 border-sky-600'
+                          : 'text-slate-700'
+                      }`}
+                    >
+                      <i className={`${d.icon} w-5 text-sky-600`}></i>
+                      <span className="truncate">{d.title}</span>
+                    </Link>
+                  ))}
                 </div>
-                {(liveDepartments.length > 0 ? liveDepartments : DEPARTMENTS_DATA).map((d) => (
-                  <Link
-                    key={d.slug}
-                    href={`/lecturers/${d.slug}`}
-                    className={`flex items-center gap-2 px-4 py-2.5 hover:bg-sky-50 transition ${
-                      d.slug === department.slug
-                        ? 'bg-sky-50 text-sky-900 font-bold border-l-4 border-sky-600'
-                        : 'text-slate-700'
-                    }`}
-                  >
-                    <i className={`${d.icon} w-5 text-sky-600`}></i>
-                    <span className="truncate">{d.title}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -150,13 +329,21 @@ export default function DepartmentDetailClient({
               <h3 className="text-base font-bold text-slate-800 font-heading">
                 ไม่พบข้อมูลบุคลากรที่ค้นหา
               </h3>
-              <p className="text-xs text-slate-500 mt-1">กรุณาตรวจสอบคำสะกดใหม่อีกครั้ง</p>
-              <button
-                onClick={() => setSearchTerm('')}
-                className="mt-4 px-4 py-2 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-xl text-xs font-semibold border border-sky-200 transition-colors"
-              >
-                ล้างการค้นหา
-              </button>
+              <p className="text-xs text-slate-500 mt-1">ท่านสามารถกดปุ่ม "เพิ่มอาจารย์ในสาขานี้" ด้านบนเพื่อเพิ่มข้อมูลได้ทันที</p>
+              <div className="flex justify-center gap-2 mt-4">
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="px-4 py-2 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-xl text-xs font-semibold border border-sky-200 transition-colors"
+                >
+                  ล้างการค้นหา
+                </button>
+                <button
+                  onClick={openAddLecturer}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                >
+                  + เพิ่มอาจารย์ใหม่
+                </button>
+              </div>
             </div>
           </div>
         ) : (
@@ -179,6 +366,7 @@ export default function DepartmentDetailClient({
                     index={0}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
+                    onEdit={(p) => openEditLecturer(p)}
                   />
                 </div>
               </section>
@@ -209,6 +397,7 @@ export default function DepartmentDetailClient({
                       index={idx + 1}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
+                      onEdit={(p) => openEditLecturer(p)}
                     />
                   ))}
                 </div>
@@ -227,6 +416,7 @@ export default function DepartmentDetailClient({
         deptSlug={department.slug}
         onClose={() => setSelectedProfile(null)}
         onOpenCalendar={(name) => setCalendarModalName(name)}
+        onEdit={(p) => openEditLecturer(p)}
       />
 
       {/* Calendar Modal */}
@@ -235,6 +425,183 @@ export default function DepartmentDetailClient({
         officerName={calendarModalName || ''}
         onClose={() => setCalendarModalName(null)}
       />
+
+      {/* ─── In-Page Add / Edit Lecturer Modal ─── */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col animate-fadeIn">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white p-5 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
+                  <i className={`fa-solid ${editingPerson ? 'fa-user-pen' : 'fa-user-plus'}`} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white">
+                    {editingPerson ? 'แก้ไขข้อมูลอาจารย์' : 'เพิ่มอาจารย์ใหม่'}
+                  </h3>
+                  <p className="text-xs text-sky-300">{department.title}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition"
+              >
+                <i className="fa-solid fa-xmark" />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleSaveLecturer} className="p-6 overflow-y-auto space-y-4 flex-grow">
+              {saveMsg.text && (
+                <div
+                  className={`p-3 rounded-xl text-xs font-bold flex items-center gap-2 ${
+                    saveMsg.ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'
+                  }`}
+                >
+                  <i className={`fa-solid ${saveMsg.ok ? 'fa-circle-check' : 'fa-circle-exclamation'}`} />
+                  {saveMsg.text}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    ชื่อ-นามสกุล (ภาษาไทย) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.nameTh}
+                    onChange={(e) => setFormData({ ...formData, nameTh: e.target.value })}
+                    placeholder="ผศ.ดร. สมชาย ใจดี"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    ชื่อ-นามสกุล (ภาษาอังกฤษ)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nameEn}
+                    onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                    placeholder="Asst. Prof. Dr. Somchai Jaidee"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">ตำแหน่ง</label>
+                  <input
+                    type="text"
+                    value={formData.position}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    placeholder="อาจารย์ประจำสาขาวิชา"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div className="flex items-center pt-5">
+                  <label className="inline-flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.isHead}
+                      onChange={(e) => setFormData({ ...formData, isHead: e.target.checked })}
+                      className="w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-400"
+                    />
+                    <span className="text-xs font-bold text-slate-800">เป็นหัวหน้าหลักสูตรสาขาวิชา</span>
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">อีเมล (@npu.ac.th)</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="somchai@npu.ac.th"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">เบอร์โทรศัพท์</label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="042-503-777"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">ห้องทำงาน / สถานที่</label>
+                  <input
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    placeholder={department.title}
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">URL รูปภาพโปรไฟล์</label>
+                  <input
+                    type="text"
+                    value={formData.imageUrl}
+                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                    placeholder="/img/somchai.jpg หรือ https://..."
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">ความเชี่ยวชาญ / งานวิจัย</label>
+                  <input
+                    type="text"
+                    value={formData.researchInterests}
+                    onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
+                    placeholder="วิศวกรรมไฟฟ้า, พลังงานหมุนเวียน, ..."
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-sky-400 focus:outline-none transition"
+                  />
+                </div>
+              </div>
+
+              {/* Form Buttons */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition flex items-center gap-1.5 shadow-md disabled:opacity-50"
+                >
+                  {saving ? (
+                    <>
+                      <i className="fa-solid fa-spinner fa-spin" />
+                      <span>กำลังบันทึก...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-cloud-arrow-up" />
+                      <span>บันทึกข้อมูลลงชีต</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

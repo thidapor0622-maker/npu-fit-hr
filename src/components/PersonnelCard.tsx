@@ -20,6 +20,7 @@ interface PersonnelCardProps {
   onClick?: () => void;
   onOpenCalendar?: (name: string) => void;
   onOpenProfile?: (person: Personnel) => void;
+  onEdit?: (person: Personnel) => void;
   isClickable?: boolean;
   variant?: 'academic' | 'executive';
 }
@@ -34,6 +35,7 @@ export default function PersonnelCard({
   onClick,
   onOpenCalendar,
   onOpenProfile,
+  onEdit,
   isClickable = false,
   variant = 'academic',
 }: PersonnelCardProps) {
@@ -157,17 +159,33 @@ export default function PersonnelCard({
           </p>
         </div>
 
-        {/* 3. Action Buttons Row (Right under the name/id): [Email Icon] [Profile Button] */}
-        <div className="flex items-center justify-end gap-2.5 mb-4">
+        {/* 3. Action Buttons Row (Right under the name/id): [Email Icon] [Profile Button] [Edit Button if authorized] */}
+        <div className="flex items-center justify-end gap-2 mb-4 flex-wrap">
+          {/* Edit Button */}
+          {onEdit && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(person);
+              }}
+              className="px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+              title="แก้ไขข้อมูลอาจารย์ท่านนี้"
+            >
+              <i className="fa-solid fa-pen-to-square text-xs" />
+              <span>แก้ไข</span>
+            </button>
+          )}
+
           {/* Square Email Button */}
           {person.email && (
             <a
               href={`mailto:${person.email}`}
               onClick={handleEmailClick}
-              className="w-10 h-10 rounded-xl border border-slate-700 hover:border-sky-600 hover:bg-sky-50 text-slate-800 hover:text-sky-600 flex items-center justify-center transition-all flex-shrink-0"
+              className="w-9 h-9 rounded-xl border border-slate-700 hover:border-sky-600 hover:bg-sky-50 text-slate-800 hover:text-sky-600 flex items-center justify-center transition-all flex-shrink-0"
               title={`ส่งอีเมล: ${person.email}`}
             >
-              <i className="fa-regular fa-envelope text-base"></i>
+              <i className="fa-regular fa-envelope text-sm"></i>
             </a>
           )}
 
@@ -175,10 +193,10 @@ export default function PersonnelCard({
           <button
             type="button"
             onClick={handleProfileClick}
-            className="px-4 py-2 rounded-xl border-2 border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all"
+            className="px-3.5 py-2 rounded-xl border-2 border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all"
             title="เปิดดูประวัติและผลงาน (Profile)"
           >
-            <i className="fa-regular fa-id-badge text-base"></i>
+            <i className="fa-regular fa-id-badge text-sm"></i>
             <span>Profile</span>
           </button>
         </div>

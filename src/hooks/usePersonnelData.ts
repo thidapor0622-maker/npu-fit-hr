@@ -71,25 +71,65 @@ function applyOverridesToExecs(execMap: Record<string, ExecutiveDetail>, overrid
   return result;
 }
 
-function applyOverridesToPersonnel(list: Personnel[], overrides: Record<string, any>): Personnel[] {
-  return list
-    .filter((p) => {
-      const ov = (p.email ? overrides[p.email.toLowerCase()] : null) || (p.name ? overrides[p.name.trim()] : null);
-      return !(ov && ov.deleted);
-    })
-    .map((p) => {
-      const ov = (p.email ? overrides[p.email.toLowerCase()] : null) || (p.name ? overrides[p.name.trim()] : null);
-      if (!ov) return p;
-      return {
+function applyOverridesToPersonnel(list: Personnel[], overrides: Record<string, any>, deptOrDivSlug?: string): Personnel[] {
+  const matchedOverrides = new Set<string>();
+  const result: Personnel[] = [];
+
+  list.forEach((p) => {
+    const ovKey = (p.email && overrides[p.email.toLowerCase()] ? p.email.toLowerCase() : null) ||
+                  (p.name && overrides[p.name.trim()] ? p.name.trim() : null);
+    const ov = ovKey ? overrides[ovKey] : null;
+    if (ovKey) matchedOverrides.add(ovKey);
+
+    if (ov && ov.deleted) return;
+    if (ov) {
+      result.push({
         ...p,
         name: ov.nameTh || p.name,
+        nameEn: ov.nameEn || p.nameEn,
         position: ov.position || p.position,
         phone: ov.phone || p.phone,
         email: ov.email || p.email,
         location: ov.location || p.location,
         img: ov.imageUrl || p.img,
-      };
+        calendarName: ov.nameEn || p.calendarName || ov.nameTh || p.name,
+        education: ov.education || p.education,
+        skills: ov.skills || p.skills,
+        researchInterests: ov.researchInterests || p.researchInterests,
+        isHead: ov.isHead !== undefined ? ov.isHead : (p as any).isHead,
+      });
+    } else {
+      result.push(p);
+    }
+  });
+
+  // Append new personnel added for this department/division
+  if (deptOrDivSlug) {
+    Object.entries(overrides).forEach(([key, ov]) => {
+      if (matchedOverrides.has(key) || ov.deleted) return;
+      const targetSlug = String(ov.departmentSlug || ov.department || ov.divisionSlug || '').toLowerCase();
+      const currentSlug = deptOrDivSlug.toLowerCase();
+      if (targetSlug && (targetSlug === currentSlug || targetSlug.includes(currentSlug) || currentSlug.includes(targetSlug))) {
+        matchedOverrides.add(key);
+        result.push({
+          name: ov.nameTh || ov.name || 'อาจารย์ใหม่',
+          nameEn: ov.nameEn || '',
+          position: ov.position || 'อาจารย์ประจำสาขาวิชา',
+          img: ov.imageUrl || ov.img || '/img/avatar-placeholder.svg',
+          email: ov.email || '',
+          phone: ov.phone || '',
+          location: ov.location || deptOrDivSlug,
+          calendarName: ov.nameEn || ov.nameTh || '',
+          education: ov.education || [],
+          skills: ov.skills || [],
+          researchInterests: ov.researchInterests || '',
+          isHead: Boolean(ov.isHead),
+        } as any);
+      }
     });
+  }
+
+  return result;
 }
 
 export function usePersonnelData() {
@@ -110,23 +150,27 @@ export function usePersonnelData() {
       setExecutives((prev) => applyOverridesToExecs(prev, ov));
       setDepartments((prev) =>
         prev.map((d) => {
-          const allCards = applyOverridesToPersonnel(d.allCards, ov);
+          const allCards = applyOverridesToPersonnel(d.allCards, ov, d.slug);
+          const head = allCards.find((p: any) => p.isHead || (p.position && (p.position.includes('หัวหน้า') || p.position.includes('ประธาน')))) || (allCards.length > 0 ? allCards[0] : null);
+          const members = allCards.filter((p) => p !== head);
           return {
             ...d,
             allCards,
-            head: allCards.length > 0 ? allCards[0] : null,
-            members: allCards.length > 1 ? allCards.slice(1) : [],
+            head,
+            members,
           };
         })
       );
       setStaffDivisions((prev) =>
         prev.map((div) => {
-          const allCards = applyOverridesToPersonnel(div.allCards, ov);
+          const allCards = applyOverridesToPersonnel(div.allCards, ov, div.slug);
+          const head = allCards.find((p: any) => p.isHead || (p.position && (p.position.includes('หัวหน้า') || p.position.includes('ผู้อำนวยการ')))) || (allCards.length > 0 ? allCards[0] : null);
+          const members = allCards.filter((p) => p !== head);
           return {
             ...div,
             allCards,
-            head: allCards.length > 0 ? allCards[0] : null,
-            members: allCards.length > 1 ? allCards.slice(1) : [],
+            head,
+            members,
           };
         })
       );
@@ -196,14 +240,17 @@ export function usePersonnelData() {
                 phone: String(r.phone || ''),
                 location: String(r.location || ''),
                 calendarName: String(r.calendarName || r.name || ''),
-              });
+                isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
+              } as any);
             }
 
             const ov = getLocalOverrides();
             const parsedDepts: Department[] = deptRows.map((d: any) => {
               const slug = String(d.slug || '').trim();
               const rawCards = lecByDept[slug] || [];
-              const allCards = applyOverridesToPersonnel(rawCards, ov);
+              const allCards = applyOverridesToPersonnel(rawCards, ov, slug);
+              const head = allCards.find((p: any) => p.isHead || (p.position && (p.position.includes('หัวหน้า') || p.position.includes('ประธาน')))) || (allCards.length > 0 ? allCards[0] : null);
+              const members = allCards.filter((p) => p !== head);
               return {
                 slug,
                 title: String(d.title || slug),
@@ -211,8 +258,8 @@ export function usePersonnelData() {
                 icon: String(d.icon || 'fa-solid fa-graduation-cap'),
                 searchKeywords: String(d.searchKeywords || d.title || ''),
                 badge: String(d.badge || d.title || ''),
-                head: allCards.length > 0 ? allCards[0] : null,
-                members: allCards.length > 1 ? allCards.slice(1) : [],
+                head,
+                members,
                 allCards,
               };
             });
