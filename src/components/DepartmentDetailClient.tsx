@@ -173,6 +173,7 @@ export default function DepartmentDetailClient({
     const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
     const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
     let syncedToGoogle = false;
+    let errorDetail = '';
 
     if (scriptUrl) {
       try {
@@ -181,8 +182,10 @@ export default function DepartmentDetailClient({
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: editingPerson ? 'updateProfile' : 'savePersonnel',
-            email: formData.email,
-            name: formData.nameTh,
+            originalEmail: editingPerson?.email || '',
+            originalName: editingPerson?.name || '',
+            email: editingPerson?.email || formData.email,
+            name: editingPerson?.name || formData.nameTh,
             nameTh: formData.nameTh,
             nameEn: formData.nameEn,
             departmentSlug: department.slug,
@@ -192,23 +195,33 @@ export default function DepartmentDetailClient({
         const textRes = await res.text();
         try {
           const r = JSON.parse(textRes);
-          if (r && r.success) syncedToGoogle = true;
-        } catch {}
-      } catch (err) {
-        console.error('Failed to sync to Apps Script:', err);
+          if (r && r.success) {
+            syncedToGoogle = true;
+          } else if (r && r.error) {
+            errorDetail = r.error;
+          }
+        } catch {
+          if (textRes.includes('ต้องมีสิทธิ์เข้าถึง') || textRes.includes('accounts.google.com')) {
+            errorDetail = 'ติดสิทธิ์เข้าถึงใน Google Apps Script';
+          }
+        }
+      } catch (err: any) {
+        errorDetail = err?.message || 'เชื่อมต่อเครือข่ายล้มเหลว';
       }
     }
 
     setSaving(false);
     if (syncedToGoogle) {
-      setSaveMsg({ text: '✓ บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว! ข้อมูลหน้าเว็บเปลี่ยนทันที', ok: true });
+      setSaveMsg({ text: '✓ ข้อมูลถูกบันทึกลงใน Google Sheets และหน้าเว็บเรียบร้อยแล้ว!', ok: true });
+      setTimeout(() => {
+        setShowEditModal(false);
+      }, 1500);
     } else {
-      setSaveMsg({ text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลหน้าเว็บเปลี่ยนทันที', ok: true });
+      setSaveMsg({
+        text: `⚠️ ข้อมูลอัปเดตบนหน้าเว็บแล้ว แต่ Google Sheets ยังไม่บันทึก (${errorDetail || 'ไม่พบข้อมูล'}) กรุณานำโค้ด Apps Script ชุดล่าสุดไปวางในชีต`,
+        ok: false,
+      });
     }
-
-    setTimeout(() => {
-      setShowEditModal(false);
-    }, 1500);
   };
 
   return (

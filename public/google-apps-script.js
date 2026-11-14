@@ -52,16 +52,18 @@ function doPost(e) {
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const targetEmail = String(postData.email || "").toLowerCase().trim();
-    const targetId = String(postData.id || "").toLowerCase().trim();
-    const targetName = String(postData.name || postData.nameTh || "").trim();
     const data = postData.data || postData;
 
-    const sheetsToCheck = ["Executives", "Lecturers", "Staff"];
+    // ข้อมูลสำหรับใช้ค้นหาแถวเดิมในชีต
+    const targetEmail = String(postData.originalEmail || postData.email || data.email || "").toLowerCase().trim();
+    const targetName = String(postData.originalName || postData.name || data.nameTh || data.name || "").trim();
+    const targetId = String(postData.id || data.id || "").toLowerCase().trim();
+
+    const sheetsToCheck = ["Lecturers", "Executives", "Staff"];
     let found = false;
     let updatedSheetName = "";
 
-    // 1. ค้นหาแถวที่มีอยู่แล้วเพื่อแก้ไข (Update)
+    // 1. ค้นหาแถวที่มีอยู่แล้วในชีตเพื่ออัปเดต (Update)
     for (let s = 0; s < sheetsToCheck.length; s++) {
       const sheet = ss.getSheetByName(sheetsToCheck[s]);
       if (!sheet) continue;
@@ -80,22 +82,22 @@ function doPost(e) {
         const rowName = nameCol >= 0 ? String(values[rowIdx][nameCol]).trim() : "";
 
         const isMatch = (targetEmail && rowEmail && rowEmail === targetEmail) ||
-                        (targetId && rowId && rowId === targetId) ||
-                        (targetName && rowName && (rowName === targetName || rowName.includes(targetName)));
+                        (targetName && rowName && (rowName === targetName || rowName.includes(targetName) || targetName.includes(rowName))) ||
+                        (targetId && rowId && rowId === targetId);
 
         if (isMatch) {
           headers.forEach((h, colIdx) => {
             const cell = sheet.getRange(rowIdx + 1, colIdx + 1);
-            if ((h.includes("nameen") || h.includes("calendarname") || h.includes("ภาษาอังกฤษ")) && data.nameEn !== undefined) {
-              cell.setValue(data.nameEn);
-            } else if ((h.includes("nameth") || h === "name" || h.includes("ชื่อ")) && (data.nameTh !== undefined || data.name !== undefined)) {
-              cell.setValue(data.nameTh || data.name);
+            if ((h.includes("nameen") || h.includes("calendarname") || h.includes("ภาษาอังกฤษ")) && (data.nameEn !== undefined || postData.nameEn !== undefined)) {
+              cell.setValue(data.nameEn || postData.nameEn);
+            } else if ((h.includes("nameth") || h === "name" || h.includes("ชื่อ")) && (data.nameTh !== undefined || data.name !== undefined || postData.nameTh !== undefined)) {
+              cell.setValue(data.nameTh || data.name || postData.nameTh);
             } else if ((h.includes("position") || h.includes("ตำแหน่ง")) && data.position !== undefined) {
               cell.setValue(data.position);
-            } else if ((h.includes("departmentslug") || h.includes("สาขา")) && (data.departmentSlug !== undefined || data.department !== undefined)) {
-              cell.setValue(data.departmentSlug || data.department);
-            } else if (h.includes("ishead") && data.isHead !== undefined) {
-              cell.setValue(Boolean(data.isHead));
+            } else if ((h.includes("departmentslug") || h.includes("สาขา")) && (data.departmentSlug !== undefined || postData.departmentSlug !== undefined)) {
+              cell.setValue(data.departmentSlug || postData.departmentSlug);
+            } else if (h.includes("ishead") && (data.isHead !== undefined || postData.isHead !== undefined)) {
+              cell.setValue(Boolean(data.isHead !== undefined ? data.isHead : postData.isHead));
             } else if ((h.includes("phone") || h.includes("โทร")) && data.phone !== undefined) {
               cell.setValue(data.phone);
             } else if ((h.includes("room") || h.includes("location") || h.includes("ห้อง")) && (data.location !== undefined || data.room !== undefined)) {
@@ -104,8 +106,8 @@ function doPost(e) {
               cell.setValue(data.imageUrl || data.img);
             } else if ((h.includes("pass") || h.includes("รหัสผ่าน")) && data.password !== undefined) {
               cell.setValue(data.password);
-            } else if (h.includes("email") && data.email !== undefined && data.email !== "") {
-              cell.setValue(data.email);
+            } else if (h.includes("email") && (data.email !== undefined || postData.email !== undefined)) {
+              cell.setValue(data.email || postData.email);
             } else if (h.includes("education") || h.includes("การศึกษา")) {
               const edu = Array.isArray(data.education) ? data.education.join(" | ") : data.education;
               if (edu !== undefined) cell.setValue(edu);
@@ -128,9 +130,9 @@ function doPost(e) {
       return createResponse({ success: true, message: "อัปเดตข้อมูลสำเร็จในชีต " + updatedSheetName, sheet: updatedSheetName });
     }
 
-    // 2. ถ้าไม่พบข้อมูลเดิม ให้เพิ่มแถวใหม่ (Append New Row) ลงในชีตอาจารย์หรือชีตที่เลือก
+    // 2. ถ้าไม่พบแถวเดิม ให้เพิ่มแถวใหม่ (Append New Row)
     let targetSheetName = "Lecturers";
-    const dept = String(data.department || data.departmentSlug || "").toLowerCase();
+    const dept = String(data.department || data.departmentSlug || postData.departmentSlug || "").toLowerCase();
     if (dept.includes("ผู้บริหาร") || dept.includes("exec")) {
       targetSheetName = "Executives";
     } else if (dept.includes("สนับสนุน") || dept.includes("staff")) {
@@ -145,13 +147,13 @@ function doPost(e) {
     const headers = targetSheet.getRange(1, 1, 1, targetSheet.getLastColumn()).getValues()[0];
     const newRow = headers.map(h => {
       const col = String(h).trim().toLowerCase();
-      if (col.includes("departmentslug") || col.includes("สาขา")) return data.departmentSlug || data.department || "";
-      if (col === "name" || col.includes("ชื่อ") || col.includes("nameth")) return data.nameTh || data.name || "";
-      if (col.includes("calendarname") || col.includes("nameen") || col.includes("ภาษาอังกฤษ")) return data.nameEn || data.nameTh || data.name || "";
+      if (col.includes("departmentslug") || col.includes("สาขา")) return data.departmentSlug || postData.departmentSlug || data.department || "";
+      if (col === "name" || col.includes("ชื่อ") || col.includes("nameth")) return data.nameTh || data.name || postData.nameTh || "";
+      if (col.includes("calendarname") || col.includes("nameen") || col.includes("ภาษาอังกฤษ")) return data.nameEn || postData.nameEn || data.nameTh || "";
       if (col.includes("position") || col.includes("ตำแหน่ง")) return data.position || "อาจารย์ประจำสาขาวิชา";
-      if (col.includes("ishead")) return Boolean(data.isHead);
+      if (col.includes("ishead")) return Boolean(data.isHead !== undefined ? data.isHead : postData.isHead);
       if (col.includes("img") || col.includes("image") || col.includes("รูป")) return data.imageUrl || data.img || "/img/avatar-placeholder.svg";
-      if (col.includes("email") || col.includes("อีเมล")) return data.email || "";
+      if (col.includes("email") || col.includes("อีเมล")) return data.email || postData.email || "";
       if (col.includes("pass") || col.includes("รหัสผ่าน")) return data.password || "npu1234";
       if (col.includes("phone") || col.includes("โทร")) return data.phone || "";
       if (col.includes("location") || col.includes("room") || col.includes("ห้อง")) return data.location || "";

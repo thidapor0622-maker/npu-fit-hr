@@ -391,8 +391,10 @@ export default function AdminPage() {
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: editEntry ? 'updateProfile' : 'savePersonnel',
-            email: formData.email,
-            name: formData.nameTh,
+            originalEmail: editEntry?.email || '',
+            originalName: editEntry?.nameTh || '',
+            email: editEntry?.email || formData.email,
+            name: editEntry?.nameTh || formData.nameTh,
             nameTh: formData.nameTh,
             nameEn: formData.nameEn,
             departmentSlug: resolvedSlug,
