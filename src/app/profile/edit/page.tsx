@@ -542,41 +542,47 @@ export default function TeacherEditPage() {
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)</span>
+                  <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                 </label>
                 <textarea
                   value={profile.researchInterests || ''}
                   onChange={(e) => setProfile({ ...profile, researchInterests: e.target.value })}
                   placeholder="วิศวกรรมระบบไฟฟ้ากำลัง, การจัดการพลังงานหมุนเวียน (Renewable Energy Systems)"
-                  rows={2}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none"
+                  rows={3}
+                  style={{ resize: 'vertical' }}
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[85px] leading-relaxed transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)</span>
+                  <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                 </label>
                 <textarea
                   value={educationText}
                   onChange={(e) => setEducationText(e.target.value)}
                   placeholder={'Ph.D. Electrical Engineering, Khon Kaen University, 2010\nM.Eng. Power Systems, KMUTT, 2005'}
-                  rows={3}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                  rows={4}
+                  style={{ resize: 'vertical' }}
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[105px] font-mono text-xs leading-relaxed transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)</span>
+                  <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                 </label>
                 <textarea
                   value={skillsText}
                   onChange={(e) => setSkillsText(e.target.value)}
                   placeholder={'Power System Analysis\nPLC Programming\nEnergy Management'}
-                  rows={3}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                  rows={4}
+                  style={{ resize: 'vertical' }}
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[105px] font-mono text-xs leading-relaxed transition"
                 />
               </div>
             </div>

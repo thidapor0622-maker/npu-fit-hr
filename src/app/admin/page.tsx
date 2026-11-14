@@ -1008,23 +1008,26 @@ export default function AdminPage() {
                       <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
                         <i className="fa-solid fa-graduation-cap text-emerald-600" /> ความเชี่ยวชาญ การศึกษา และทักษะ
                       </h4>
-                      <div className="space-y-3.5">
+                      <div className="space-y-4">
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)
+                          <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                            <span>ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)</span>
+                            <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                           </label>
                           <textarea
                             value={formData.researchInterests || ''}
                             onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
                             placeholder="วิศวกรรมระบบไฟฟ้ากำลัง, การจัดการพลังงานหมุนเวียน (Renewable Energy Systems)"
-                            rows={2}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none"
+                            rows={3}
+                            style={{ resize: 'vertical' }}
+                            className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[85px] leading-relaxed transition"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)
+                          <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                            <span>ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)</span>
+                            <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                           </label>
                           <textarea
                             value={
@@ -1034,14 +1037,16 @@ export default function AdminPage() {
                             }
                             onChange={(e) => setFormData({ ...formData, education: e.target.value.split('\n') })}
                             placeholder="Ph.D. Electrical Engineering, Khon Kaen University, 2010&#10;M.Eng. Power Systems, KMUTT, 2005"
-                            rows={3}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                            rows={4}
+                            style={{ resize: 'vertical' }}
+                            className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[105px] font-mono text-xs leading-relaxed transition"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)
+                          <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                            <span>ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)</span>
+                            <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
                           </label>
                           <textarea
                             value={
@@ -1051,8 +1056,9 @@ export default function AdminPage() {
                             }
                             onChange={(e) => setFormData({ ...formData, skills: e.target.value.split('\n') })}
                             placeholder="Power System Analysis&#10;PLC Programming&#10;Energy Management"
-                            rows={3}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white resize-none font-mono text-xs"
+                            rows={4}
+                            style={{ resize: 'vertical' }}
+                            className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[105px] font-mono text-xs leading-relaxed transition"
                           />
                         </div>
                       </div>
