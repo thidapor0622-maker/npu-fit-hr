@@ -59,7 +59,7 @@ function UnifiedLoginForm() {
       });
 
       if (matched) {
-        const sheetPassword = String(matched.password || '').trim();
+        const sheetPassword = String(matched.password || matched.passwd || matched.pass || '').trim();
         const defaultSuffixPass = cleanUser.includes('@') ? cleanUser.split('@')[0].slice(-6) : cleanUser;
 
         // If admin set password in Google Sheets, verify strictly
