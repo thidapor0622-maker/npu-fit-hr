@@ -236,7 +236,27 @@ export default function AdminPage() {
       }
 
       if (list.length > 0) {
-        setPersonnel(list);
+        let overrides: Record<string, any> = {};
+        if (typeof window !== 'undefined') {
+          try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+        }
+        const mergedList = list.map((item) => {
+          const ov = overrides[item.id] || (item.email ? overrides[item.email.toLowerCase()] : null) || (item.nameTh ? overrides[item.nameTh.trim()] : null);
+          if (ov) {
+            return {
+              ...item,
+              ...ov,
+              password: ov.password || item.password,
+              isHead: ov.isHead !== undefined ? ov.isHead : item.isHead,
+              education: ov.education || item.education,
+              skills: ov.skills || item.skills,
+              researchInterests: ov.researchInterests || item.researchInterests,
+              calendarUrl: ov.calendarUrl || item.calendarUrl,
+            };
+          }
+          return item;
+        });
+        setPersonnel(mergedList);
         return;
       }
     } catch {}
@@ -322,13 +342,21 @@ export default function AdminPage() {
   };
 
   const openEdit = (p: PersonnelEntry) => {
-    setEditEntry(p);
+    let ov: any = null;
+    if (typeof window !== 'undefined') {
+      try {
+        const overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}');
+        ov = overrides[p.id] || (p.email ? overrides[p.email.toLowerCase()] : null) || (p.nameTh ? overrides[p.nameTh.trim()] : null);
+      } catch {}
+    }
+    const merged = ov ? { ...p, ...ov } : p;
+    setEditEntry(merged);
     setFormData({
-      ...p,
-      password: p.password || 'npu1234',
-      isHead: Boolean(p.isHead),
-      education: p.education || [],
-      skills: p.skills || [],
+      ...merged,
+      password: merged.password || 'npu1234',
+      isHead: Boolean(merged.isHead),
+      education: merged.education || [],
+      skills: merged.skills || [],
     });
     setShowForm(true);
     setCrudMsg('');
@@ -384,10 +412,12 @@ export default function AdminPage() {
       nameTh: formData.nameTh || '',
       nameEn: formData.nameEn || '',
       email: formData.email || '',
+      password: formData.password || 'npu1234',
       phone: formData.phone || '',
       position: formData.position || '',
       department: formData.department || '',
       departmentSlug: resolvedSlug,
+      isHead: Boolean(formData.isHead),
       location: formData.location || '',
       imageUrl: formData.imageUrl || '/img/avatar-placeholder.svg',
       calendarUrl: formData.calendarUrl || '',
