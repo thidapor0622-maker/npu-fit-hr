@@ -238,15 +238,17 @@ export default function DepartmentDetailClient({
           </Link>
 
           <div className="flex items-center gap-2.5">
-            {/* Add Lecturer Button (Always visible to Admin or users) */}
-            <button
-              onClick={openAddLecturer}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm"
-              title="เพิ่มอาจารย์ประจำสาขาวิชานี้"
-            >
-              <i className="fa-solid fa-user-plus text-xs"></i>
-              <span>เพิ่มอาจารย์ในสาขานี้</span>
-            </button>
+            {/* Add Lecturer Button (ONLY visible to Admin) */}
+            {isAdmin && (
+              <button
+                onClick={openAddLecturer}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm"
+                title="เพิ่มอาจารย์ประจำสาขาวิชานี้ (เฉพาะผู้ดูแลระบบ)"
+              >
+                <i className="fa-solid fa-user-plus text-xs"></i>
+                <span>เพิ่มอาจารย์ในสาขานี้</span>
+              </button>
+            )}
 
             {/* Department switcher dropdown */}
             <div className="relative">
@@ -342,7 +344,7 @@ export default function DepartmentDetailClient({
               <h3 className="text-base font-bold text-slate-800 font-heading">
                 ไม่พบข้อมูลบุคลากรที่ค้นหา
               </h3>
-              <p className="text-xs text-slate-500 mt-1">ท่านสามารถกดปุ่ม "เพิ่มอาจารย์ในสาขานี้" ด้านบนเพื่อเพิ่มข้อมูลได้ทันที</p>
+              <p className="text-xs text-slate-500 mt-1">กรุณาตรวจสอบคำสะกดใหม่อีกครั้ง</p>
               <div className="flex justify-center gap-2 mt-4">
                 <button
                   onClick={() => setSearchTerm('')}
@@ -350,12 +352,14 @@ export default function DepartmentDetailClient({
                 >
                   ล้างการค้นหา
                 </button>
-                <button
-                  onClick={openAddLecturer}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
-                >
-                  + เพิ่มอาจารย์ใหม่
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={openAddLecturer}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                  >
+                    + เพิ่มอาจารย์ใหม่
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -379,7 +383,7 @@ export default function DepartmentDetailClient({
                     index={0}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
-                    onEdit={(p) => openEditLecturer(p)}
+                    onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                   />
                 </div>
               </section>
@@ -410,7 +414,7 @@ export default function DepartmentDetailClient({
                       index={idx + 1}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
-                      onEdit={(p) => openEditLecturer(p)}
+                      onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                     />
                   ))}
                 </div>
@@ -429,7 +433,7 @@ export default function DepartmentDetailClient({
         deptSlug={department.slug}
         onClose={() => setSelectedProfile(null)}
         onOpenCalendar={(name) => setCalendarModalName(name)}
-        onEdit={(p) => openEditLecturer(p)}
+        onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
       />
 
       {/* Calendar Modal */}
