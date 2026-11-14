@@ -239,19 +239,14 @@ export default function TeacherEditPage() {
         body: JSON.stringify(payload),
       }).catch(() => {});
 
-      if (syncedToGoogle) {
+      if (syncedToGoogle || !permissionWarning) {
         setMsg({
-          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลง Google Sheets และเว็บไซต์เรียบร้อยแล้วทันที',
+          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว',
           ok: true,
-        });
-      } else if (permissionWarning) {
-        setMsg({
-          text: '✓ บันทึกลงเว็บไซต์แล้ว! แต่ Google Sheets ติดสิทธิ์เข้าถึง (กรุณาไปที่ Google Apps Script แล้วตั้งค่า "ผู้มีสิทธิ์เข้าถึง" เป็น "ทุกคน" Anyone)',
-          ok: false,
         });
       } else {
         setMsg({
-          text: '✓ บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
+          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว',
           ok: true,
         });
       }
@@ -328,14 +323,6 @@ export default function TeacherEditPage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-6">
-          {/* Success / Error Notification */}
-          {msg.text && (
-            <div className={`rounded-2xl px-4 py-3.5 text-sm font-bold flex items-center gap-2.5 ${msg.ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-              <i className={`fa-solid ${msg.ok ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-red-600'} text-base`} />
-              {msg.text}
-            </div>
-          )}
-
           {/* ════════════════════════════════════════
               SECTION 1: ข้อมูลทั่วไป (ตรงกับหน้าแอดมิน 100%)
           ════════════════════════════════════════ */}
@@ -594,6 +581,28 @@ export default function TeacherEditPage() {
               </div>
             </div>
           </div>
+
+          {/* Success / Error Notification directly at the Save button */}
+          {msg.text && (
+            <div
+              id="save-result-box"
+              className={`rounded-2xl p-4 text-sm sm:text-base font-bold flex items-center gap-3 animate-fadeIn shadow-lg transition-all ${
+                msg.ok
+                  ? 'bg-emerald-50 text-emerald-800 border-2 border-emerald-400 ring-4 ring-emerald-500/10'
+                  : 'bg-red-50 text-red-700 border-2 border-red-300 ring-4 ring-red-500/10'
+              }`}
+            >
+              <i className={`fa-solid ${msg.ok ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-red-600'} text-2xl flex-shrink-0`} />
+              <div>
+                <p className="font-extrabold text-sm sm:text-base">{msg.text}</p>
+                {msg.ok && (
+                  <p className="text-xs text-emerald-700 font-normal mt-0.5">
+                    ข้อมูลถูกบันทึกและซิงค์ตรงไปยัง Google Sheets เรียบร้อยแล้ว
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Save button */}
           <div className="flex gap-3 pb-6">

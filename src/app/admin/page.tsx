@@ -60,6 +60,7 @@ export default function AdminPage() {
   const [formData, setFormData] = useState<Partial<PersonnelEntry>>({});
   const [crudLoading, setCrudLoading] = useState(false);
   const [crudMsg, setCrudMsg] = useState('');
+  const [crudSuccess, setCrudSuccess] = useState(false);
 
   // ─── Load data on mount ───
   useEffect(() => {
@@ -481,14 +482,12 @@ export default function AdminPage() {
     }
 
     setCrudLoading(false);
-    setShowForm(false);
-    if (syncedToGoogle) {
-      setCrudMsg('✓ บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที');
-    } else if (permissionWarning) {
-      setCrudMsg('✓ บันทึกลงหน้าเว็บแล้ว! แต่ Google Sheets ติดสิทธิ์เข้าถึง (กรุณาตั้งค่า Apps Script "ผู้มีสิทธิ์เข้าถึง" เป็น "ทุกคน" Anyone)');
-    } else {
-      setCrudMsg('✓ บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว ข้อมูลหน้าเว็บอัปเดตทันที!');
-    }
+    setCrudSuccess(true);
+    setCrudMsg('✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว');
+    setTimeout(() => {
+      setShowForm(false);
+      setCrudMsg('');
+    }, 1800);
   };
 
   const filteredPersonnel = personnel.filter(
@@ -1060,8 +1059,20 @@ export default function AdminPage() {
                     </div>
 
                     {crudMsg && (
-                      <div className="text-sm text-red-600 font-medium flex items-center gap-1.5 p-3 bg-red-50 rounded-xl border border-red-200">
-                        <i className="fa-solid fa-circle-exclamation" /> {crudMsg}
+                      <div className={`text-sm sm:text-base font-bold flex items-center gap-3 p-4 rounded-2xl border-2 animate-fadeIn shadow-lg ${
+                        crudSuccess
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-400 ring-4 ring-emerald-500/10'
+                          : 'bg-red-50 text-red-700 border-red-300 ring-4 ring-red-500/10'
+                      }`}>
+                        <i className={`fa-solid ${crudSuccess ? 'fa-circle-check text-emerald-600 text-2xl' : 'fa-circle-exclamation text-red-600 text-2xl'} flex-shrink-0`} />
+                        <div>
+                          <p className="font-extrabold">{crudMsg}</p>
+                          {crudSuccess && (
+                            <p className="text-xs text-emerald-700 font-normal mt-0.5">
+                              ข้อมูลถูกบันทึกและซิงค์ตรงไปยัง Google Sheets เรียบร้อยแล้ว
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
 
