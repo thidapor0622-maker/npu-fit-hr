@@ -150,9 +150,11 @@ export default function TeacherEditPage() {
         window.dispatchEvent(new Event('hr_personnel_updated'));
       }
 
-      // 1. Try sending to Google Apps Script Web App if configured
-      const scriptUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
+      // 1. Send directly to Google Apps Script Web App to sync into Google Sheets
+      const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+      const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || DEFAULT_APPS_SCRIPT_URL;
       let syncedToGoogle = false;
+      let permissionWarning = false;
 
       if (scriptUrl) {
         try {
@@ -162,6 +164,9 @@ export default function TeacherEditPage() {
             body: JSON.stringify({
               action: 'updateProfile',
               email,
+              name: profile.nameTh,
+              nameTh: profile.nameTh,
+              nameEn: profile.nameEn,
               data: {
                 nameTh: profile.nameTh,
                 nameEn: profile.nameEn,
@@ -175,9 +180,16 @@ export default function TeacherEditPage() {
               },
             }),
           });
-          const result = await res.json().catch(() => null);
-          if (result && result.success) {
-            syncedToGoogle = true;
+          const textRes = await res.text();
+          try {
+            const result = JSON.parse(textRes);
+            if (result && result.success) {
+              syncedToGoogle = true;
+            }
+          } catch {
+            if (textRes.includes('ต้องมีสิทธิ์เข้าถึง') || textRes.includes('accounts.google.com')) {
+              permissionWarning = true;
+            }
           }
         } catch (scriptErr) {
           console.log('Sync to Google Apps Script:', scriptErr);
@@ -192,12 +204,17 @@ export default function TeacherEditPage() {
 
       if (syncedToGoogle) {
         setMsg({
-          text: '✓ บันทึกข้อมูลและส่งไปอัปเดตลง Google Sheets เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
+          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลง Google Sheets และเว็บไซต์เรียบร้อยแล้วทันที',
           ok: true,
+        });
+      } else if (permissionWarning) {
+        setMsg({
+          text: '✓ บันทึกลงเว็บไซต์แล้ว! แต่ Google Sheets ติดสิทธิ์เข้าถึง (กรุณาไปที่ Google Apps Script แล้วตั้งค่า "ผู้มีสิทธิ์เข้าถึง" เป็น "ทุกคน" Anyone)',
+          ok: false,
         });
       } else {
         setMsg({
-          text: '✓ บันทึกข้อมูลโปรไฟล์จากหน้าเว็บไซต์เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
+          text: '✓ บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที',
           ok: true,
         });
       }

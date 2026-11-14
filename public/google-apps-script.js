@@ -2,21 +2,25 @@
  * Google Apps Script for HR Site Database
  * คณะเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยนครพนม
  *
- * วิธีใช้งาน:
- * 1. เปิด Google Sheets ที่สร้างไว้
+ * วิธีตั้งค่าเพื่อให้หน้าเว็บส่งข้อมูลบันทึกลง Google Sheets ได้อัตโนมัติ:
+ * 1. เปิด Google Sheets
  * 2. ไปที่เมนู ส่วนขยาย (Extensions) > Apps Script
- * 3. ลบโค้ดเดิมทั้งหมดออก แล้ววางโค้ดชุดนี้ลงไป
- * 4. กด บันทึก (Ctrl+S)
- * 5. กด ทำให้ใช้งานได้ (Deploy) > การทำให้ใช้งานได้ใหม่ (New deployment)
+ * 3. ลบโค้ดเดิมทั้งหมดออก แล้ววางโค้ดชุดนี้ลงไปทั้งหมด
+ * 4. กด บันทึก (Ctrl + S)
+ * 5. กดปุ่มสีน้ำเงินมุมขวาบน "ทำให้ใช้งานได้" (Deploy) > "การทำให้ใช้งานได้ใหม่" (New deployment)
+ *    (หรือ "จัดการการทำให้ใช้งานได้" > แก้ไข)
  * 6. เลือกประเภท: เว็บแอป (Web app)
- * 7. ตั้งค่า "ผู้มีสิทธิ์เข้าถึง" (Who has access) เป็น "ทุกคน" (Anyone)
- * 8. คัดลอก Web App URL ไปใส่ในระบบหลังบ้าน HR Site
+ * 7. สำคัญมาก!! 
+ *    - ดำเนินการในฐานะ (Execute as): "ฉัน" (Me / อีเมลของคุณ)
+ *    - ผู้มีสิทธิ์เข้าถึง (Who has access): "ทุกคน" (Anyone)  <--- ต้องเลือก "ทุกคน"
+ * 8. กด "ทำให้ใช้งานได้" (Deploy) และให้สิทธิ์เข้าถึง (Authorize access)
+ * 9. คัดลอก URL เว็บแอปที่ได้มาใช้งาน
  */
 
 function doGet(e) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetName = e.parameter.sheet;
+    const sheetName = e && e.parameter ? e.parameter.sheet : null;
 
     if (sheetName) {
       const sheet = ss.getSheetByName(sheetName);
@@ -26,7 +30,6 @@ function doGet(e) {
       return createResponse(readSheetData(sheet));
     }
 
-    // Return all sheets if no specific sheet requested
     const result = {
       Executives: readSheetData(ss.getSheetByName("Executives")),
       Departments: readSheetData(ss.getSheetByName("Departments")),
@@ -44,29 +47,110 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    const postData = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetName = postData.sheet;
-
-    if (!sheetName) {
-      return createResponse({ error: "Sheet name is required" }, 400);
+    let postData = {};
+    if (e && e.postData && e.postData.contents) {
+      postData = JSON.parse(e.postData.contents);
+    } else if (e && e.parameter) {
+      postData = e.parameter;
     }
 
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const action = postData.action || "updateProfile";
+
+    // ─── ACTION 1: updateProfile (ค้นหาอัตโนมัติทุกชีตด้วย Email / ID / ชื่อ) ───
+    if (action === "updateProfile") {
+      const targetEmail = String(postData.email || "").toLowerCase().trim();
+      const targetId = String(postData.id || "").toLowerCase().trim();
+      const targetName = String(postData.name || postData.nameTh || "").trim();
+      const data = postData.data || postData;
+
+      const sheetsToCheck = ["Executives", "Lecturers", "Staff"];
+      let found = false;
+      let updatedSheetName = "";
+
+      for (let s = 0; s < sheetsToCheck.length; s++) {
+        const sheet = ss.getSheetByName(sheetsToCheck[s]);
+        if (!sheet) continue;
+
+        const values = sheet.getDataRange().getValues();
+        if (values.length <= 1) continue;
+
+        const headers = values[0].map(h => String(h).trim().toLowerCase());
+        const emailCol = headers.findIndex(h => h.includes("email") || h.includes("อีเมล"));
+        const idCol = headers.findIndex(h => h === "id" || h.includes("รหัส"));
+        const nameCol = headers.findIndex(h => h.includes("name") || h.includes("ชื่อ"));
+
+        for (let rowIdx = 1; rowIdx < values.length; rowIdx++) {
+          const rowEmail = emailCol >= 0 ? String(values[rowIdx][emailCol]).toLowerCase().trim() : "";
+          const rowId = idCol >= 0 ? String(values[rowIdx][idCol]).toLowerCase().trim() : "";
+          const rowName = nameCol >= 0 ? String(values[rowIdx][nameCol]).trim() : "";
+
+          const isMatch = (targetEmail && rowEmail === targetEmail) ||
+                          (targetId && rowId === targetId) ||
+                          (targetName && rowName && (rowName === targetName || rowName.includes(targetName)));
+
+          if (isMatch) {
+            // แมตช์พบแถวบุคลากรแล้ว ทำการอัปเดตข้อมูลทุกคอลัมน์ที่ตรงกัน
+            headers.forEach((h, colIdx) => {
+              const cell = sheet.getRange(rowIdx + 1, colIdx + 1);
+              
+              if ((h.includes("nameen") || h.includes("calendarname") || h.includes("ภาษาอังกฤษ")) && data.nameEn !== undefined) {
+                cell.setValue(data.nameEn);
+              } else if ((h.includes("nameth") || h === "name" || h.includes("ชื่อ") || h.includes("ชื่อ-สกุล")) && (data.nameTh !== undefined || data.name !== undefined)) {
+                cell.setValue(data.nameTh || data.name);
+              } else if ((h.includes("position") || h.includes("ตำแหน่ง")) && data.position !== undefined) {
+                cell.setValue(data.position);
+              } else if ((h.includes("phone") || h.includes("โทร")) && data.phone !== undefined) {
+                cell.setValue(data.phone);
+              } else if ((h.includes("room") || h.includes("location") || h.includes("ห้อง")) && (data.location !== undefined || data.room !== undefined)) {
+                cell.setValue(data.location || data.room);
+              } else if ((h.includes("img") || h.includes("image") || h.includes("รูป")) && (data.imageUrl !== undefined || data.img !== undefined)) {
+                cell.setValue(data.imageUrl || data.img);
+              } else if ((h.includes("pass") || h.includes("รหัสผ่าน")) && data.password !== undefined) {
+                cell.setValue(data.password);
+              } else if (h.includes("education") || h.includes("การศึกษา")) {
+                const edu = Array.isArray(data.education) ? data.education.join(" | ") : data.education;
+                if (edu !== undefined) cell.setValue(edu);
+              } else if (h.includes("skill") || h.includes("ความเชี่ยวชาญ")) {
+                const sk = Array.isArray(data.skills) ? data.skills.join(" | ") : data.skills;
+                if (sk !== undefined) cell.setValue(sk);
+              } else if (h.includes("interest") || h.includes("งานวิจัย") || h.includes("research")) {
+                if (data.researchInterests !== undefined) cell.setValue(data.researchInterests);
+              } else if (h.includes("email") && data.email !== undefined && data.email !== "") {
+                cell.setValue(data.email);
+              }
+            });
+
+            found = true;
+            updatedSheetName = sheetsToCheck[s];
+            break;
+          }
+        }
+        if (found) break;
+      }
+
+      if (found) {
+        return createResponse({ success: true, message: "อัปเดตข้อมูลสำเร็จในชีต " + updatedSheetName, sheet: updatedSheetName });
+      } else {
+        return createResponse({ error: "ไม่พบข้อมูลบุคลากรที่ต้องการอัปเดต (Email: " + targetEmail + ")" }, 404);
+      }
+    }
+
+    // ─── ACTION 2: append หรือ update แบบระบุ sheet ───
+    const sheetName = postData.sheet || "Lecturers";
     const sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
       return createResponse({ error: "Sheet not found: " + sheetName }, 404);
     }
 
-    // Append new row
-    if (postData.action === "append" && postData.row) {
+    if (action === "append" && postData.row) {
       const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
       const rowData = headers.map(h => postData.row[h] !== undefined ? postData.row[h] : "");
       sheet.appendRow(rowData);
-      return createResponse({ success: true, message: "Row added successfully" });
+      return createResponse({ success: true, message: "เพิ่มแถวใหม่เรียบร้อยแล้ว" });
     }
 
-    // Update row by id or name
-    if (postData.action === "update" && postData.key && postData.keyValue && postData.row) {
+    if (action === "update" && postData.key && postData.keyValue && postData.row) {
       const data = sheet.getDataRange().getValues();
       const headers = data[0];
       const keyColIdx = headers.indexOf(postData.key);
@@ -81,13 +165,13 @@ function doPost(e) {
               sheet.getRange(i + 1, hIdx + 1).setValue(postData.row[h]);
             }
           });
-          return createResponse({ success: true, message: "Row updated successfully" });
+          return createResponse({ success: true, message: "อัปเดตแถวเรียบร้อยแล้ว" });
         }
       }
       return createResponse({ error: "Record not found with " + postData.key + "=" + postData.keyValue }, 404);
     }
 
-    return createResponse({ error: "Invalid action" }, 400);
+    return createResponse({ error: "Invalid action or parameters" }, 400);
   } catch (err) {
     return createResponse({ error: err.toString() }, 500);
   }

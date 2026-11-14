@@ -79,8 +79,9 @@ export default function AdminPage() {
     const savedSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
     const defaultSheetId = savedSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
     setSheetId(defaultSheetId);
-    const savedApiUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
-    if (savedApiUrl) setSheetApiUrl(savedApiUrl);
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const savedApiUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
+    setSheetApiUrl(savedApiUrl);
     setEnabled(true);
     setLastSync(new Date().toLocaleDateString('th-TH'));
 
@@ -357,22 +358,48 @@ export default function AdminPage() {
       window.dispatchEvent(new Event('hr_personnel_updated'));
     }
 
-    const scriptUrl = typeof window !== 'undefined' ? localStorage.getItem('hr_sheet_api_url') : '';
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const scriptUrl = sheetApiUrl || (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
+    let syncedToGoogle = false;
+    let permissionWarning = false;
+
     if (scriptUrl) {
-      fetch(scriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'updateProfile',
-          email: formData.email,
-          data: newEntry,
-        }),
-      }).catch(() => {});
+      try {
+        const res = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'updateProfile',
+            email: formData.email,
+            name: formData.nameTh,
+            nameTh: formData.nameTh,
+            nameEn: formData.nameEn,
+            data: newEntry,
+          }),
+        });
+        const textRes = await res.text();
+        try {
+          const result = JSON.parse(textRes);
+          if (result && result.success) syncedToGoogle = true;
+        } catch {
+          if (textRes.includes('ต้องมีสิทธิ์เข้าถึง') || textRes.includes('accounts.google.com')) {
+            permissionWarning = true;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to sync to Google Apps Script:', err);
+      }
     }
 
     setCrudLoading(false);
     setShowForm(false);
-    setCrudMsg('✓ บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว ข้อมูลหน้าเว็บอัปเดตทันที!');
+    if (syncedToGoogle) {
+      setCrudMsg('✓ บันทึกข้อมูลและส่งเข้า Google Sheets เรียบร้อยแล้ว! ข้อมูลบนหน้าเว็บอัปเดตทันที');
+    } else if (permissionWarning) {
+      setCrudMsg('✓ บันทึกลงหน้าเว็บแล้ว! แต่ Google Sheets ติดสิทธิ์เข้าถึง (กรุณาตั้งค่า Apps Script "ผู้มีสิทธิ์เข้าถึง" เป็น "ทุกคน" Anyone)');
+    } else {
+      setCrudMsg('✓ บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว ข้อมูลหน้าเว็บอัปเดตทันที!');
+    }
   };
 
   const filteredPersonnel = personnel.filter(
