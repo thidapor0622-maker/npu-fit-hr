@@ -10,6 +10,8 @@ export interface Personnel {
   researchInterests?: string;
   education?: string[];
   skills?: string[];
+  isHead?: boolean;
+  departmentSlug?: string;
 }
 
 export interface Department {

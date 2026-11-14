@@ -26,6 +26,8 @@ interface PersonnelEntry {
   email?: string;
   position?: string;
   department?: string;
+  departmentSlug?: string;
+  isHead?: boolean;
   phone?: string;
   location?: string;
   researchInterests?: string;
