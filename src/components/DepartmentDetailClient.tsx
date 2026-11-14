@@ -170,7 +170,7 @@ export default function DepartmentDetailClient({
     }
 
     // 2. Sync to Google Apps Script Web App
-    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
     const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
     let syncedToGoogle = false;
     let errorDetail = '';

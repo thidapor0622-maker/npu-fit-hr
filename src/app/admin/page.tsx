@@ -82,7 +82,7 @@ export default function AdminPage() {
     const savedSheetId = typeof window !== 'undefined' ? localStorage.getItem('hr_custom_sheet_id') : null;
     const defaultSheetId = savedSheetId || process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID || '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU';
     setSheetId(defaultSheetId);
-    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
     const savedApiUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
     setSheetApiUrl(savedApiUrl);
     setEnabled(true);
@@ -443,7 +443,7 @@ export default function AdminPage() {
       window.dispatchEvent(new Event('hr_personnel_updated'));
     }
 
-    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
     const scriptUrl = sheetApiUrl || (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
     let syncedToGoogle = false;
     let permissionWarning = false;

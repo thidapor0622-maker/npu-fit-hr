@@ -24,7 +24,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
     NEXT_PUBLIC_GOOGLE_SHEET_ID: '1s9Cru468Qo81ImgNAd4v8xULsWt51wAuQ4AY3nMg7WU',
-    NEXT_PUBLIC_SHEET_API_URL: 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec',
+    NEXT_PUBLIC_SHEET_API_URL: 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec',
   },
 };
 

@@ -179,7 +179,7 @@ export default function TeacherEditPage() {
       }
 
       // 1. Send directly to Google Apps Script Web App to sync into Google Sheets
-      const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuFLxRE9fBf0nRGb-WaAI6AAHoMabEzdivL9KDAu0sBnP6sDTRtgirwoiYoqdlyfo5/exec';
+      const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
       const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || DEFAULT_APPS_SCRIPT_URL;
       let syncedToGoogle = false;
       let permissionWarning = false;
