@@ -111,16 +111,28 @@ export default function PersonnelCard({
       return (
         <div
           id="current-user-card"
-          className="p-1 rounded-[28px] bg-gradient-to-b from-emerald-500 via-emerald-400 to-emerald-200 shadow-[0_12px_35px_rgba(16,185,129,0.38)] w-full max-w-[284px] flex flex-col transition-all relative transform hover:scale-[1.01]"
+          style={{
+            padding: '4px',
+            borderRadius: '28px',
+            background: 'linear-gradient(180deg, #059669 0%, #10b981 40%, #34d399 75%, #a7f3d0 100%)',
+            boxShadow: '0 12px 35px rgba(16, 185, 129, 0.45)',
+          }}
+          className="w-full max-w-[284px] flex flex-col transition-all relative transform hover:scale-[1.01]"
         >
-          <div className="absolute -top-3.5 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white text-[11px] font-extrabold shadow-lg shadow-emerald-600/40 border border-white">
+          <div
+            style={{
+              background: 'linear-gradient(90deg, #059669 0%, #10b981 50%, #14b8a6 100%)',
+            }}
+            className="absolute -top-3.5 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[11px] font-extrabold shadow-lg shadow-emerald-600/40 border-2 border-white"
+          >
             <span className="w-2 h-2 rounded-full bg-white animate-ping" />
             <i className="fa-solid fa-circle-user text-xs" />
             <span>โปรไฟล์ของคุณ</span>
           </div>
           <div
             onClick={isClickable && onClick ? onClick : undefined}
-            className={`personnel-card group bg-white rounded-[24px] shadow-sm flex flex-col h-full w-full overflow-hidden ${
+            style={{ borderRadius: '24px' }}
+            className={`personnel-card group bg-white shadow-sm flex flex-col h-full w-full overflow-hidden ${
               isClickable ? 'cursor-pointer' : ''
             }`}
           >
@@ -228,10 +240,21 @@ export default function PersonnelCard({
     return (
       <div
         id="current-user-card"
-        className="p-1 rounded-[28px] bg-gradient-to-b from-emerald-500 via-emerald-400 to-emerald-200 shadow-[0_12px_35px_rgba(16,185,129,0.38)] w-full max-w-[314px] flex flex-col transition-all relative transform hover:scale-[1.01]"
+        style={{
+          padding: '4px',
+          borderRadius: '28px',
+          background: 'linear-gradient(180deg, #059669 0%, #10b981 40%, #34d399 75%, #a7f3d0 100%)',
+          boxShadow: '0 12px 35px rgba(16, 185, 129, 0.45)',
+        }}
+        className="w-full max-w-[314px] flex flex-col transition-all relative transform hover:scale-[1.01]"
       >
         {/* Floating User Badge */}
-        <div className="absolute -top-3.5 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white text-[11px] font-extrabold shadow-lg shadow-emerald-600/40 border border-white">
+        <div
+          style={{
+            background: 'linear-gradient(90deg, #059669 0%, #10b981 50%, #14b8a6 100%)',
+          }}
+          className="absolute -top-3.5 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[11px] font-extrabold shadow-lg shadow-emerald-600/40 border-2 border-white"
+        >
           <span className="w-2 h-2 rounded-full bg-white animate-ping" />
           <i className="fa-solid fa-circle-user text-xs" />
           <span>โปรไฟล์ของคุณ</span>
@@ -239,7 +262,8 @@ export default function PersonnelCard({
 
         <div
           onClick={isClickable && onClick ? onClick : undefined}
-          className={`bg-white rounded-[24px] p-5 flex flex-col justify-between h-full w-full relative overflow-hidden ${
+          style={{ borderRadius: '24px' }}
+          className={`bg-white p-5 flex flex-col justify-between h-full w-full relative overflow-hidden ${
             isClickable ? 'cursor-pointer' : ''
           }`}
         >

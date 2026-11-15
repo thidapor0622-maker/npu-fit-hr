@@ -230,16 +230,30 @@ export function applyOverridesToPersonnel(list: Personnel[], overrides: Record<s
     if (ov && ov.deleted) return;
 
     if (ov) {
+      let finalName = ov.nameTh || ov.name || p.name;
+      let finalEmail = ov.email || p.email;
+      let finalPos = ov.position || p.position;
+      let finalImg = ov.imageUrl || ov.img || p.img;
+
+      if (finalName.includes('วีรธรรม') || (p.email && p.email.toLowerCase() === 'weeratham@npu.ac.th')) {
+        finalName = finalName.replace(/v+$/i, '').trim();
+        finalEmail = 'weeratham@npu.ac.th';
+        finalImg = '/img/รอง1.png';
+        if (finalPos.includes('คณะเทคโนโลยีอุตสาหกรรม') && !finalPos.includes('ฝ่าย')) {
+          finalPos = 'รองคณบดีฝ่ายบริหาร';
+        }
+      }
+
       result.push({
         ...p,
-        name: ov.nameTh || ov.name || p.name,
+        name: finalName,
         nameEn: ov.nameEn || p.nameEn,
-        position: ov.position || p.position,
+        position: finalPos,
         phone: ov.phone || p.phone,
-        email: ov.email || p.email,
+        email: finalEmail,
         location: ov.location || p.location,
-        img: ov.imageUrl || ov.img || p.img,
-        calendarName: ov.nameEn || p.calendarName || ov.nameTh || p.name,
+        img: finalImg,
+        calendarName: ov.nameEn || p.calendarName || finalName,
         calendarUrl: ov.calendarUrl || (p as any).calendarUrl || '',
         education: ov.education || p.education || [],
         skills: ov.skills || p.skills || [],

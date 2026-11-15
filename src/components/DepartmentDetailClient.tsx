@@ -618,7 +618,7 @@ export default function DepartmentDetailClient({
         deptSlug={department.slug}
         onClose={() => setSelectedProfile(null)}
         onOpenCalendar={(name) => setCalendarModalName(name)}
-        onEdit={(isAdmin || (userEmail && selectedProfile?.email && userEmail === selectedProfile.email.toLowerCase().trim())) ? (p) => openEditLecturer(p) : undefined}
+        onEdit={(isAdmin || isCurrentUserPerson(selectedProfile)) ? (p) => openEditLecturer(p) : undefined}
         onDelete={isAdmin ? (p) => handleDeleteLecturer(p) : undefined}
       />
 

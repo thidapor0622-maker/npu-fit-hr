@@ -477,22 +477,23 @@ export default function AdminPage() {
           if (ov && ov.deleted) return;
           const merged = ov ? { ...item, ...ov, role: item.role } : item;
 
-          // Extra safety for executives
-          if (item.id === 'boonlert' || (item.role === 'executive' && item.email === 'boonlert@npu.ac.th')) {
-            if (merged.nameTh.includes('วีรธรรม') || !merged.nameTh.includes('บุญเลิศ')) {
-              merged.nameTh = 'ดร.บุญเลิศ โพธิ์ขำ';
-              merged.nameEn = 'Dr. Boonlert Phokham';
-            }
-            if (merged.position.includes('รอง') || !merged.position.includes('คณบดี')) {
-              merged.position = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
-            }
+          // Extra safety for executives & key leaders
+          if (item.id === 'boonlert' || merged.email === 'boonlert@npu.ac.th' || merged.nameTh.includes('บุญเลิศ')) {
+            merged.id = 'boonlert';
+            merged.nameTh = 'ดร.บุญเลิศ โพธิ์ขำ';
+            merged.nameEn = 'Dr. Boonlert Phokham';
+            merged.position = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
             merged.email = 'boonlert@npu.ac.th';
+            merged.role = 'executive';
+            merged.department = 'คณะผู้บริหาร';
             merged.imageUrl = '/img/คณบดี.png';
           }
-          if (item.id === 'weeratham' || (item.role === 'executive' && merged.nameTh.includes('วีรธรรม'))) {
+          if (item.id === 'weeratham' || merged.nameTh.includes('วีรธรรม')) {
             merged.nameTh = merged.nameTh.replace(/v+$/i, '').trim();
-            if (!merged.position || merged.position.includes('คณะเทคโนโลยีอุตสาหกรรม')) merged.position = 'รองคณบดีฝ่ายบริหาร';
             merged.email = 'weeratham@npu.ac.th';
+            if (item.role === 'executive' && (!merged.position || merged.position.includes('คณะเทคโนโลยีอุตสาหกรรม'))) {
+              merged.position = 'รองคณบดีฝ่ายบริหาร';
+            }
             merged.imageUrl = '/img/รอง1.png';
           }
 
