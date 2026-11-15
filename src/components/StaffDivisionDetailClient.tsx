@@ -21,9 +21,51 @@ export default function StaffDivisionDetailClient({
   const [calendarModalName, setCalendarModalName] = useState<string | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<Personnel | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userStr = localStorage.getItem('hr_user_session');
+      if (userStr) {
+        try {
+          setCurrentUser(JSON.parse(userStr));
+        } catch {}
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('current-user-card');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser]);
 
   const division =
     liveDivisions.find((d) => d.slug === initialDivision.slug) || initialDivision;
+
+  const isCurrentUserPerson = (p: Personnel | null): boolean => {
+    if (!p || !currentUser) return false;
+    const curEmail = (currentUser.email || '').toLowerCase().trim();
+    const curUser = (currentUser.user || '').toLowerCase().trim();
+    const curName = (currentUser.name || '').trim();
+
+    const pEmail = (p.email || '').toLowerCase().trim();
+    const pName = (p.name || '').trim();
+    const pCalName = (p.calendarName || '').trim();
+
+    if (curEmail && pEmail && curEmail === pEmail) return true;
+    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+    if (curName && isSamePersonnel(p, { name: curName, email: curEmail })) return true;
+    if (curUser && (pName.toLowerCase().includes(curUser) || pCalName.toLowerCase().includes(curUser))) return true;
+
+    return false;
+  };
 
   const term = searchTerm.trim().toLowerCase();
 
@@ -178,6 +220,7 @@ export default function StaffDivisionDetailClient({
                     deptTitle={division.title}
                     deptSlug={division.slug}
                     index={0}
+                    isCurrentUser={isCurrentUserPerson(division.head)}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
                   />
@@ -207,6 +250,7 @@ export default function StaffDivisionDetailClient({
                       deptTitle={division.title}
                       deptSlug={division.slug}
                       index={idx + 1}
+                      isCurrentUser={isCurrentUserPerson(person)}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
                     />

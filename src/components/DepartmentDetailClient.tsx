@@ -25,6 +25,7 @@ export default function DepartmentDetailClient({
   // Auth State
   const [isAdmin, setIsAdmin] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(null);
 
   // Edit / Add Modal State
   const [showEditModal, setShowEditModal] = useState(false);
@@ -54,11 +55,25 @@ export default function DepartmentDetailClient({
       if (userStr) {
         try {
           const u = JSON.parse(userStr);
+          setCurrentUser(u);
           setUserEmail((u.email || '').toLowerCase().trim());
         } catch {}
       }
     }
   }, []);
+
+  // Smooth scroll to logged in user's card so they immediately see their card highlighted
+  useEffect(() => {
+    if (currentUser) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('current-user-card');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, department]);
 
   // If live data has this department, use it; otherwise fallback to initial
   const department =
@@ -97,6 +112,28 @@ export default function DepartmentDetailClient({
 
   const isMembersVisible = uniqueMatchedMembers.length > 0;
   const hasResults = isHeadVisible || isMembersVisible;
+
+  // Check if this personnel matches the logged-in user to show the gradient green border
+  const isCurrentUserPerson = (p: Personnel | null): boolean => {
+    if (!p || !currentUser) return false;
+    const curEmail = (currentUser.email || '').toLowerCase().trim();
+    const curUser = (currentUser.user || '').toLowerCase().trim();
+    const curName = (currentUser.name || '').trim();
+
+    const pEmail = (p.email || '').toLowerCase().trim();
+    const pName = (p.name || '').trim();
+    const pCalName = (p.calendarName || '').trim();
+
+    // 1. Email matching
+    if (curEmail && pEmail && curEmail === pEmail) return true;
+    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+
+    // 2. Identity matching by Thai Name / English Name
+    if (curName && isSamePersonnel(p, { name: curName, email: curEmail })) return true;
+    if (curUser && (pName.toLowerCase().includes(curUser) || pCalName.toLowerCase().includes(curUser))) return true;
+
+    return false;
+  };
 
   // ─── Modal Openers ───
   const openAddLecturer = () => {
@@ -491,6 +528,7 @@ export default function DepartmentDetailClient({
                     deptTitleEn={department.titleEn}
                     deptSlug={department.slug}
                     index={0}
+                    isCurrentUser={isCurrentUserPerson(department.head)}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
                   />
@@ -521,6 +559,7 @@ export default function DepartmentDetailClient({
                       deptTitleEn={department.titleEn}
                       deptSlug={department.slug}
                       index={idx + 1}
+                      isCurrentUser={isCurrentUserPerson(person)}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
                     />

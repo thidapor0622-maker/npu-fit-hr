@@ -17,6 +17,7 @@ interface PersonnelCardProps {
   deptSlug?: string;
   index?: number;
   isSelected?: boolean;
+  isCurrentUser?: boolean;
   onClick?: () => void;
   onOpenCalendar?: (name: string) => void;
   onOpenProfile?: (person: Personnel) => void;
@@ -32,6 +33,7 @@ export default function PersonnelCard({
   deptSlug,
   index = 0,
   isSelected = false,
+  isCurrentUser = false,
   onClick,
   onOpenCalendar,
   onOpenProfile,
@@ -64,15 +66,32 @@ export default function PersonnelCard({
   if (variant === 'executive') {
     return (
       <div
+        id={isCurrentUser ? 'current-user-card' : undefined}
         onClick={isClickable && onClick ? onClick : undefined}
-        className={`personnel-card group bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all border flex flex-col h-full w-full max-w-[280px] overflow-hidden ${
+        style={isCurrentUser ? {
+          border: '3.5px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #059669 0%, #10b981 35%, #34d399 70%, #a7f3d0 100%)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+          boxShadow: '0 16px 36px -6px rgba(16, 185, 129, 0.35), 0 4px 12px -2px rgba(16, 185, 129, 0.15)',
+        } : undefined}
+        className={`personnel-card group bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all border flex flex-col h-full w-full max-w-[280px] relative overflow-hidden ${
           isClickable ? 'cursor-pointer' : ''
         } ${
-          isSelected
-            ? 'selected-card border-sky-500 ring-2 ring-sky-400'
-            : 'border-slate-200 hover:border-sky-400'
+          isCurrentUser
+            ? 'ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-emerald-50 scale-[1.02]'
+            : isSelected
+              ? 'selected-card border-sky-500 ring-2 ring-sky-400'
+              : 'border-slate-200 hover:border-sky-400'
         }`}
       >
+        {isCurrentUser && (
+          <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 text-white text-[11px] font-bold shadow-md shadow-emerald-600/30">
+            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+            <i className="fa-solid fa-circle-user text-xs" />
+            <span>โปรไฟล์ของคุณ</span>
+          </div>
+        )}
         <div className="p-5 flex flex-col items-center text-center flex-grow">
           <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden border border-slate-200 mb-3 bg-slate-50 shadow-inner mx-auto relative">
             <img
@@ -120,11 +139,32 @@ export default function PersonnelCard({
   // Academic Variant (Exact Match to User's Uploaded Sample Image)
   return (
     <div
+      id={isCurrentUser ? 'current-user-card' : undefined}
       onClick={isClickable && onClick ? onClick : undefined}
-      className={`group bg-white rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all border border-slate-200/90 hover:border-sky-400 flex flex-col justify-between h-full w-full max-w-[310px] relative overflow-hidden ${
+      style={isCurrentUser ? {
+        border: '3.5px solid transparent',
+        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #059669 0%, #10b981 35%, #34d399 70%, #a7f3d0 100%)',
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+        boxShadow: '0 16px 36px -6px rgba(16, 185, 129, 0.35), 0 4px 12px -2px rgba(16, 185, 129, 0.15)',
+      } : undefined}
+      className={`group bg-white rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full w-full max-w-[310px] relative overflow-hidden ${
         isClickable ? 'cursor-pointer' : ''
+      } ${
+        isCurrentUser
+          ? 'ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-emerald-50 scale-[1.02]'
+          : 'border border-slate-200/90 hover:border-sky-400'
       }`}
     >
+      {/* Current Logged-in User Badge */}
+      {isCurrentUser && (
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 text-white text-[11px] font-bold shadow-md shadow-emerald-600/30">
+          <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+          <i className="fa-solid fa-circle-user text-xs" />
+          <span>โปรไฟล์ของคุณ</span>
+        </div>
+      )}
+
       <div className="flex flex-col flex-grow">
         {/* 1. Portrait Image (Aspect ratio 4:5 with rounded-2xl as in picture) */}
         <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden border border-slate-200/80 mb-4 bg-slate-50 shadow-inner relative flex-shrink-0">

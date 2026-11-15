@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { usePersonnelData } from '@/hooks/usePersonnelData';
 import { ExecutiveDetail } from '@/data/executives';
 import PersonnelCard from '@/components/PersonnelCard';
@@ -12,6 +12,18 @@ export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExecutiveId, setSelectedExecutiveId] = useState<string | null>(null);
   const [calendarModalName, setCalendarModalName] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userStr = localStorage.getItem('hr_user_session');
+      if (userStr) {
+        try {
+          setCurrentUser(JSON.parse(userStr));
+        } catch {}
+      }
+    }
+  }, []);
 
   const detailConsoleRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +38,23 @@ export default function HomePage() {
   const viceDeans = useMemo(() => {
     return allExecList.filter((p) => p && p.id !== 'boonlert' && !p.name.includes('บุญเลิศ') && (!p.position || p.position.includes('รอง') || !p.position.includes('คณบดีคณะ')));
   }, [allExecList]);
+
+  const isCurrentUserExec = (p: ExecutiveDetail | undefined): boolean => {
+    if (!p || !currentUser) return false;
+    const curEmail = (currentUser.email || '').toLowerCase().trim();
+    const curUser = (currentUser.user || '').toLowerCase().trim();
+    const curName = (currentUser.name || '').trim();
+
+    const pEmail = (p.email || '').toLowerCase().trim();
+    const pName = (p.name || '').trim();
+
+    if (curEmail && pEmail && curEmail === pEmail) return true;
+    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+    if (curName && pName && (curName.includes(pName) || pName.includes(curName))) return true;
+    if (curUser && p.id && p.id.toLowerCase() === curUser) return true;
+
+    return false;
+  };
 
   const term = searchTerm.trim().toLowerCase();
 
@@ -140,6 +169,7 @@ export default function HomePage() {
                     }}
                     variant="executive"
                     isSelected={selectedExecutiveId === dean.id}
+                    isCurrentUser={isCurrentUserExec(dean)}
                     isClickable
                     onClick={() => handleCardClick(dean.id)}
                     onOpenProfile={() => handleCardClick(dean.id)}
@@ -173,6 +203,7 @@ export default function HomePage() {
                       }}
                       variant="executive"
                       isSelected={selectedExecutiveId === vd.id}
+                      isCurrentUser={isCurrentUserExec(vd)}
                       isClickable
                       onClick={() => handleCardClick(vd.id)}
                       onOpenProfile={() => handleCardClick(vd.id)}
