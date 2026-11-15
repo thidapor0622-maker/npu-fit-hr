@@ -13,6 +13,31 @@ interface StaffDivisionDetailClientProps {
   division: StaffDivision;
 }
 
+function getLoggedInUserInfo(): { email: string; user: string; name: string } | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('hr_user_session');
+    if (raw) {
+      if (raw.startsWith('{')) {
+        const parsed = JSON.parse(raw);
+        return {
+          email: String(parsed.email || '').toLowerCase().trim(),
+          user: String(parsed.user || parsed.username || parsed.id || '').toLowerCase().trim(),
+          name: String(parsed.name || parsed.nameTh || '').trim(),
+        };
+      } else {
+        const str = raw.toLowerCase().trim();
+        return {
+          email: str.includes('@') ? str : `${str}@npu.ac.th`,
+          user: str.includes('@') ? str.split('@')[0] : str,
+          name: str,
+        };
+      }
+    }
+  } catch {}
+  return null;
+}
+
 export default function StaffDivisionDetailClient({
   division: initialDivision,
 }: StaffDivisionDetailClientProps) {
@@ -21,16 +46,14 @@ export default function StaffDivisionDetailClient({
   const [calendarModalName, setCalendarModalName] = useState<string | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<Personnel | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(() => {
+    return getLoggedInUserInfo();
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('hr_user_session');
-      if (userStr) {
-        try {
-          setCurrentUser(JSON.parse(userStr));
-        } catch {}
-      }
+      const u = getLoggedInUserInfo();
+      if (u) setCurrentUser(u);
     }
   }, []);
 
@@ -50,19 +73,29 @@ export default function StaffDivisionDetailClient({
     liveDivisions.find((d) => d.slug === initialDivision.slug) || initialDivision;
 
   const isCurrentUserPerson = (p: Personnel | null): boolean => {
-    if (!p || !currentUser) return false;
-    const curEmail = (currentUser.email || '').toLowerCase().trim();
-    const curUser = (currentUser.user || '').toLowerCase().trim();
-    const curName = (currentUser.name || '').trim();
+    if (!p) return false;
+    const info = currentUser || getLoggedInUserInfo();
+    if (!info) return false;
 
-    const pEmail = (p.email || '').toLowerCase().trim();
-    const pName = (p.name || '').trim();
-    const pCalName = (p.calendarName || '').trim();
+    const curEmail = (info.email || '').toLowerCase().trim();
+    const curUser = (info.user || '').toLowerCase().trim();
+    const curName = (info.name || '').toLowerCase().trim();
+
+    const pEmail = String(p.email || '').toLowerCase().trim();
+    const pName = String(p.name || '').toLowerCase().trim();
+    const pCalName = String(p.calendarName || '').toLowerCase().trim();
 
     if (curEmail && pEmail && curEmail === pEmail) return true;
+    if (curEmail && pEmail && curEmail.split('@')[0] === pEmail.split('@')[0]) return true;
     if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
-    if (curName && isSamePersonnel(p, { name: curName, email: curEmail })) return true;
-    if (curUser && (pName.toLowerCase().includes(curUser) || pCalName.toLowerCase().includes(curUser))) return true;
+    if (curUser && (pName.includes(curUser) || pCalName.includes(curUser))) return true;
+
+    if (curName) {
+      const cleanCur = curName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+      const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+      if (cleanCur && cleanP && (cleanP.includes(cleanCur) || cleanCur.includes(cleanP))) return true;
+      if (isSamePersonnel(p, { name: info.name, email: info.email })) return true;
+    }
 
     return false;
   };

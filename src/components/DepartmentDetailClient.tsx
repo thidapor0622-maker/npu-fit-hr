@@ -13,6 +13,31 @@ interface DepartmentDetailClientProps {
   department: Department;
 }
 
+function getLoggedInUserInfo(): { email: string; user: string; name: string } | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('hr_user_session');
+    if (raw) {
+      if (raw.startsWith('{')) {
+        const parsed = JSON.parse(raw);
+        return {
+          email: String(parsed.email || '').toLowerCase().trim(),
+          user: String(parsed.user || parsed.username || parsed.id || '').toLowerCase().trim(),
+          name: String(parsed.name || parsed.nameTh || '').trim(),
+        };
+      } else {
+        const str = raw.toLowerCase().trim();
+        return {
+          email: str.includes('@') ? str : `${str}@npu.ac.th`,
+          user: str.includes('@') ? str.split('@')[0] : str,
+          name: str,
+        };
+      }
+    }
+  } catch {}
+  return null;
+}
+
 export default function DepartmentDetailClient({
   department: initialDepartment,
 }: DepartmentDetailClientProps) {
@@ -25,7 +50,9 @@ export default function DepartmentDetailClient({
   // Auth State
   const [isAdmin, setIsAdmin] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ email?: string; user?: string; name?: string } | null>(() => {
+    return getLoggedInUserInfo();
+  });
 
   // Edit / Add Modal State
   const [showEditModal, setShowEditModal] = useState(false);
@@ -115,22 +142,33 @@ export default function DepartmentDetailClient({
 
   // Check if this personnel matches the logged-in user to show the gradient green border
   const isCurrentUserPerson = (p: Personnel | null): boolean => {
-    if (!p || !currentUser) return false;
-    const curEmail = (currentUser.email || '').toLowerCase().trim();
-    const curUser = (currentUser.user || '').toLowerCase().trim();
-    const curName = (currentUser.name || '').trim();
+    if (!p) return false;
+    const info = currentUser || getLoggedInUserInfo();
+    if (!info) return false;
 
-    const pEmail = (p.email || '').toLowerCase().trim();
-    const pName = (p.name || '').trim();
-    const pCalName = (p.calendarName || '').trim();
+    const curEmail = (info.email || '').toLowerCase().trim();
+    const curUser = (info.user || '').toLowerCase().trim();
+    const curName = (info.name || '').toLowerCase().trim();
 
-    // 1. Email matching
+    const pEmail = String(p.email || '').toLowerCase().trim();
+    const pName = String(p.name || '').toLowerCase().trim();
+    const pCalName = String(p.calendarName || '').toLowerCase().trim();
+
+    // 1. Direct email matching
     if (curEmail && pEmail && curEmail === pEmail) return true;
-    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+    if (curEmail && pEmail && curEmail.split('@')[0] === pEmail.split('@')[0]) return true;
 
-    // 2. Identity matching by Thai Name / English Name
-    if (curName && isSamePersonnel(p, { name: curName, email: curEmail })) return true;
-    if (curUser && (pName.toLowerCase().includes(curUser) || pCalName.toLowerCase().includes(curUser))) return true;
+    // 2. Username matching (e.g. 'kowit' matching 'kowit@npu.ac.th')
+    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+    if (curUser && (pName.includes(curUser) || pCalName.includes(curUser))) return true;
+
+    // 3. Name matching
+    if (curName) {
+      const cleanCur = curName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+      const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+      if (cleanCur && cleanP && (cleanP.includes(cleanCur) || cleanCur.includes(cleanP))) return true;
+      if (isSamePersonnel(p, { name: info.name, email: info.email })) return true;
+    }
 
     return false;
   };
