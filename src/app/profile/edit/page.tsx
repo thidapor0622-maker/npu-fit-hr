@@ -24,6 +24,85 @@ interface ProfileData {
   calendarUrl?: string;
 }
 
+function getPersonnelTargetUrl(departmentSlug?: string, department?: string): string {
+  const raw = String(departmentSlug || department || '').toLowerCase().trim();
+
+  // 1. Staff divisions
+  if (raw.startsWith('dept-') || raw.includes('สนับสนุน') || raw.includes('staff')) {
+    if (raw.includes('admin') || raw.includes('คณบดี') || raw.includes('บริหารทั่วไป')) return getAssetPath('/staff/dept-admin/');
+    if (raw.includes('academic') || raw.includes('วิชาการ')) return getAssetPath('/staff/dept-academic/');
+    if (raw.includes('finance') || raw.includes('แผนงาน') || raw.includes('งบประมาณ')) return getAssetPath('/staff/dept-finance/');
+    if (raw.includes('facility') || raw.includes('อาคาร')) return getAssetPath('/staff/dept-facility/');
+    return getAssetPath(`/staff/${raw}/`);
+  }
+
+  // 2. Executives
+  if (raw.includes('exec') || raw.includes('ผู้บริหาร')) {
+    return getAssetPath('/');
+  }
+
+  // 3. Lecturer departments
+  const DEPT_MAP: Record<string, string> = {
+    'electrical-power': 'electrical-power',
+    'สาขาวิชาไฟฟ้ากำลัง': 'electrical-power',
+    'ไฟฟ้ากำลัง': 'electrical-power',
+    'electronics-robotics': 'electronics-robotics',
+    'สาขาวิชาอิเล็กทรอนิกส์': 'electronics-robotics',
+    'อิเล็กทรอนิกส์': 'electronics-robotics',
+    'automotive-ev': 'automotive-ev',
+    'สาขาวิชายานยนต์และเครื่องกล': 'automotive-ev',
+    'ยานยนต์': 'automotive-ev',
+    'industrial-technology': 'industrial-technology',
+    'สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต': 'industrial-technology',
+    'เทคนิคการผลิต': 'industrial-technology',
+    'civil-engineering': 'civil-engineering',
+    'สาขาวิชาเทคโนโลยีโยธา': 'civil-engineering',
+    'โยธา': 'civil-engineering',
+    'welding-metallurgy': 'welding-metallurgy',
+    'สาขาวิชาเทคโนโลยีการเชื่อมและโลหะ': 'welding-metallurgy',
+    'เชื่อมและโลหะ': 'welding-metallurgy',
+    'computer-technology': 'computer-technology',
+    'สาขาวิชาเทคโนโลยีสารสนเทศ/คอมพิวเตอร์': 'computer-technology',
+    'คอมพิวเตอร์': 'computer-technology',
+    'architecture-design': 'architecture-design',
+    'สาขาวิชาสถาปัตยกรรมและการออกแบบ': 'architecture-design',
+    'สถาปัตยกรรม': 'architecture-design',
+    'business-computer': 'business-computer',
+    'สาขาวิชาคอมพิวเตอร์ธุรกิจ': 'business-computer',
+    'คอมพิวเตอร์ธุรกิจ': 'business-computer',
+    'accounting': 'accounting',
+    'สาขาวิชาการบัญชี': 'accounting',
+    'การบัญชี': 'accounting',
+    'marketing': 'marketing',
+    'สาขาวิชาการตลาด': 'marketing',
+    'การตลาด': 'marketing',
+    'management': 'management',
+    'สาขาวิชาการจัดการ': 'management',
+    'การจัดการ': 'management',
+    'hotel-tourism': 'hotel-tourism',
+    'สาขาวิชาการท่องเที่ยวและการโรงแรม': 'hotel-tourism',
+    'ท่องเที่ยว': 'hotel-tourism',
+    'logistics-supply-chain': 'logistics-supply-chain',
+    'สาขาวิชาการจัดการโลจิสติกส์': 'logistics-supply-chain',
+    'โลจิสติกส์': 'logistics-supply-chain',
+    'industrial-crafts': 'industrial-crafts',
+    'สาขาวิชาหัตถกรรมอุตสาหกรรม': 'industrial-crafts',
+    'หัตถกรรม': 'industrial-crafts',
+  };
+
+  for (const [key, slug] of Object.entries(DEPT_MAP)) {
+    if (raw.includes(key)) {
+      return getAssetPath(`/lecturers/${slug}/`);
+    }
+  }
+
+  if (raw && !raw.includes('สาขาวิชา')) {
+    return getAssetPath(`/lecturers/${raw}/`);
+  }
+
+  return getAssetPath('/lecturers/electrical-power/');
+}
+
 export default function TeacherEditPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -248,17 +327,16 @@ export default function TeacherEditPage() {
         body: JSON.stringify(payload),
       }).catch(() => {});
 
-      if (syncedToGoogle || !permissionWarning) {
-        setMsg({
-          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว',
-          ok: true,
-        });
-      } else {
-        setMsg({
-          text: '✓ บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว',
-          ok: true,
-        });
-      }
+      const targetUrl = getPersonnelTargetUrl(payload.departmentSlug, payload.department);
+      setMsg({
+        text: '✓ บันทึกข้อมูลสำเร็จ! ระบบกำลังนำท่านกลับไปยังหน้าสาขา/ฝ่ายงานของคุณทันที...',
+        ok: true,
+      });
+
+      // Smoothly redirect to their department/division page after brief visual confirmation
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 1200);
     } catch (e: any) {
       setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
     } finally {
@@ -611,9 +689,17 @@ export default function TeacherEditPage() {
               <div>
                 <p className="font-extrabold text-sm sm:text-base">{msg.text}</p>
                 {msg.ok && (
-                  <p className="text-xs text-emerald-700 font-normal mt-0.5">
-                    ข้อมูลถูกบันทึกและซิงค์ตรงไปยัง Google Sheets เรียบร้อยแล้ว
-                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <p className="text-xs text-emerald-700 font-normal">
+                      ข้อมูลถูกบันทึกและซิงค์ตรงไปยัง Google Sheets เรียบร้อยแล้ว กำลังนำท่านกลับไปที่หน้าสาขา...
+                    </p>
+                    <a
+                      href={getPersonnelTargetUrl(profile.departmentSlug, profile.department)}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-2 py-0.5 rounded-lg transition"
+                    >
+                      คลิกเพื่อไปทันที &rarr;
+                    </a>
+                  </div>
                 )}
               </div>
             </div>
