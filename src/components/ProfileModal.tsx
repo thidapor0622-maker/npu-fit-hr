@@ -132,21 +132,6 @@ export default function ProfileModal({
                     <span>{person.phone}</span>
                   </a>
                 )}
-
-                {onEdit && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      onEdit(person);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow-sm"
-                    title="แก้ไขข้อมูลอาจารย์ท่านนี้"
-                  >
-                    <i className="fa-solid fa-pen-to-square text-xs"></i>
-                    <span>แก้ไขโปรไฟล์</span>
-                  </button>
-                )}
               </div>
             </div>
           </div>
