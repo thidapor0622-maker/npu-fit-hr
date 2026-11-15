@@ -57,6 +57,7 @@ export default function AdminPage() {
   // ─── Personnel CRUD ───
   const [personnel, setPersonnel] = useState<PersonnelEntry[]>([]);
   const [searchQ, setSearchQ] = useState('');
+  const [filterRole, setFilterRole] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editEntry, setEditEntry] = useState<PersonnelEntry | null>(null);
   const [formData, setFormData] = useState<Partial<PersonnelEntry>>({});
@@ -514,13 +515,27 @@ export default function AdminPage() {
     }, 1800);
   };
 
-  const filteredPersonnel = personnel.filter(
-    (p) =>
+  const filteredPersonnel = personnel.filter((p) => {
+    const matchSearch =
       !searchQ ||
       (p.nameTh || '').includes(searchQ) ||
       (p.nameEn || '').toLowerCase().includes(searchQ.toLowerCase()) ||
-      (p.email || '').toLowerCase().includes(searchQ.toLowerCase())
-  );
+      (p.email || '').toLowerCase().includes(searchQ.toLowerCase()) ||
+      (p.department || '').toLowerCase().includes(searchQ.toLowerCase()) ||
+      (p.position || '').toLowerCase().includes(searchQ.toLowerCase());
+
+    if (!matchSearch) return false;
+
+    if (filterRole === 'all') return true;
+    if (filterRole === 'executive') return p.role === 'executive' || p.department === 'คณะผู้บริหาร';
+    if (filterRole === 'teacher') return p.role === 'teacher';
+    if (filterRole === 'staff') return p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน');
+
+    return (
+      p.departmentSlug === filterRole ||
+      (p.department || '').toLowerCase().includes(filterRole.toLowerCase())
+    );
+  });
 
   // ─── TABS ───
   const tabs: { id: AdminTab; label: string; icon: string }[] = [
@@ -752,17 +767,47 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* Search */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
-              <div className="relative">
+            {/* Search and Category Filter */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+              <div className="relative flex-1 w-full">
                 <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
                 <input
                   type="text"
                   value={searchQ}
                   onChange={(e) => setSearchQ(e.target.value)}
-                  placeholder="ค้นหาชื่อ, อีเมล..."
+                  placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา..."
                   className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
+              </div>
+
+              {/* Category / Role Filter Selector on the right */}
+              <div className="relative w-full sm:w-auto min-w-[240px]">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i className="fa-solid fa-filter text-xs" />
+                </div>
+                <select
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="w-full pl-9 pr-9 py-2.5 text-sm font-bold border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400 transition cursor-pointer appearance-none shadow-sm"
+                >
+                  <option value="all">👥 ทั้งหมด ({personnel.length})</option>
+                  <option value="executive">👔 คณะผู้บริหาร ({personnel.filter(p => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length})</option>
+                  <option value="teacher">🎓 อาจารย์ประจำสาขาวิชา ({personnel.filter(p => p.role === 'teacher').length})</option>
+                  <option value="staff">💼 บุคลากร / ฝ่ายสนับสนุน ({personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length})</option>
+                  <optgroup label="── แยกตามสาขาวิชา ──">
+                    {DEPARTMENTS_DATA.map((d) => {
+                      const count = personnel.filter(p => p.role === 'teacher' && (p.departmentSlug === d.slug || (p.department || '').includes(d.title))).length;
+                      return (
+                        <option key={d.slug} value={d.slug}>
+                          {d.title} ({count})
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </select>
+                <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                  <i className="fa-solid fa-chevron-down" />
+                </div>
               </div>
             </div>
 
