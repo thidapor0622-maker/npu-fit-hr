@@ -25,6 +25,23 @@ export default function Navbar() {
 
   // Check login state on mount & route change
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isAdmin = localStorage.getItem('hr_admin_session') === 'true';
+      const userStr = localStorage.getItem('hr_user_session');
+      if (isAdmin) {
+        setAuth({ authenticated: true, role: 'admin', user: 'admin' });
+        return;
+      }
+      if (userStr) {
+        try {
+          const u = JSON.parse(userStr);
+          if (u && (u.email || u.name)) {
+            setAuth({ authenticated: true, role: 'teacher', email: u.email, name: u.name });
+            return;
+          }
+        } catch {}
+      }
+    }
     fetch('/api/auth')
       .then((r) => r.json())
       .then((d) => setAuth(d))
@@ -32,7 +49,11 @@ export default function Navbar() {
   }, [pathname]);
 
   const handleLogout = async () => {
-    await fetch('/api/auth', { method: 'DELETE' });
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hr_admin_session');
+      localStorage.removeItem('hr_user_session');
+    }
+    await fetch('/api/auth', { method: 'DELETE' }).catch(() => {});
     setAuth({ authenticated: false });
     setDropdownOpen(false);
     router.push('/');

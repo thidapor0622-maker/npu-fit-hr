@@ -22,6 +22,7 @@ type AdminTab = 'dashboard' | 'personnel' | 'settings';
 
 interface PersonnelEntry {
   id: string;
+  role?: 'executive' | 'teacher' | 'staff';
   nameEn?: string;
   nameTh?: string;
   email?: string;
@@ -110,6 +111,7 @@ export default function AdminPage() {
     Object.values(EXECUTIVES_DATA).forEach((ex) => {
       list.push({
         id: ex.id,
+        role: 'executive',
         nameTh: ex.name,
         position: ex.position,
         email: ex.email,
@@ -123,12 +125,14 @@ export default function AdminPage() {
       d.allCards?.forEach((p, idx) => {
         list.push({
           id: `${d.slug}-${idx}`,
+          role: 'teacher',
           nameTh: p.name,
           nameEn: p.nameEn,
           position: p.position,
           email: p.email,
           phone: p.phone,
           department: d.title,
+          departmentSlug: d.slug,
           imageUrl: p.img,
           location: p.location,
         });
@@ -138,11 +142,13 @@ export default function AdminPage() {
       div.allCards?.forEach((p, idx) => {
         list.push({
           id: `${div.slug}-${idx}`,
+          role: 'staff',
           nameTh: p.name,
           position: p.position,
           email: p.email,
           phone: p.phone,
           department: div.title,
+          departmentSlug: div.slug,
           imageUrl: p.img,
           location: p.location,
         });
@@ -167,6 +173,7 @@ export default function AdminPage() {
           if (!r.name && !r.id) return;
           list.push({
             id: String(r.id || r.name),
+            role: 'executive',
             nameTh: String(r.name || ''),
             nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || ''),
@@ -192,6 +199,7 @@ export default function AdminPage() {
           if (!r.name && !r.email) return;
           list.push({
             id: String(r.email || `lec-${idx}`),
+            role: 'teacher',
             nameTh: String(r.name || ''),
             nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || 'อาจารย์ประจำ'),
@@ -217,6 +225,7 @@ export default function AdminPage() {
           if (!r.name && !r.email) return;
           list.push({
             id: String(r.email || `staff-${idx}`),
+            role: 'staff',
             nameTh: String(r.name || ''),
             nameEn: String(r.calendarName || r.nameEn || ''),
             position: String(r.position || 'บุคลากร'),
@@ -247,8 +256,8 @@ export default function AdminPage() {
           const ov = overrides[item.id] || (item.email ? overrides[item.email.toLowerCase()] : null) || (item.nameTh ? overrides[item.nameTh.trim()] : null);
           if (ov && ov.deleted) return;
           const merged = ov ? { ...item, ...ov } : item;
-          // Deduplicate by identity
-          const isDup = filteredList.some((existing) => isSamePersonnel(existing, merged));
+          // Deduplicate by identity ONLY within the same role!
+          const isDup = filteredList.some((existing) => existing.role === merged.role && isSamePersonnel(existing, merged));
           if (!isDup) {
             filteredList.push(merged);
           }
@@ -580,10 +589,10 @@ export default function AdminPage() {
             {/* Stats grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'ผู้บริหาร', value: String(personnel.filter((p) => p.department === 'คณะผู้บริหาร').length || 5), icon: 'fa-user-tie', color: 'sky' },
+                { label: 'ผู้บริหาร', value: String(personnel.filter((p) => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length || 5), icon: 'fa-user-tie', color: 'sky' },
                 { label: 'สาขาวิชา', value: '15', icon: 'fa-building-columns', color: 'indigo' },
-                { label: 'อาจารย์ประจำ', value: `${personnel.filter((p) => p.department !== 'คณะผู้บริหาร' && !p.department?.includes('dept-') && !p.department?.includes('สายสนับสนุน')).length || 89} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
-                { label: 'บุคลากรสายสนับสนุน', value: `${personnel.filter((p) => p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length || 38} ท่าน`, icon: 'fa-users', color: 'emerald' },
+                { label: 'อาจารย์ประจำ', value: `${personnel.filter((p) => p.role === 'teacher').length || 90} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
+                { label: 'บุคลากรสายสนับสนุน', value: `${personnel.filter((p) => p.role === 'staff').length || 34} ท่าน`, icon: 'fa-users', color: 'emerald' },
               ].map((s) => (
                 <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
                   <div className={`w-10 h-10 rounded-xl bg-${s.color}-100 text-${s.color}-600 flex items-center justify-center mb-3`}>
