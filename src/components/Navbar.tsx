@@ -157,42 +157,43 @@ export default function Navbar() {
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-fadeIn">
-                  <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
-                    <p className="text-[11px] text-slate-500 font-medium">เข้าสู่ระบบในฐานะ</p>
-                    <p className="text-xs font-bold text-slate-900 truncate">
-                      {auth.role === 'admin' ? 'ผู้ดูแลระบบ (Admin)' : auth.email}
-                    </p>
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setDropdownOpen(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-fadeIn p-1.5 space-y-1">
+                    {auth.role === 'admin' ? (
+                      <Link
+                        href="/admin"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl font-bold transition"
+                      >
+                        <i className="fa-solid fa-gauge text-emerald-600 text-sm" />
+                        <span>หน้าจัดการ Admin</span>
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/profile/edit"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-3.5 py-2.5 text-xs sm:text-sm text-slate-700 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl font-bold transition"
+                      >
+                        <i className="fa-solid fa-user-pen text-indigo-600 text-sm" />
+                        <span>แก้ไขโปรไฟล์ข้อมูลของฉัน</span>
+                      </Link>
+                    )}
+
+                    <div className="h-px bg-slate-100 my-1" />
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded-xl font-bold transition text-left"
+                    >
+                      <i className="fa-solid fa-right-from-bracket text-red-500 text-sm" />
+                      <span>ออกจากระบบ</span>
+                    </button>
                   </div>
-
-                  {auth.role === 'admin' ? (
-                    <Link
-                      href="/admin"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-3 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 font-semibold transition"
-                    >
-                      <i className="fa-solid fa-gauge text-emerald-600" />
-                      หน้าจัดการ Admin
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/profile/edit"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-3 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 font-semibold transition"
-                    >
-                      <i className="fa-solid fa-user-pen text-indigo-600" />
-                      แก้ไขโปรไฟล์ของฉัน
-                    </Link>
-                  )}
-
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-xs sm:text-sm text-red-600 hover:bg-red-50 font-semibold transition border-t border-slate-100 text-left"
-                  >
-                    <i className="fa-solid fa-right-from-bracket" />
-                    ออกจากระบบ
-                  </button>
-                </div>
+                </>
               )}
             </div>
           ) : (
