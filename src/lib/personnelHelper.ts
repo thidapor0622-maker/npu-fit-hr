@@ -225,8 +225,24 @@ export function isSamePersonnel(
 ): boolean {
   if (!a || !b) return false;
 
-  // 1. By ID if both exist (ignore generic auto-generated IDs like lec-0, staff-0)
-  if (a.id && b.id && a.id.trim() === b.id.trim() && !a.id.startsWith('lec-') && !a.id.startsWith('staff-')) {
+  const strippedA = stripThaiTitle(a.nameTh || a.name);
+  const strippedB = stripThaiTitle(b.nameTh || b.name);
+
+  // If both have non-empty names and their stripped names are DIFFERENT,
+  // they CANNOT be the same person! (Prevents shared placeholder emails/generic IDs from merging)
+  if (strippedA && strippedB && strippedA !== strippedB) {
+    return false;
+  }
+
+  // 1. By ID if both exist (ignore generic auto-generated IDs or emails)
+  if (
+    a.id &&
+    b.id &&
+    a.id.trim() === b.id.trim() &&
+    !a.id.startsWith('lec-') &&
+    !a.id.startsWith('staff-') &&
+    !a.id.includes('@')
+  ) {
     return true;
   }
 
@@ -236,18 +252,12 @@ export function isSamePersonnel(
   if (nameA && nameB && nameA === nameB) return true;
 
   // 3. By title-stripped name
-  const strippedA = stripThaiTitle(a.nameTh || a.name);
-  const strippedB = stripThaiTitle(b.nameTh || b.name);
   if (strippedA && strippedB && strippedA.length >= 4 && strippedA === strippedB) return true;
 
-  // 4. By Email (case-insensitive) - ONLY if names do NOT conflict!
+  // 4. By Email (case-insensitive) - ONLY if names match or one is missing
   const emailA = (a.email || '').toLowerCase().trim();
   const emailB = (b.email || '').toLowerCase().trim();
   if (emailA && emailB && emailA === emailB) {
-    // If both have names and their stripped names are different, they are DIFFERENT people with shared/placeholder email
-    if (strippedA && strippedB && strippedA !== strippedB) {
-      return false;
-    }
     return true;
   }
 

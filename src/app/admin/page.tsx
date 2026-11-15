@@ -133,7 +133,7 @@ export default function AdminPage() {
     DEPARTMENTS_DATA.forEach((d) => {
       d.allCards?.forEach((p, idx) => {
         list.push({
-          id: p.email || `${d.slug}-${idx}`,
+          id: `${d.slug}-${idx}`,
           role: 'teacher',
           nameTh: p.name,
           nameEn: p.calendarName || p.nameEn || p.name,
@@ -156,7 +156,7 @@ export default function AdminPage() {
     STAFF_DIVISIONS_DATA.forEach((div) => {
       div.allCards?.forEach((p, idx) => {
         list.push({
-          id: p.email || `${div.slug}-${idx}`,
+          id: `${div.slug}-${idx}`,
           role: 'staff',
           nameTh: p.name,
           nameEn: p.calendarName || p.nameEn || p.name,
@@ -219,7 +219,7 @@ export default function AdminPage() {
       DEPARTMENTS_DATA.forEach((d) => {
         d.allCards?.forEach((p, idx) => {
           list.push({
-            id: p.email || `${d.slug}-${idx}`,
+            id: `${d.slug}-${idx}`,
             role: 'teacher',
             nameTh: p.name,
             nameEn: p.calendarName || p.nameEn || p.name,
@@ -245,7 +245,7 @@ export default function AdminPage() {
       STAFF_DIVISIONS_DATA.forEach((div) => {
         div.allCards?.forEach((p, idx) => {
           list.push({
-            id: p.email || `${div.slug}-${idx}`,
+            id: `${div.slug}-${idx}`,
             role: 'staff',
             nameTh: p.name,
             nameEn: p.calendarName || p.nameEn || p.name,
@@ -317,10 +317,7 @@ export default function AdminPage() {
           const email = String(r.email || r['อีเมล'] || '').trim();
           if (!name && !email) return;
 
-          const matchIdx = list.findIndex(p => p.role === 'teacher' && (
-            (email && p.email?.toLowerCase() === email.toLowerCase()) ||
-            (name && isSamePersonnel(p, { name, email }))
-          ));
+          const matchIdx = list.findIndex(p => p.role === 'teacher' && isSamePersonnel(p, { name, email }));
 
           const deptSlug = String(r.departmentSlug || r.location || '');
           const updated: Partial<PersonnelEntry> = {
@@ -364,10 +361,7 @@ export default function AdminPage() {
           const email = String(r.email || r['อีเมล'] || '').trim();
           if (!name && !email) return;
 
-          const matchIdx = list.findIndex(p => p.role === 'staff' && (
-            (email && p.email?.toLowerCase() === email.toLowerCase()) ||
-            (name && isSamePersonnel(p, { name, email }))
-          ));
+          const matchIdx = list.findIndex(p => p.role === 'staff' && isSamePersonnel(p, { name, email }));
 
           const divSlug = String(r.divisionSlug || r.location || '');
           const updated: Partial<PersonnelEntry> = {
