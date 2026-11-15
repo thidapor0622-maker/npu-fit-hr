@@ -362,10 +362,21 @@ export function usePersonnelData() {
           }
 
           // Parse Departments & Lecturers
-          if (deptRows && deptRows.length > 0 && lecRows) {
+          if (lecRows && lecRows.length > 0) {
+            const resolveDeptSlug = (rawSlug?: string, rawLocation?: string): string => {
+              const str = String(rawSlug || rawLocation || '').toLowerCase().trim();
+              if (!str) return '';
+              for (const dept of DEPARTMENTS_DATA) {
+                if (dept.slug.toLowerCase() === str) return dept.slug;
+                if (dept.title.toLowerCase().includes(str) || str.includes(dept.title.toLowerCase())) return dept.slug;
+                if (dept.titleEn && (dept.titleEn.toLowerCase().includes(str) || str.includes(dept.titleEn.toLowerCase()))) return dept.slug;
+              }
+              return str;
+            };
+
             const lecByDept: Record<string, Personnel[]> = {};
             for (const r of lecRows) {
-              const dSlug = String(r.departmentSlug || '').trim();
+              const dSlug = resolveDeptSlug(r.departmentSlug, r.location);
               if (!dSlug) continue;
               if (!lecByDept[dSlug]) lecByDept[dSlug] = [];
               const edu = r.education ? String(r.education).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
@@ -373,9 +384,9 @@ export function usePersonnelData() {
               const research = String(r.researchInterests || r.interest || '');
               const calUrl = String(r.calendarUrl || '');
               lecByDept[dSlug].push({
-                name: String(r.name || ''),
-                nameEn: String(r.calendarName || r.nameEn || ''),
-                position: String(r.position || ''),
+                name: String(r.name || r.nameTh || ''),
+                nameEn: String(r.calendarName || r.nameEn || r.name || ''),
+                position: String(r.position || 'อาจารย์ประจำสาขาวิชา'),
                 img: String(r.img || '/img/avatar-placeholder.svg'),
                 email: String(r.email || ''),
                 phone: String(r.phone || ''),
@@ -391,21 +402,22 @@ export function usePersonnelData() {
             }
 
             const ov = getLocalOverrides();
-            const parsedDepts: Department[] = deptRows.map((d: any) => {
-              const slug = String(d.slug || '').trim();
-              const rawCards = lecByDept[slug] || [];
+            const baseDepts = DEPARTMENTS_DATA.map((baseD) => {
+              const fromSheet = deptRows ? deptRows.find((sd: any) => String(sd.slug || '').trim().toLowerCase() === baseD.slug.toLowerCase()) : null;
+              return fromSheet ? { ...baseD, ...fromSheet, slug: baseD.slug } : baseD;
+            });
+
+            const parsedDepts: Department[] = baseDepts.map((d: any) => {
+              const slug = d.slug;
+              const sheetCards = lecByDept[slug] || [];
+              const rawCards = sheetCards.length > 0 ? sheetCards : (d.allCards || []);
               const allCards = applyOverridesToPersonnel(rawCards, ov, slug);
               const { head, members } = splitHeadAndMembers(allCards);
               return {
-                slug,
-                title: String(d.title || slug),
-                titleEn: String(d.titleEn || ''),
-                icon: String(d.icon || 'fa-solid fa-graduation-cap'),
-                searchKeywords: String(d.searchKeywords || d.title || ''),
-                badge: String(d.badge || d.title || ''),
-                head,
-                members,
-                allCards,
+                ...d,
+                head: head || d.head,
+                members: members.length > 0 ? members : d.members,
+                allCards: allCards.length > 0 ? allCards : d.allCards,
               };
             });
 

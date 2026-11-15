@@ -196,14 +196,16 @@ export default function AdminPage() {
 
       if (lecRows && lecRows.length > 0) {
         lecRows.forEach((r, idx) => {
-          if (!r.name && !r.email) return;
+          const name = String(r.name || r.nameTh || r['ชื่อ-นามสกุล'] || r['ชื่อ'] || r.calendarName || r.nameEn || '').trim();
+          const email = String(r.email || r['อีเมล'] || '').trim();
+          if (!name && !email) return;
           list.push({
-            id: String(r.email || `lec-${idx}`),
+            id: String(r.id || email || `lec-${idx}`),
             role: 'teacher',
-            nameTh: String(r.name || ''),
-            nameEn: String(r.calendarName || r.nameEn || ''),
+            nameTh: name || 'อาจารย์ประจำสาขาวิชา',
+            nameEn: String(r.calendarName || r.nameEn || name),
             position: String(r.position || 'อาจารย์ประจำ'),
-            email: String(r.email || ''),
+            email: email,
             password: String(r.passwd || r.password || 'npu1234'),
             phone: String(r.phone || ''),
             department: String(r.departmentSlug || r.location || 'อาจารย์ประจำสาขาวิชา'),
@@ -255,7 +257,7 @@ export default function AdminPage() {
         list.forEach((item) => {
           const ov = overrides[item.id] || (item.email ? overrides[item.email.toLowerCase()] : null) || (item.nameTh ? overrides[item.nameTh.trim()] : null);
           if (ov && ov.deleted) return;
-          const merged = ov ? { ...item, ...ov } : item;
+          const merged = ov ? { ...item, ...ov, role: item.role } : item;
           // Deduplicate by identity ONLY within the same role!
           const isDup = filteredList.some((existing) => existing.role === merged.role && isSamePersonnel(existing, merged));
           if (!isDup) {
@@ -591,7 +593,7 @@ export default function AdminPage() {
               {[
                 { label: 'ผู้บริหาร', value: String(personnel.filter((p) => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length || 5), icon: 'fa-user-tie', color: 'sky' },
                 { label: 'สาขาวิชา', value: '15', icon: 'fa-building-columns', color: 'indigo' },
-                { label: 'อาจารย์ประจำ', value: `${personnel.filter((p) => p.role === 'teacher').length || 90} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
+                { label: 'อาจารย์ประจำ', value: `${Math.max(personnel.filter((p) => p.role === 'teacher').length, 90)} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
                 { label: 'บุคลากรสายสนับสนุน', value: `${personnel.filter((p) => p.role === 'staff').length || 34} ท่าน`, icon: 'fa-users', color: 'emerald' },
               ].map((s) => (
                 <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
