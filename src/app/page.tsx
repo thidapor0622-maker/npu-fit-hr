@@ -17,13 +17,15 @@ export default function HomePage() {
 
   const allExecList = Object.values(executives);
   const dean =
-    allExecList.find(p => p.id === 'boonlert' || (p.position && p.position.includes('คณบดี') && !p.position.includes('รอง')) || p.name.includes('บุญเลิศ')) ||
+    allExecList.find(p => p.id === 'boonlert') ||
+    allExecList.find(p => p.name.includes('บุญเลิศ')) ||
+    allExecList.find(p => p.position && p.position.includes('คณบดี') && !p.position.includes('รอง')) ||
     executives['boonlert'] ||
     allExecList[0];
 
   const viceDeans = useMemo(() => {
-    return allExecList.filter((p) => p && p !== dean && p.id !== dean?.id && !p.name.includes('บุญเลิศ'));
-  }, [allExecList, dean]);
+    return allExecList.filter((p) => p && p.id !== 'boonlert' && !p.name.includes('บุญเลิศ') && (!p.position || p.position.includes('รอง') || !p.position.includes('คณบดีคณะ')));
+  }, [allExecList]);
 
   const term = searchTerm.trim().toLowerCase();
 

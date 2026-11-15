@@ -271,19 +271,67 @@ export default function AdminPage() {
       // 2.1 Sync Executives
       if (execRows && execRows.length > 0) {
         execRows.forEach((r) => {
-          if (!r.name && !r.id && !r.email) return;
-          const matchIdx = list.findIndex(p => p.role === 'executive' && (
-            (r.id && p.id === String(r.id)) ||
-            (r.email && p.email?.toLowerCase() === String(r.email).toLowerCase()) ||
-            (r.name && isSamePersonnel(p, { name: r.name, email: r.email }))
-          ));
+          const rawName = String(r.name || r.nameTh || '').trim();
+          const rawEmail = String(r.email || '').toLowerCase().trim();
+          const rawPos = String(r.position || '').trim();
+          const rawId = String(r.id || '').trim().toLowerCase();
+          if (!rawName && !rawPos && !rawEmail && !rawId) return;
+
+          let matchIdx = -1;
+          if (rawId) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && p.id.toLowerCase() === rawId);
+          }
+          if (matchIdx === -1 && (rawName.includes('บุญเลิศ') || (rawPos.includes('คณบดี') && !rawPos.includes('รอง')))) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && (p.id === 'boonlert' || p.nameTh.includes('บุญเลิศ')));
+          }
+          if (matchIdx === -1 && rawName.includes('วีรธรรม')) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && (p.id === 'weeratham' || p.nameTh.includes('วีรธรรม')));
+          }
+          if (matchIdx === -1 && rawName.includes('บุญเยี่ยม')) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && (p.id === 'boonyiem' || p.nameTh.includes('บุญเยี่ยม')));
+          }
+          if (matchIdx === -1 && rawName.includes('วีระ')) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && (p.id === 'weera' || p.nameTh.includes('วีระ')));
+          }
+          if (matchIdx === -1 && (rawName.includes('ยอดเปรม') || rawName.includes('สายันต์'))) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && (p.id === 'yodprem' || p.id === 'sayan' || p.nameTh.includes('ยอดเปรม') || p.nameTh.includes('สายันต์')));
+          }
+          if (matchIdx === -1 && rawEmail) {
+            matchIdx = list.findIndex(p => p.role === 'executive' && p.email?.toLowerCase() === rawEmail);
+          }
+
+          const matchedTarget = matchIdx >= 0 ? list[matchIdx] : null;
+          let safeName = rawName;
+          let safePos = rawPos;
+          let safeEmail = rawEmail;
+          let safeImg = String(r.img || '');
+
+          if (matchedTarget?.id === 'boonlert' || matchIdx === 0) {
+            if (safeName.includes('วีรธรรม') || !safeName.includes('บุญเลิศ')) {
+              safeName = 'ดร.บุญเลิศ โพธิ์ขำ';
+            }
+            if (safePos.includes('รอง') || !safePos.includes('คณบดี')) {
+              safePos = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
+            }
+            safeEmail = 'boonlert@npu.ac.th';
+            safeImg = '/img/คณบดี.png';
+          }
+
+          if (matchedTarget?.id === 'weeratham' || safeName.includes('วีรธรรม')) {
+            safeName = safeName.replace(/v+$/i, '').trim();
+            if (!safeName) safeName = 'ผศ.วีรธรรม ไชยยงค์';
+            if (!safePos || safePos.includes('คณะเทคโนโลยีอุตสาหกรรม')) safePos = 'รองคณบดีฝ่ายบริหาร';
+            safeEmail = 'weeratham@npu.ac.th';
+            safeImg = '/img/รอง1.png';
+          }
+
           const updated: Partial<PersonnelEntry> = {
-            nameTh: String(r.name || r.nameTh || ''),
-            nameEn: String(r.calendarName || r.nameEn || r.name || ''),
-            position: String(r.position || ''),
-            email: String(r.email || ''),
+            nameTh: safeName || undefined,
+            nameEn: String(r.calendarName || r.nameEn || safeName || ''),
+            position: safePos || undefined,
+            email: safeEmail || undefined,
             phone: String(r.phone || ''),
-            imageUrl: String(r.img || ''),
+            imageUrl: safeImg || undefined,
             location: String(r.room || r.location || ''),
             calendarUrl: String(r.calendarUrl || ''),
             researchInterests: String(r.researchInterests || r.interest || ''),
@@ -294,11 +342,11 @@ export default function AdminPage() {
           if (matchIdx >= 0) {
             list[matchIdx] = {
               ...list[matchIdx],
-              ...Object.fromEntries(Object.entries(updated).filter(([_, v]) => v !== '' && (!Array.isArray(v) || v.length > 0))),
+              ...Object.fromEntries(Object.entries(updated).filter(([_, v]) => v !== undefined && v !== '' && (!Array.isArray(v) || v.length > 0))),
             };
           } else {
             list.push({
-              id: String(r.id || r.email || `exec-${list.length}`),
+              id: String(rawId || safeEmail || `exec-${list.length}`),
               role: 'executive',
               department: 'คณะผู้บริหาร',
               departmentSlug: 'executives',
@@ -401,13 +449,53 @@ export default function AdminPage() {
       if (list.length > 0) {
         let overrides: Record<string, any> = {};
         if (typeof window !== 'undefined') {
-          try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+          try {
+            const rawOv = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}');
+            let hasBad = false;
+            Object.keys(rawOv).forEach((k) => {
+              const val = rawOv[k];
+              const kLower = k.toLowerCase();
+              const nTh = String(val?.nameTh || val?.name || '');
+              if ((kLower === 'boonlert' || kLower === 'boonlert@npu.ac.th' || val?.id === 'boonlert' || val?.email === 'boonlert@npu.ac.th') && nTh.includes('วีรธรรม')) {
+                delete rawOv[k];
+                hasBad = true;
+              }
+              if (nTh.includes('วีรธรรม') && nTh.includes('v')) {
+                val.nameTh = nTh.replace(/v+$/i, '').trim();
+                hasBad = true;
+              }
+            });
+            if (hasBad) {
+              localStorage.setItem('hr_personnel_overrides', JSON.stringify(rawOv));
+            }
+            overrides = rawOv;
+          } catch {}
         }
         const filteredList: PersonnelEntry[] = [];
         list.forEach((item) => {
           const ov = overrides[item.id] || (item.email ? overrides[item.email.toLowerCase()] : null) || (item.nameTh ? overrides[item.nameTh.trim()] : null);
           if (ov && ov.deleted) return;
           const merged = ov ? { ...item, ...ov, role: item.role } : item;
+
+          // Extra safety for executives
+          if (item.id === 'boonlert' || (item.role === 'executive' && item.email === 'boonlert@npu.ac.th')) {
+            if (merged.nameTh.includes('วีรธรรม') || !merged.nameTh.includes('บุญเลิศ')) {
+              merged.nameTh = 'ดร.บุญเลิศ โพธิ์ขำ';
+              merged.nameEn = 'Dr. Boonlert Phokham';
+            }
+            if (merged.position.includes('รอง') || !merged.position.includes('คณบดี')) {
+              merged.position = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
+            }
+            merged.email = 'boonlert@npu.ac.th';
+            merged.imageUrl = '/img/คณบดี.png';
+          }
+          if (item.id === 'weeratham' || (item.role === 'executive' && merged.nameTh.includes('วีรธรรม'))) {
+            merged.nameTh = merged.nameTh.replace(/v+$/i, '').trim();
+            if (!merged.position || merged.position.includes('คณะเทคโนโลยีอุตสาหกรรม')) merged.position = 'รองคณบดีฝ่ายบริหาร';
+            merged.email = 'weeratham@npu.ac.th';
+            merged.imageUrl = '/img/รอง1.png';
+          }
+
           // Deduplicate by identity ONLY within the same role!
           const isDup = filteredList.some((existing) => existing.role === merged.role && isSamePersonnel(existing, merged));
           if (!isDup) {
@@ -415,6 +503,45 @@ export default function AdminPage() {
           }
         });
         setPersonnel(filteredList);
+
+        // Auto-heal Google Sheets row 1 if it has corrupted Weeratham data
+        const scriptUrl = sheetApiUrl || (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
+        if (scriptUrl && execRows && execRows.length > 0) {
+          const firstExec = execRows[0];
+          const firstExecName = String(firstExec.name || firstExec.nameTh || '');
+          if (firstExecName.includes('วีรธรรม')) {
+            fetch(scriptUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({
+                action: 'updateProfile',
+                sheet: 'Executives',
+                originalEmail: 'boonlert@npu.ac.th',
+                originalName: firstExecName,
+                id: 'boonlert',
+                email: 'boonlert@npu.ac.th',
+                name: 'ดร.บุญเลิศ โพธิ์ขำ',
+                nameTh: 'ดร.บุญเลิศ โพธิ์ขำ',
+                nameEn: 'Dr. Boonlert Phokham',
+                position: 'คณบดีคณะเทคโนโลยีอุตสาหกรรม',
+                role: 'executive',
+                imageUrl: '/img/คณบดี.png',
+                data: {
+                  id: 'boonlert',
+                  name: 'ดร.บุญเลิศ โพธิ์ขำ',
+                  nameTh: 'ดร.บุญเลิศ โพธิ์ขำ',
+                  position: 'คณบดีคณะเทคโนโลยีอุตสาหกรรม',
+                  email: 'boonlert@npu.ac.th',
+                  phone: '042-XXX-XXXX ต่อ 101',
+                  imageUrl: '/img/คณบดี.png',
+                  departmentSlug: 'executives',
+                  department: 'คณะผู้บริหาร',
+                  isHead: true,
+                }
+              })
+            }).catch(() => {});
+          }
+        }
         return;
       }
     } catch {}
@@ -565,7 +692,7 @@ export default function AdminPage() {
     const resolvedSlug = DEPT_SLUG_MAP[deptInput] || deptInput;
 
     const targetId = editEntry?.id || formData.email || `custom-${Date.now()}`;
-    const isExecutive = editEntry?.role === 'executive' || formData.department === 'คณะผู้บริหาร' || (editEntry && editEntry.id in EXECUTIVES_DATA);
+    const isExecutive = editEntry?.role === 'executive' || formData.department === 'คณะผู้บริหาร' || (editEntry && editEntry.id in EXECUTIVES_DATA) || formData.position?.includes('คณบดี') || formData.email === 'boonlert@npu.ac.th' || formData.nameTh?.includes('บุญเลิศ');
 
     const newEntry: PersonnelEntry = {
       id: targetId,
@@ -580,7 +707,7 @@ export default function AdminPage() {
       departmentSlug: isExecutive ? 'executives' : resolvedSlug,
       isHead: isExecutive ? true : Boolean(formData.isHead),
       location: formData.location || '',
-      imageUrl: formData.imageUrl || '/img/avatar-placeholder.svg',
+      imageUrl: formData.imageUrl || (isExecutive && (targetId === 'boonlert' || formData.position?.includes('คณบดีคณะ')) ? '/img/คณบดี.png' : '/img/avatar-placeholder.svg'),
       calendarUrl: formData.calendarUrl || '',
       researchInterests: formData.researchInterests || '',
       education: Array.isArray(formData.education) ? formData.education : String(formData.education || '').split('\n').filter(Boolean),
@@ -634,13 +761,15 @@ export default function AdminPage() {
           body: JSON.stringify({
             action: editEntry ? 'updateProfile' : 'savePersonnel',
             sheet: isExecutive ? 'Executives' : undefined,
-            originalEmail: editEntry?.email || '',
-            originalName: editEntry?.nameTh || '',
+            originalEmail: editEntry?.email || formData.email || '',
+            originalName: editEntry?.nameTh || formData.nameTh || '',
             id: editEntry?.id || targetId,
-            email: editEntry?.email || formData.email,
-            name: editEntry?.nameTh || formData.nameTh,
+            email: formData.email,
+            name: formData.nameTh,
             nameTh: formData.nameTh,
             nameEn: formData.nameEn,
+            position: formData.position,
+            imageUrl: newEntry.imageUrl,
             departmentSlug: isExecutive ? 'executives' : resolvedSlug,
             department: isExecutive ? 'คณะผู้บริหาร' : formData.department,
             role: newEntry.role,

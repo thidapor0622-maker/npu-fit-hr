@@ -101,8 +101,11 @@ function doPost(e) {
     const targetEmail = String(postData.originalEmail || postData.email || data.email || "").toLowerCase().trim();
     const targetName = String(postData.originalName || postData.name || data.nameTh || data.name || "").trim();
     const targetId = String(postData.id || data.id || "").toLowerCase().trim();
+    const preferredSheet = String(postData.sheet || "").trim();
 
-    const sheetsToCheck = ["Lecturers", "Executives", "Staff"];
+    const sheetsToCheck = preferredSheet
+      ? [preferredSheet, ...["Lecturers", "Executives", "Staff"].filter(s => s !== preferredSheet)]
+      : ["Lecturers", "Executives", "Staff"];
     let found = false;
     let updatedSheetName = "";
 
@@ -118,15 +121,33 @@ function doPost(e) {
       const emailCol = headers.findIndex(h => h.includes("email") || h.includes("อีเมล"));
       const idCol = headers.findIndex(h => h === "id" || h.includes("รหัส"));
       const nameCol = headers.findIndex(h => h === "name" || h.includes("ชื่อ"));
+      const posCol = headers.findIndex(h => h.includes("position") || h.includes("ตำแหน่ง"));
 
       for (let rowIdx = 1; rowIdx < values.length; rowIdx++) {
         const rowEmail = emailCol >= 0 ? String(values[rowIdx][emailCol]).toLowerCase().trim() : "";
         const rowId = idCol >= 0 ? String(values[rowIdx][idCol]).toLowerCase().trim() : "";
         const rowName = nameCol >= 0 ? String(values[rowIdx][nameCol]).trim() : "";
+        const rowPos = posCol >= 0 ? String(values[rowIdx][posCol]).trim() : "";
 
-        const isMatch = (targetEmail && rowEmail && rowEmail === targetEmail) ||
-                        (targetName && rowName && (rowName === targetName || rowName.includes(targetName) || targetName.includes(rowName))) ||
-                        (targetId && rowId && rowId === targetId);
+        let isMatch = false;
+        if (targetId && rowId && rowId === targetId) {
+          isMatch = true;
+        } else if (sheetsToCheck[s] === "Executives" && (targetId === "boonlert" || targetName.includes("บุญเลิศ") || targetEmail === "boonlert@npu.ac.th" || (data.position && data.position.includes("คณบดี") && !data.position.includes("รอง")))) {
+          if (rowIdx === 1 || rowName.includes("บุญเลิศ") || (rowPos.includes("คณบดี") && !rowPos.includes("รอง")) || rowEmail === "boonlert@npu.ac.th") {
+            isMatch = true;
+          }
+        } else if (sheetsToCheck[s] === "Executives" && (targetId === "weeratham" || targetName.includes("วีรธรรม") || targetEmail === "weeratham@npu.ac.th")) {
+          if (rowIdx === 2 || rowName.includes("วีรธรรม") || rowEmail === "weeratham@npu.ac.th") {
+            isMatch = true;
+          }
+        } else if (targetName && rowName && (rowName === targetName || rowName.includes(targetName) || targetName.includes(rowName))) {
+          isMatch = true;
+        } else if (targetEmail && rowEmail && rowEmail === targetEmail) {
+          // Only match by email if names don't conflict
+          if (!targetName || !rowName || rowName === targetName || rowName.includes(targetName) || targetName.includes(rowName)) {
+            isMatch = true;
+          }
+        }
 
         if (isMatch) {
           headers.forEach((h, colIdx) => {

@@ -20,7 +20,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
     "badge": "General Administration",
     "head": {
       "name": "ผศ.วีรธรรม ไชยยงค์",
-      "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+      "position": "รองคณบดีฝ่ายบริหาร",
       "img": "/img/รอง1.png",
       "email": "weeratham@npu.ac.th",
       "phone": "042-XXX-XXXX ต่อ 101",
@@ -221,7 +221,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
     "allCards": [
       {
         "name": "ผศ.วีรธรรม ไชยยงค์",
-        "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
+        "position": "รองคณบดีฝ่ายบริหาร",
         "img": "/img/รอง1.png",
         "email": "weeratham@npu.ac.th",
         "phone": "042-XXX-XXXX ต่อ 101",

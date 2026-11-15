@@ -59,8 +59,22 @@ function getLocalOverrides(): Record<string, any> {
       // Purge any corrupted override where Weeratham was mistakenly saved over Boonlert
       const nameTh = String(val.nameTh || val.name || '');
       const keyStr = String(k || '').toLowerCase();
-      if ((keyStr === 'boonlert' || keyStr === 'boonlert@npu.ac.th') && nameTh.includes('วีรธรรม')) {
+      const valEmail = String(val.email || '').toLowerCase().trim();
+      const valId = String(val.id || '').toLowerCase().trim();
+
+      if ((keyStr === 'boonlert' || keyStr === 'boonlert@npu.ac.th' || valId === 'boonlert' || valEmail === 'boonlert@npu.ac.th') && nameTh.includes('วีรธรรม')) {
         return;
+      }
+
+      // Automatically clean trailing 'vvv' from Weeratham if present
+      if (nameTh.includes('วีรธรรม')) {
+        val.nameTh = nameTh.replace(/v+$/i, '').trim();
+        if (val.name) val.name = String(val.name).replace(/v+$/i, '').trim();
+        if (val.position && val.position.includes('คณะเทคโนโลยีอุตสาหกรรม') && !val.position.includes('ฝ่าย')) {
+          val.position = 'รองคณบดีฝ่ายบริหาร';
+        }
+        val.email = 'weeratham@npu.ac.th';
+        val.imageUrl = '/img/รอง1.png';
       }
 
       // Automatically purge any temporary test records
@@ -111,14 +125,40 @@ function applyOverridesToExecs(execMap: Record<string, ExecutiveDetail>, overrid
 
     if (ov && ov.deleted) continue;
     if (ov) {
+      let finalName = ov.nameTh || ex.name;
+      let finalPos = ov.position || ex.position;
+      let finalEmail = ov.email || ex.email;
+      let finalImg = ov.imageUrl || ex.img;
+
+      // Enforce Dean Dr. Boonlert protection
+      if (ex.id === 'boonlert' || key === 'boonlert') {
+        if (finalName.includes('วีรธรรม') || !finalName.includes('บุญเลิศ')) {
+          finalName = 'ดร.บุญเลิศ โพธิ์ขำ';
+        }
+        if (finalPos.includes('รอง') || !finalPos.includes('คณบดี')) {
+          finalPos = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
+        }
+        finalEmail = 'boonlert@npu.ac.th';
+        finalImg = '/img/คณบดี.png';
+      }
+
+      // Enforce Weeratham clean name
+      if (ex.id === 'weeratham' || key === 'weeratham' || finalName.includes('วีรธรรม')) {
+        finalName = finalName.replace(/v+$/i, '').trim();
+        if (!finalName) finalName = 'ผศ.วีรธรรม ไชยยงค์';
+        if (!finalPos || finalPos.includes('คณะเทคโนโลยีอุตสาหกรรม')) finalPos = 'รองคณบดีฝ่ายบริหาร';
+        finalEmail = 'weeratham@npu.ac.th';
+        finalImg = '/img/รอง1.png';
+      }
+
       result[key] = {
         ...ex,
-        name: ov.nameTh || ex.name,
-        position: ov.position || ex.position,
+        name: finalName,
+        position: finalPos,
         phone: ov.phone || ex.phone,
-        email: ov.email || ex.email,
+        email: finalEmail,
         room: ov.location || ex.room,
-        img: ov.imageUrl || ex.img,
+        img: finalImg,
         education: ov.education || ex.education,
         skills: ov.skills || ex.skills,
       };
@@ -348,36 +388,72 @@ export function usePersonnelData() {
           if (execRows && execRows.length > 0) {
             const baseExecMap: Record<string, ExecutiveDetail> = { ...EXECUTIVES_DATA };
             for (const r of execRows) {
-              const name = String(r.name || r.nameTh || '').trim();
-              const position = String(r.position || '').trim();
-              const email = String(r.email || '').trim().toLowerCase();
-              if (!name && !position && !email) continue;
+              const rawName = String(r.name || r.nameTh || '').trim();
+              const rawPos = String(r.position || '').trim();
+              const rawEmail = String(r.email || '').trim().toLowerCase();
+              const rawId = String(r.id || '').trim().toLowerCase();
+              if (!rawName && !rawPos && !rawEmail && !rawId) continue;
 
               // Identify matching executive key in baseExecMap
               let targetKey = Object.keys(baseExecMap).find((k) => {
                 const ex = baseExecMap[k];
-                if (r.id && ex.id.toLowerCase() === String(r.id).trim().toLowerCase()) return true;
-                if (name && (name.includes('บุญเลิศ') || ex.name.includes('บุญเลิศ')) && ex.id === 'boonlert') return true;
-                if (name && (name.includes('วีรธรรม') || ex.name.includes('วีรธรรม')) && ex.id === 'weeratham') return true;
-                if (name && (name.includes('บุญเยี่ยม') || ex.name.includes('บุญเยี่ยม')) && ex.id === 'boonyiem') return true;
-                if (name && (name.includes('วีระ') || ex.name.includes('วีระ')) && ex.id === 'weera') return true;
-                if (name && (name.includes('สายันต์') || ex.name.includes('สายันต์')) && ex.id === 'sayan') return true;
-                if (position && position.includes('คณบดี') && !position.includes('รอง') && ex.id === 'boonlert') return true;
-                if (name && isSamePersonnel(ex, { name, email })) return true;
+                if (rawId && ex.id.toLowerCase() === rawId) return true;
+                if (rawName && rawName.includes('บุญเลิศ') && ex.id === 'boonlert') return true;
+                if (rawName && rawName.includes('วีรธรรม') && ex.id === 'weeratham') return true;
+                if (rawName && rawName.includes('บุญเยี่ยม') && ex.id === 'boonyiem') return true;
+                if (rawName && rawName.includes('วีระ') && ex.id === 'weera') return true;
+                if (rawName && (rawName.includes('ยอดเปรม') || rawName.includes('สายันต์')) && (ex.id === 'yodprem' || ex.id === 'sayan')) return true;
+                if (rawPos && rawPos.includes('คณบดี') && !rawPos.includes('รอง') && ex.id === 'boonlert') return true;
+                if (rawPos && rawPos.includes('ฝ่ายบริหาร') && ex.id === 'weeratham') return true;
+                if (rawPos && rawPos.includes('ฝ่ายวิชาการ') && ex.id === 'boonyiem') return true;
+                if (rawPos && rawPos.includes('ฝ่ายวิจัย') && ex.id === 'weera') return true;
+                if (rawPos && (rawPos.includes('พัฒนานักศึกษา') || rawPos.includes('แผน')) && (ex.id === 'yodprem' || ex.id === 'sayan')) return true;
+                if (rawEmail && ex.email.toLowerCase() === rawEmail) {
+                  if (rawEmail === 'boonlert@npu.ac.th') {
+                    return !rawName.includes('วีรธรรม') && ex.id === 'boonlert';
+                  }
+                  return true;
+                }
                 return false;
               });
 
               if (!targetKey) {
-                targetKey = String(r.id || email || `exec-${Object.keys(baseExecMap).length}`);
+                targetKey = String(rawId || rawEmail || `exec-${Object.keys(baseExecMap).length}`);
               }
 
               const prev = baseExecMap[targetKey] || ({} as ExecutiveDetail);
+              let safeName = rawName || prev.name || '';
+              let safePos = rawPos || prev.position || '';
+              let safeEmail = rawEmail || prev.email || '';
+              let safeImg = String(r.img || prev.img || '/img/avatar-placeholder.svg');
+
+              // Guard Dean Boonlert
+              if (targetKey === 'boonlert') {
+                if (safeName.includes('วีรธรรม') || !safeName.includes('บุญเลิศ')) {
+                  safeName = 'ดร.บุญเลิศ โพธิ์ขำ';
+                }
+                if (safePos.includes('รอง') || !safePos.includes('คณบดี')) {
+                  safePos = 'คณบดีคณะเทคโนโลยีอุตสาหกรรม';
+                }
+                safeEmail = 'boonlert@npu.ac.th';
+                safeImg = '/img/คณบดี.png';
+              }
+
+              // Guard Weeratham
+              if (targetKey === 'weeratham' || safeName.includes('วีรธรรม')) {
+                safeName = safeName.replace(/v+$/i, '').trim();
+                if (!safeName) safeName = 'ผศ.วีรธรรม ไชยยงค์';
+                if (!safePos || safePos.includes('คณะเทคโนโลยีอุตสาหกรรม')) safePos = 'รองคณบดีฝ่ายบริหาร';
+                safeEmail = 'weeratham@npu.ac.th';
+                safeImg = '/img/รอง1.png';
+              }
+
               baseExecMap[targetKey] = {
                 id: prev.id || targetKey,
-                name: name || prev.name || '',
-                position: position || prev.position || '',
-                img: String(r.img || prev.img || '/img/avatar-placeholder.svg'),
-                email: email || prev.email || '',
+                name: safeName,
+                position: safePos,
+                img: safeImg,
+                email: safeEmail,
                 phone: String(r.phone || prev.phone || ''),
                 mapQuery: String(r.mapQuery || prev.mapQuery || ''),
                 room: String(r.room || r.location || prev.room || ''),
