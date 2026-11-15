@@ -1,17 +1,9 @@
-// src/lib/assetHelper.ts
-// Helper to prepend basePath for GitHub Pages static export
-
-export function getAssetPath(src: string | undefined): string {
-  if (!src) return '';
-  if (
-    src.startsWith('http://') ||
-    src.startsWith('https://') ||
-    src.startsWith('data:') ||
-    src.startsWith('blob:')
-  ) {
-    return src;
+export function getAssetPath(path: string): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
   }
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-  const cleanPath = src.startsWith('/') ? src : `/${src}`;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${basePath}${cleanPath}`;
 }
