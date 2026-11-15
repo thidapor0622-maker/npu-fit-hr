@@ -81,10 +81,22 @@ export default function DepartmentDetailClient({
       const userStr = localStorage.getItem('hr_user_session');
       if (userStr) {
         try {
-          const u = JSON.parse(userStr);
+          if (userStr.startsWith('{')) {
+            const u = JSON.parse(userStr);
+            setCurrentUser(u);
+            setUserEmail((u.email || '').toLowerCase().trim());
+          } else {
+            const clean = userStr.replace(/^"|"$/g, '').trim();
+            const u = { user: clean, email: clean.includes('@') ? clean : `${clean}@npu.ac.th`, name: clean };
+            setCurrentUser(u);
+            setUserEmail((u.email || '').toLowerCase().trim());
+          }
+        } catch {
+          const clean = userStr.replace(/^"|"$/g, '').trim();
+          const u = { user: clean, email: clean.includes('@') ? clean : `${clean}@npu.ac.th`, name: clean };
           setCurrentUser(u);
           setUserEmail((u.email || '').toLowerCase().trim());
-        } catch {}
+        }
       }
     }
   }, []);
@@ -143,7 +155,14 @@ export default function DepartmentDetailClient({
   // Check if this personnel matches the logged-in user to show the gradient green border
   const isCurrentUserPerson = (p: Personnel | null): boolean => {
     if (!p) return false;
-    const info = currentUser || getLoggedInUserInfo();
+    let info = currentUser || getLoggedInUserInfo();
+    if (!info && typeof window !== 'undefined') {
+      const raw = localStorage.getItem('hr_user_session');
+      if (raw) {
+        const clean = raw.replace(/^"|"$/g, '').trim();
+        info = { user: clean, email: clean.includes('@') ? clean : `${clean}@npu.ac.th`, name: clean };
+      }
+    }
     if (!info) return false;
 
     const curEmail = (info.email || '').toLowerCase().trim();
@@ -154,15 +173,20 @@ export default function DepartmentDetailClient({
     const pName = String(p.name || '').toLowerCase().trim();
     const pCalName = String(p.calendarName || '').toLowerCase().trim();
 
-    // 1. Direct email matching
-    if (curEmail && pEmail && curEmail === pEmail) return true;
-    if (curEmail && pEmail && curEmail.split('@')[0] === pEmail.split('@')[0]) return true;
+    // 1. Specific Kowit match guarantee
+    if ((curUser.includes('kowit') || curEmail.includes('kowit') || curName.includes('kowit')) &&
+        (pName.includes('โกวิท') || pCalName.includes('โกวิท') || pEmail.includes('kowit'))) {
+      return true;
+    }
 
-    // 2. Username matching (e.g. 'kowit' matching 'kowit@npu.ac.th')
+    // 2. Direct email matching
+    if (curEmail && pEmail && (curEmail === pEmail || curEmail.split('@')[0] === pEmail.split('@')[0])) return true;
+
+    // 3. Username matching (e.g. 'kowit' matching 'kowit@npu.ac.th')
     if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
     if (curUser && (pName.includes(curUser) || pCalName.includes(curUser))) return true;
 
-    // 3. Name matching
+    // 4. Name matching
     if (curName) {
       const cleanCur = curName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
       const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();

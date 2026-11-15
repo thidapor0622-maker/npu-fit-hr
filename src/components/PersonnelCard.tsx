@@ -42,6 +42,29 @@ export default function PersonnelCard({
   variant = 'academic',
 }: PersonnelCardProps) {
   const [imgSrc, setImgSrc] = useState(getAssetPath(person.img || '/img/avatar-placeholder.svg'));
+  const [isSelf, setIsSelf] = useState(isCurrentUser);
+
+  useEffect(() => {
+    if (isCurrentUser) {
+      setIsSelf(true);
+      return;
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = (localStorage.getItem('hr_user_session') || '').toLowerCase();
+        if (raw) {
+          const pEmail = String(person.email || '').toLowerCase().trim();
+          const pName = String(person.name || '');
+          const pCal = String(person.calendarName || '');
+          if (raw.includes('kowit') && (pName.includes('โกวิท') || pCal.includes('โกวิท') || pEmail.includes('kowit'))) {
+            setIsSelf(true);
+          } else if (pEmail && raw.includes(pEmail.split('@')[0])) {
+            setIsSelf(true);
+          }
+        }
+      } catch {}
+    }
+  }, [isCurrentUser, person]);
 
   const englishName = formatEnglishName(person);
   const thaiName = formatThaiName(person.name);
@@ -107,7 +130,7 @@ export default function PersonnelCard({
       </div>
     );
 
-    if (isCurrentUser) {
+    if (isCurrentUser || isSelf) {
       return (
         <div
           id="current-user-card"
@@ -236,7 +259,7 @@ export default function PersonnelCard({
   );
 
   // If this card belongs to the currently logged in user: Wrap with a vibrant 4px green gradient border!
-  if (isCurrentUser) {
+  if (isCurrentUser || isSelf) {
     return (
       <div
         id="current-user-card"
