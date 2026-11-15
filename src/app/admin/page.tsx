@@ -992,16 +992,16 @@ export default function AdminPage() {
                 })}
               </div>
 
-              {/* Search Bar Row (Clean Full Width without dropdown) */}
-              <div className="pt-1">
-                <div className="relative w-full">
+              {/* Search Bar Row & Compact Department Filter (แสดงข้างๆ เฉพาะหน้าอาจารย์ประจำสาขา) */}
+              <div className="pt-1 flex flex-col sm:flex-row items-center gap-3">
+                <div className="relative flex-1 w-full">
                   <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
                   <input
                     type="text"
                     value={searchQ}
                     onChange={(e) => setSearchQ(e.target.value)}
                     placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา หรือฝ่ายงาน..."
-                    className="w-full pl-11 pr-24 py-3 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50/60 hover:bg-white focus:bg-white transition shadow-inner"
+                    className="w-full pl-11 pr-24 py-2.5 sm:py-3 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50/60 hover:bg-white focus:bg-white transition shadow-inner"
                   />
                   {searchQ && (
                     <button
@@ -1016,6 +1016,33 @@ export default function AdminPage() {
                     พบ {filteredPersonnel.length} คน
                   </div>
                 </div>
+
+                {/* แถบสาขาวิชาทั้งหมด ข้างๆ ช่องค้นหา ขนาดกะทัดรัด (แสดงเฉพาะหน้ารายชื่ออาจารย์ประจำสาขาวิชาเท่านั้น) */}
+                {filterRole === 'teacher' && (
+                  <div className="relative w-full sm:w-auto sm:min-w-[210px] sm:max-w-[240px]">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-purple-600 text-xs">
+                      <i className="fa-solid fa-graduation-cap" />
+                    </div>
+                    <select
+                      value={filterDept}
+                      onChange={(e) => setFilterDept(e.target.value)}
+                      className="w-full pl-8 pr-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold border border-purple-200 rounded-2xl bg-purple-50/60 hover:bg-purple-100/70 text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-400 transition cursor-pointer appearance-none shadow-sm truncate"
+                    >
+                      <option value="all">🎓 สาขาวิชาทั้งหมด ({personnel.filter(p => p.role === 'teacher').length} คน)</option>
+                      {DEPARTMENTS_DATA.map((d) => {
+                        const count = personnel.filter(p => p.role === 'teacher' && (p.departmentSlug === d.slug || (p.department || '').includes(d.title))).length;
+                        return (
+                          <option key={d.slug} value={d.slug}>
+                            {d.title} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-purple-400 text-xs">
+                      <i className="fa-solid fa-chevron-down" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
