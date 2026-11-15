@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { getAssetPath } from '@/lib/assetHelper';
 import { Suspense } from 'react';
 
 function LoginForm() {
@@ -22,40 +21,21 @@ function LoginForm() {
     setLoading(true);
     setError('');
 
-    const cleanUser = username.trim().toLowerCase();
-
-    if (cleanUser === 'admin' && password === 'admin1234') {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('hr_admin_session', 'true');
-      }
-      fetch('/api/admin/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: cleanUser, password }),
-      }).catch(() => {});
-
-      window.location.href = getAssetPath('/admin/');
-      return;
-    }
-
     try {
       const res = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: cleanUser, password }),
+        body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
       if (data.success) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('hr_admin_session', 'true');
-        }
         router.push(from);
         router.refresh();
       } else {
         setError(data.message || 'เข้าสู่ระบบไม่สำเร็จ');
       }
     } catch {
-      setError('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แอดมิน: admin / รหัสผ่าน: admin1234)');
+      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ');
     } finally {
       setLoading(false);
     }
@@ -74,7 +54,7 @@ function LoginForm() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/10 backdrop-blur border border-white/20 shadow-2xl mb-4">
             <img
-              src={getAssetPath('/img/โลโก้.png')}
+              src="/img/โลโก้.png"
               alt="NPU Logo"
               className="w-14 h-14 object-contain"
               onError={(e) => {

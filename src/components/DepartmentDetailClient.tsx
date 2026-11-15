@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Department, DEPARTMENTS_DATA, Personnel } from '@/data/departments';
 import { usePersonnelData } from '@/hooks/usePersonnelData';
+import { isSamePersonnel, normalizeThaiNameForMatch, getResearchInterests } from '@/lib/personnelHelper';
 import PersonnelCard from '@/components/PersonnelCard';
 import CalendarModal from '@/components/CalendarModal';
 import ProfileModal from '@/components/ProfileModal';
@@ -78,8 +79,23 @@ export default function DepartmentDetailClient({
   };
 
   const isHeadVisible = department.head ? isPersonMatch(department.head) : false;
-  const matchedMembers = department.members.filter(isPersonMatch);
-  const isMembersVisible = matchedMembers.length > 0;
+
+  // Filter out head from members (using both reference and identity) to ensure head NEVER appears in members
+  const safeMembers = (department.members || []).filter((p) => {
+    if (!department.head) return true;
+    if (p === department.head) return false;
+    if (isSamePersonnel(p, department.head)) return false;
+    return true;
+  });
+
+  const matchedMembers = safeMembers.filter(isPersonMatch);
+
+  // Deduplicate matched members by identity to ensure 100% unique cards
+  const uniqueMatchedMembers = matchedMembers.filter((person, index, arr) => {
+    return arr.findIndex((item) => isSamePersonnel(item, person)) === index;
+  });
+
+  const isMembersVisible = uniqueMatchedMembers.length > 0;
   const hasResults = isHeadVisible || isMembersVisible;
 
   // ─── Modal Openers ───
@@ -105,7 +121,7 @@ export default function DepartmentDetailClient({
 
   const openEditLecturer = (p: Personnel) => {
     setEditingPerson(p);
-    const isHead = department.head?.name === p.name || (p as any).isHead === true;
+    const isHead = (department.head && isSamePersonnel(department.head, p)) || (p as any).isHead === true;
     setFormData({
       nameTh: p.name || '',
       nameEn: (p as any).nameEn || p.calendarName || '',
@@ -116,7 +132,7 @@ export default function DepartmentDetailClient({
       location: p.location || department.title,
       imageUrl: p.img || '',
       calendarUrl: (p as any).calendarUrl || '',
-      researchInterests: (p as any).researchInterests || '',
+      researchInterests: (p as any).researchInterests || getResearchInterests(p, department.slug) || '',
       education: Array.isArray(p.education) ? p.education.join('\n') : (p.education || ''),
       skills: Array.isArray(p.skills) ? p.skills.join('\n') : (p.skills || ''),
     });
@@ -130,17 +146,18 @@ export default function DepartmentDetailClient({
     setSaving(true);
     setSaveMsg({ text: '', ok: true });
 
-    const key = formData.email ? formData.email.toLowerCase().trim() : (formData.nameTh.trim() || `lec-${Date.now()}`);
-    const originalKey = editingPerson ? (editingPerson.email ? editingPerson.email.toLowerCase().trim() : editingPerson.name.trim()) : key;
+    const emailTrimmed = formData.email.toLowerCase().trim();
+    const nameTrimmed = formData.nameTh.trim();
+    const key = emailTrimmed || (editingPerson ? ((editingPerson as any).id || (editingPerson.email ? editingPerson.email.toLowerCase().trim() : editingPerson.name.trim())) : (nameTrimmed || `lec-${Date.now()}`));
 
     const payload = {
       id: key,
       departmentSlug: department.slug,
       department: department.title,
-      nameTh: formData.nameTh.trim(),
-      name: formData.nameTh.trim(),
+      nameTh: nameTrimmed,
+      name: nameTrimmed,
       nameEn: formData.nameEn.trim(),
-      calendarName: formData.nameEn.trim() || formData.nameTh.trim(),
+      calendarName: formData.nameEn.trim() || nameTrimmed,
       position: formData.position.trim(),
       isHead: formData.isHead,
       email: formData.email.trim(),
@@ -155,17 +172,31 @@ export default function DepartmentDetailClient({
       updatedAt: new Date().toISOString(),
     };
 
-    // 1. Update localStorage overrides
+    // 1. Update localStorage overrides cleanly (no duplicate keys!)
     if (typeof window !== 'undefined') {
       let overrides: Record<string, any> = {};
       try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+
+      // If editing an existing person, remove any old alias keys for this person
+      if (editingPerson) {
+        Object.keys(overrides).forEach((k) => {
+          const item = overrides[k];
+          if (isSamePersonnel(editingPerson, item) || isSamePersonnel(editingPerson, { name: k, email: k })) {
+            delete overrides[k];
+          }
+        });
+      }
+
+      // Also remove any existing key that matches the new email or new name
+      Object.keys(overrides).forEach((k) => {
+        const item = overrides[k];
+        if (isSamePersonnel(payload, item) || isSamePersonnel(payload, { name: k, email: k })) {
+          delete overrides[k];
+        }
+      });
+
+      // Store ONLY under the single canonical key
       overrides[key] = payload;
-      if (originalKey && originalKey !== key) {
-        overrides[originalKey] = payload;
-      }
-      if (formData.nameTh) {
-        overrides[formData.nameTh.trim()] = payload;
-      }
       localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
       window.dispatchEvent(new Event('hr_personnel_updated'));
     }
@@ -185,10 +216,10 @@ export default function DepartmentDetailClient({
             action: editingPerson ? 'updateProfile' : 'savePersonnel',
             originalEmail: editingPerson?.email || '',
             originalName: editingPerson?.name || '',
-            email: editingPerson?.email || formData.email,
-            name: editingPerson?.name || formData.nameTh,
-            nameTh: formData.nameTh,
-            nameEn: formData.nameEn,
+            email: formData.email.trim(),
+            name: formData.nameTh.trim(),
+            nameTh: formData.nameTh.trim(),
+            nameEn: formData.nameEn.trim(),
             departmentSlug: department.slug,
             data: payload,
           }),
@@ -212,14 +243,85 @@ export default function DepartmentDetailClient({
     }
 
     setSaving(false);
-    setSaveMsg({ text: 'บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปอัปเดตลงบนเว็บไซต์เรียบร้อยแล้ว', ok: true });
-    if (selectedProfile && (selectedProfile.name === (editingPerson?.name || formData.nameTh) || selectedProfile.email === (editingPerson?.email || formData.email))) {
-      setSelectedProfile((prev) => (prev ? { ...prev, ...payload } : null));
-    }
+    setSaveMsg({ text: 'บันทึกข้อมูลสำเร็จ! ข้อมูลโปรไฟล์ได้รับการอัปเดตเรียบร้อยแล้ว', ok: true });
+
+    // Update selected profile to reflect the changes immediately in their own profile
+    setSelectedProfile(payload as any);
+
     setTimeout(() => {
       setShowEditModal(false);
       setSaveMsg({ text: '', ok: true });
     }, 1200);
+  };
+
+  // ─── Delete Lecturer ───
+  const handleDeleteLecturer = async (personToDelete?: Personnel) => {
+    const target = personToDelete || editingPerson;
+    if (!target) return;
+    const displayName = target.name || (target as any).nameTh || 'อาจารย์ท่านนี้';
+    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลของ "${displayName}" ออกจากหน้ารายชื่อสาขาวิชา?`)) {
+      return;
+    }
+
+    setSaving(true);
+    const delEmail = (target.email || '').toLowerCase().trim();
+    const delName = (target.name || '').trim();
+    const delId = ((target as any).id || '').trim();
+
+    if (typeof window !== 'undefined') {
+      let overrides: Record<string, any> = {};
+      try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+
+      // Remove existing aliases and mark as deleted
+      Object.keys(overrides).forEach((k) => {
+        const item = overrides[k];
+        if (isSamePersonnel(target, item) || isSamePersonnel(target, { name: k, email: k })) {
+          delete overrides[k];
+        }
+      });
+
+      const mainKey = delEmail || delId || delName || `del-${Date.now()}`;
+      overrides[mainKey] = { deleted: true, email: delEmail, nameTh: delName };
+      if (delEmail) overrides[delEmail] = { deleted: true };
+      if (delName) overrides[delName] = { deleted: true };
+
+      localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
+      window.dispatchEvent(new Event('hr_personnel_updated'));
+    }
+
+    // Sync delete action to Google Apps Script Web App
+    const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
+    const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || defaultApiUrl;
+    if (scriptUrl) {
+      try {
+        await fetch(scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'deletePersonnel',
+            email: delEmail,
+            name: delName,
+            originalEmail: delEmail,
+            originalName: delName,
+            departmentSlug: department.slug,
+          }),
+        });
+      } catch {}
+    }
+
+    setSaving(false);
+    setSelectedProfile(null);
+    setShowEditModal(false);
+  };
+
+  const handleClearDuplicates = () => {
+    if (typeof window !== 'undefined') {
+      if (confirm('ต้องการล้างข้อมูลแคชที่ซ้ำในระบบ และรีเฟรชดึงข้อมูลล่าสุดจาก Google Sheet ใช่หรือไม่?')) {
+        localStorage.removeItem('hr_personnel_overrides');
+        window.dispatchEvent(new Event('hr_personnel_updated'));
+        window.location.reload();
+      }
+    }
   };
 
   return (
@@ -238,14 +340,24 @@ export default function DepartmentDetailClient({
           <div className="flex items-center gap-2.5">
             {/* Add Lecturer Button (ONLY visible to Admin) */}
             {isAdmin && (
-              <button
-                onClick={openAddLecturer}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm"
-                title="เพิ่มอาจารย์ประจำสาขาวิชานี้ (เฉพาะผู้ดูแลระบบ)"
-              >
-                <i className="fa-solid fa-user-plus text-xs"></i>
-                <span>เพิ่มอาจารย์ในสาขานี้</span>
-              </button>
+              <>
+                <button
+                  onClick={handleClearDuplicates}
+                  className="bg-amber-600/30 hover:bg-amber-600 text-amber-200 hover:text-white border border-amber-400/30 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                  title="ล้างข้อมูลที่ซ้ำและดึงข้อมูลล่าสุดจาก Google Sheets"
+                >
+                  <i className="fa-solid fa-arrows-rotate text-xs"></i>
+                  <span>ล้างรายชื่อซ้ำ/รีเฟรช</span>
+                </button>
+                <button
+                  onClick={openAddLecturer}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm"
+                  title="เพิ่มอาจารย์ประจำสาขาวิชานี้ (เฉพาะผู้ดูแลระบบ)"
+                >
+                  <i className="fa-solid fa-user-plus text-xs"></i>
+                  <span>เพิ่มอาจารย์ในสาขานี้</span>
+                </button>
+              </>
             )}
 
             {/* Department switcher dropdown */}
@@ -381,13 +493,14 @@ export default function DepartmentDetailClient({
                     index={0}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
+                    onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                   />
                 </div>
               </section>
             )}
 
             {department.head &&
-              department.members.length > 0 &&
+              uniqueMatchedMembers.length > 0 &&
               isHeadVisible &&
               isMembersVisible && <hr className="border-sky-200/60 max-w-5xl mx-auto" />}
 
@@ -401,9 +514,9 @@ export default function DepartmentDetailClient({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch justify-items-center max-w-6xl mx-auto">
-                  {matchedMembers.map((person, idx) => (
+                  {uniqueMatchedMembers.map((person, idx) => (
                     <PersonnelCard
-                      key={idx}
+                      key={person.email || person.name || idx}
                       person={person}
                       deptTitle={department.title}
                       deptTitleEn={department.titleEn}
@@ -411,6 +524,7 @@ export default function DepartmentDetailClient({
                       index={idx + 1}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
+                      onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                     />
                   ))}
                 </div>
@@ -430,6 +544,7 @@ export default function DepartmentDetailClient({
         onClose={() => setSelectedProfile(null)}
         onOpenCalendar={(name) => setCalendarModalName(name)}
         onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
+        onDelete={isAdmin ? (p) => handleDeleteLecturer(p) : undefined}
       />
 
       {/* Calendar Modal */}
@@ -682,31 +797,48 @@ export default function DepartmentDetailClient({
                   </div>
                 )}
 
-                <div className="flex items-center justify-end gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditModal(false)}
-                    className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition flex items-center gap-2 shadow-md disabled:opacity-50"
-                  >
-                    {saving ? (
-                      <>
-                        <i className="fa-solid fa-spinner fa-spin" />
-                        <span>กำลังบันทึกข้อมูล...</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="fa-solid fa-floppy-disk" />
-                        <span>บันทึกข้อมูล</span>
-                      </>
+                <div className="flex items-center justify-between gap-2.5">
+                  <div>
+                    {editingPerson && (
+                      <button
+                        type="button"
+                        onClick={handleDeleteLecturer}
+                        disabled={saving}
+                        className="px-3.5 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition flex items-center gap-1.5 shadow-sm"
+                        title="ลบอาจารย์ท่านนี้ออกจากสาขาวิชา"
+                      >
+                        <i className="fa-solid fa-trash-can text-xs" />
+                        <span>ลบอาจารย์ท่านนี้</span>
+                      </button>
                     )}
-                  </button>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowEditModal(false)}
+                      className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                    >
+                      ยกเลิก
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="px-6 py-2.5 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition flex items-center gap-2 shadow-md disabled:opacity-50"
+                    >
+                      {saving ? (
+                        <>
+                          <i className="fa-solid fa-spinner fa-spin" />
+                          <span>กำลังบันทึกข้อมูล...</span>
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-floppy-disk" />
+                          <span>บันทึกข้อมูล</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>

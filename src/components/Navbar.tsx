@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { getAssetPath } from '@/lib/assetHelper';
 
 interface AuthState {
   authenticated: boolean;
@@ -26,25 +25,6 @@ export default function Navbar() {
 
   // Check login state on mount & route change
   useEffect(() => {
-    const isLocalAdmin = typeof window !== 'undefined' && localStorage.getItem('hr_admin_session') === 'true';
-    if (isLocalAdmin) {
-      setAuth({ authenticated: true, role: 'admin', user: 'admin' });
-      return;
-    }
-    const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('hr_user_session') : null;
-    if (userSessionStr) {
-      try {
-        const u = JSON.parse(userSessionStr);
-        setAuth({
-          authenticated: true,
-          role: u.role || 'teacher',
-          email: u.email,
-          name: u.name,
-          user: u.user,
-        });
-        return;
-      } catch {}
-    }
     fetch('/api/auth')
       .then((r) => r.json())
       .then((d) => setAuth(d))
@@ -52,14 +32,11 @@ export default function Navbar() {
   }, [pathname]);
 
   const handleLogout = async () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('hr_admin_session');
-      localStorage.removeItem('hr_user_session');
-    }
-    await fetch('/api/auth', { method: 'DELETE' }).catch(() => {});
+    await fetch('/api/auth', { method: 'DELETE' });
     setAuth({ authenticated: false });
     setDropdownOpen(false);
-    window.location.href = getAssetPath('/');
+    router.push('/');
+    router.refresh();
   };
 
   return (
@@ -75,7 +52,7 @@ export default function Navbar() {
             className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 rounded-2xl flex items-center justify-center p-2 border border-white/10 hover:scale-105 transition-transform flex-shrink-0"
           >
             <img
-              src={logoErr ? 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Nakhon_Phanom_University_Logo.svg' : getAssetPath('/img/โลโก้.png')}
+              src={logoErr ? 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Nakhon_Phanom_University_Logo.svg' : '/img/โลโก้.png'}
               alt="ตรามหาวิทยาลัยนครพนม"
               className="w-full h-full object-contain"
               onError={() => setLogoErr(true)}

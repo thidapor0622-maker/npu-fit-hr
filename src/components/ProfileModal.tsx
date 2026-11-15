@@ -15,6 +15,7 @@ interface ProfileModalProps {
   onClose: () => void;
   onOpenCalendar?: (name: string) => void;
   onEdit?: (person: Personnel) => void;
+  onDelete?: (person: Personnel) => void;
 }
 
 export default function ProfileModal({
@@ -26,6 +27,7 @@ export default function ProfileModal({
   onClose,
   onOpenCalendar,
   onEdit,
+  onDelete,
 }: ProfileModalProps) {
   const [imgErr, setImgErr] = useState(false);
 
@@ -193,6 +195,21 @@ export default function ProfileModal({
 
           {/* Action Row at Bottom: View Calendar & (Admin only) Edit */}
           <div className="pt-3 flex flex-col sm:flex-row gap-2 justify-end items-center border-t border-slate-100">
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onDelete(person);
+                }}
+                className="w-full sm:w-auto bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-red-200"
+                title="ลบอาจารย์ท่านนี้ออกจากสาขาวิชา"
+              >
+                <i className="fa-solid fa-trash-can text-red-600"></i>
+                <span>ลบข้อมูลอาจารย์</span>
+              </button>
+            )}
+
             {onEdit && (
               <button
                 type="button"

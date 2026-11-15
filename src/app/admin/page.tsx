@@ -8,6 +8,7 @@ import { fetchClientGViz } from '@/hooks/usePersonnelData';
 import { EXECUTIVES_DATA } from '@/data/executives';
 import { DEPARTMENTS_DATA } from '@/data/departments';
 import { STAFF_DIVISIONS_DATA } from '@/data/staff-divisions';
+import { isSamePersonnel } from '@/lib/personnelHelper';
 
 interface SheetDetails {
   Executives: number;
@@ -241,23 +242,18 @@ export default function AdminPage() {
         if (typeof window !== 'undefined') {
           try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
         }
-        const mergedList = list.map((item) => {
+        const filteredList: PersonnelEntry[] = [];
+        list.forEach((item) => {
           const ov = overrides[item.id] || (item.email ? overrides[item.email.toLowerCase()] : null) || (item.nameTh ? overrides[item.nameTh.trim()] : null);
-          if (ov) {
-            return {
-              ...item,
-              ...ov,
-              password: ov.password || item.password,
-              isHead: ov.isHead !== undefined ? ov.isHead : item.isHead,
-              education: ov.education || item.education,
-              skills: ov.skills || item.skills,
-              researchInterests: ov.researchInterests || item.researchInterests,
-              calendarUrl: ov.calendarUrl || item.calendarUrl,
-            };
+          if (ov && ov.deleted) return;
+          const merged = ov ? { ...item, ...ov } : item;
+          // Deduplicate by identity
+          const isDup = filteredList.some((existing) => isSamePersonnel(existing, merged));
+          if (!isDup) {
+            filteredList.push(merged);
           }
-          return item;
         });
-        setPersonnel(mergedList);
+        setPersonnel(filteredList);
         return;
       }
     } catch {}
@@ -437,9 +433,26 @@ export default function AdminPage() {
     if (typeof window !== 'undefined') {
       let overrides: Record<string, any> = {};
       try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+
+      // Clean up old alias keys if editing
+      if (editEntry) {
+        Object.keys(overrides).forEach((k) => {
+          const item = overrides[k];
+          if (isSamePersonnel(editEntry, item) || isSamePersonnel(editEntry, { name: k, email: k })) {
+            delete overrides[k];
+          }
+        });
+      }
+
+      // Remove any existing key matching the new identity
+      Object.keys(overrides).forEach((k) => {
+        const item = overrides[k];
+        if (isSamePersonnel(newEntry, item) || isSamePersonnel(newEntry, { name: k, email: k })) {
+          delete overrides[k];
+        }
+      });
+
       overrides[targetId] = { ...newEntry, departmentSlug: resolvedSlug };
-      if (formData.email) overrides[formData.email.toLowerCase()] = { ...newEntry, departmentSlug: resolvedSlug };
-      if (formData.nameTh) overrides[formData.nameTh.trim()] = { ...newEntry, departmentSlug: resolvedSlug };
       localStorage.setItem('hr_personnel_overrides', JSON.stringify(overrides));
       window.dispatchEvent(new Event('hr_personnel_updated'));
     }

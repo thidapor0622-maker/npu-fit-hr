@@ -195,3 +195,54 @@ export function getPersonnelCode(person: Personnel, index: number = 0): string {
   }
   return `10${String(8500 + index).slice(-4)}`;
 }
+
+/**
+ * Normalizes Thai name by removing all whitespaces for bulletproof comparison
+ */
+export function normalizeThaiNameForMatch(name?: string): string {
+  if (!name) return '';
+  return name.replace(/\s+/g, '').trim().toLowerCase();
+}
+
+/**
+ * Strips academic and polite titles for deep Thai name matching
+ */
+export function stripThaiTitle(name?: string): string {
+  if (!name) return '';
+  return name
+    .replace(/\s+/g, '')
+    .replace(/^(ผู้ช่วยศาสตราจารย์|รองศาสตราจารย์|ศาสตราจารย์|อาจารย์|ดร\.|ผศ\.ดร\.|รศ\.ดร\.|ศ\.ดร\.|ผศ\.|รศ\.|ศ\.|อ\.|นาย|นางสาว|นาง|น\.ส\.)/g, '')
+    .trim()
+    .toLowerCase();
+}
+
+/**
+ * Checks whether two personnel records refer to the exact same person
+ */
+export function isSamePersonnel(
+  a: { email?: string; name?: string; nameTh?: string; id?: string } | null | undefined,
+  b: { email?: string; name?: string; nameTh?: string; id?: string } | null | undefined
+): boolean {
+  if (!a || !b) return false;
+
+  // 1. By ID if both exist
+  if (a.id && b.id && a.id.trim() === b.id.trim()) return true;
+
+  // 2. By Email (case-insensitive)
+  const emailA = (a.email || '').toLowerCase().trim();
+  const emailB = (b.email || '').toLowerCase().trim();
+  if (emailA && emailB && emailA === emailB) return true;
+
+  // 3. By exact normalized Thai name (ignoring spaces)
+  const nameA = normalizeThaiNameForMatch(a.nameTh || a.name);
+  const nameB = normalizeThaiNameForMatch(b.nameTh || b.name);
+  if (nameA && nameB && nameA === nameB) return true;
+
+  // 4. By title-stripped name
+  const strippedA = stripThaiTitle(a.nameTh || a.name);
+  const strippedB = stripThaiTitle(b.nameTh || b.name);
+  if (strippedA && strippedB && strippedA.length >= 4 && strippedA === strippedB) return true;
+
+  return false;
+}
+

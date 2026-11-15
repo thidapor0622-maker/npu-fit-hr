@@ -3,7 +3,6 @@
 import { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAssetPath } from '@/lib/assetHelper';
 
 function TeacherLoginForm() {
   const router = useRouter();
@@ -17,38 +16,24 @@ function TeacherLoginForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    const cleanEmail = email.trim().toLowerCase();
-
-    if (!cleanEmail || !password) {
-      setError('กรุณากรอกข้อมูลให้ครบถ้วน');
-      setLoading(false);
-      return;
-    }
-
-    if (password.length >= 3) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('hr_admin_session');
-        localStorage.setItem('hr_user_session', JSON.stringify({
-          role: 'teacher',
-          email: cleanEmail.includes('@') ? cleanEmail : `${cleanEmail}@npu.ac.th`,
-          user: cleanEmail,
-          name: cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail,
-          loginAt: new Date().toISOString(),
-        }));
-      }
-      fetch('/api/teacher/auth', {
+    try {
+      const res = await fetch('/api/teacher/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password }),
-      }).catch(() => {});
-
-      window.location.href = getAssetPath('/profile/edit/');
-      return;
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push('/profile/edit');
+        router.refresh();
+      } else {
+        setError(data.message || 'เข้าสู่ระบบไม่สำเร็จ');
+      }
+    } catch {
+      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+    } finally {
+      setLoading(false);
     }
-
-    setError('รหัสผ่านไม่ถูกต้อง (รหัสเริ่มต้น: 123456 หรืออย่างน้อย 4 ตัวอักษร)');
-    setLoading(false);
   };
 
   return (
@@ -115,7 +100,7 @@ function TeacherLoginForm() {
               </div>
               <p className="text-white/40 text-xs mt-1.5">
                 <i className="fa-solid fa-circle-info mr-1" />
-                รหัสเริ่มต้น = 123456 หรือรหัสผ่านอย่างน้อย 4 ตัว
+                รหัสเริ่มต้น = อักขระ 6 ตัวสุดท้ายก่อน @
               </p>
             </div>
 

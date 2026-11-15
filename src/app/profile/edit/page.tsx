@@ -155,6 +155,15 @@ export default function TeacherEditPage() {
         // Save into unified personnel overrides so website updates everywhere
         let overrides: Record<string, any> = {};
         try { overrides = JSON.parse(localStorage.getItem('hr_personnel_overrides') || '{}'); } catch {}
+
+        // Remove old email key if changed or Thai name alias key to prevent duplicates
+        if (email && email.toLowerCase() !== activeEmail) {
+          delete overrides[email.toLowerCase().trim()];
+        }
+        if (profile.nameTh && overrides[profile.nameTh.trim()]) {
+          delete overrides[profile.nameTh.trim()];
+        }
+
         overrides[activeEmail] = {
           id: activeEmail,
           nameTh: profile.nameTh,

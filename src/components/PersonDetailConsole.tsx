@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { ExecutiveDetail } from '@/data/executives';
-import { getAssetPath } from '@/lib/assetHelper';
 
 interface PersonDetailConsoleProps {
   person: ExecutiveDetail | null;
@@ -45,7 +44,7 @@ export default function PersonDetailConsole({
             {/* Image Box */}
             <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-xl bg-sky-900/5 mb-3.5 relative group border-2 border-white">
               <img
-                src={imgErr ? getAssetPath('/img/avatar-placeholder.svg') : getAssetPath(person.img)}
+                src={imgErr ? '/img/avatar-placeholder.svg' : person.img}
                 alt={person.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImgErr(true)}
