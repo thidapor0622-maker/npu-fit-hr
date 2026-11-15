@@ -61,12 +61,7 @@ export default function HomePage() {
               <i className="fa-solid fa-graduation-cap text-sky-400"></i> Faculty of Industrial Technology
             </span>
 
-            {isLiveSheet && (
-              <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Google Sheet Live</span>
-              </span>
-            )}
+
           </div>
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading">

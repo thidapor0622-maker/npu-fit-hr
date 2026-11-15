@@ -34,12 +34,7 @@ export default function LecturersPage() {
               <i className="fa-solid fa-graduation-cap"></i> Faculty of Industrial Technology
             </span>
 
-            {isLiveSheet && (
-              <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Google Sheet Live</span>
-              </span>
-            )}
+
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white font-heading">
