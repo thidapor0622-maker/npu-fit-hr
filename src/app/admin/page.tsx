@@ -565,17 +565,20 @@ export default function AdminPage() {
     const resolvedSlug = DEPT_SLUG_MAP[deptInput] || deptInput;
 
     const targetId = editEntry?.id || formData.email || `custom-${Date.now()}`;
+    const isExecutive = editEntry?.role === 'executive' || formData.department === 'คณะผู้บริหาร' || (editEntry && editEntry.id in EXECUTIVES_DATA);
+
     const newEntry: PersonnelEntry = {
       id: targetId,
+      role: isExecutive ? 'executive' : (editEntry?.role || (formData.department?.includes('dept-') || formData.department?.includes('สายสนับสนุน') ? 'staff' : 'teacher')),
       nameTh: formData.nameTh || '',
       nameEn: formData.nameEn || '',
       email: formData.email || '',
       password: formData.password || 'npu1234',
       phone: formData.phone || '',
       position: formData.position || '',
-      department: formData.department || '',
-      departmentSlug: resolvedSlug,
-      isHead: Boolean(formData.isHead),
+      department: isExecutive ? 'คณะผู้บริหาร' : (formData.department || ''),
+      departmentSlug: isExecutive ? 'executives' : resolvedSlug,
+      isHead: isExecutive ? true : Boolean(formData.isHead),
       location: formData.location || '',
       imageUrl: formData.imageUrl || '/img/avatar-placeholder.svg',
       calendarUrl: formData.calendarUrl || '',
@@ -630,15 +633,18 @@ export default function AdminPage() {
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: editEntry ? 'updateProfile' : 'savePersonnel',
+            sheet: isExecutive ? 'Executives' : undefined,
             originalEmail: editEntry?.email || '',
             originalName: editEntry?.nameTh || '',
+            id: editEntry?.id || targetId,
             email: editEntry?.email || formData.email,
             name: editEntry?.nameTh || formData.nameTh,
             nameTh: formData.nameTh,
             nameEn: formData.nameEn,
-            departmentSlug: resolvedSlug,
-            department: formData.department,
-            data: { ...newEntry, departmentSlug: resolvedSlug },
+            departmentSlug: isExecutive ? 'executives' : resolvedSlug,
+            department: isExecutive ? 'คณะผู้บริหาร' : formData.department,
+            role: newEntry.role,
+            data: { ...newEntry, departmentSlug: isExecutive ? 'executives' : resolvedSlug },
           }),
         });
         const textRes = await res.text();

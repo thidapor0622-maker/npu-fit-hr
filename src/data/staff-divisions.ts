@@ -22,7 +22,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
       "name": "ผศ.วีรธรรม ไชยยงค์",
       "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
       "img": "/img/รอง1.png",
-      "email": "boonlert@npu.ac.th",
+      "email": "weeratham@npu.ac.th",
       "phone": "042-XXX-XXXX ต่อ 101",
       "location": "สำนักงานคณบดี",
       "calendarName": "ผศ.วีรธรรม ไชยยงค์"
@@ -223,7 +223,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
         "name": "ผศ.วีรธรรม ไชยยงค์",
         "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
         "img": "/img/รอง1.png",
-        "email": "boonlert@npu.ac.th",
+        "email": "weeratham@npu.ac.th",
         "phone": "042-XXX-XXXX ต่อ 101",
         "location": "สำนักงานคณบดี",
         "calendarName": "ผศ.วีรธรรม ไชยยงค์"
@@ -685,7 +685,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
       "name": "ผศ.ยอดเปรม ภูกำเนิด",
       "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
       "img": "/img/รอง4.png",
-      "email": "boonlert@npu.ac.th",
+      "email": "yodprem@npu.ac.th",
       "phone": "042-XXX-XXXX ต่อ 101",
       "location": "สำนักงานคณบดี",
       "calendarName": "ผศ.ยอดเปรม ภูกำเนิด"
@@ -724,7 +724,7 @@ export const STAFF_DIVISIONS_DATA: StaffDivision[] = [
         "name": "ผศ.ยอดเปรม ภูกำเนิด",
         "position": "รองคณบดีคณะเทคโนโลยีอุตสาหกรรม",
         "img": "/img/รอง4.png",
-        "email": "boonlert@npu.ac.th",
+        "email": "yodprem@npu.ac.th",
         "phone": "042-XXX-XXXX ต่อ 101",
         "location": "สำนักงานคณบดี",
         "calendarName": "ผศ.ยอดเปรม ภูกำเนิด"

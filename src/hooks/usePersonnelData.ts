@@ -56,11 +56,16 @@ function getLocalOverrides(): Record<string, any> {
         return;
       }
 
+      // Purge any corrupted override where Weeratham was mistakenly saved over Boonlert
+      const nameTh = String(val.nameTh || val.name || '');
+      const keyStr = String(k || '').toLowerCase();
+      if ((keyStr === 'boonlert' || keyStr === 'boonlert@npu.ac.th') && nameTh.includes('วีรธรรม')) {
+        return;
+      }
+
       // Automatically purge any temporary test records
       const nameEn = String(val.nameEn || val.calendarName || '');
-      const nameTh = String(val.nameTh || val.name || '');
-      const keyStr = String(k || '');
-      if (nameEn.toLowerCase().includes('test') || nameTh.toLowerCase().includes('test') || keyStr.toLowerCase().includes('test')) {
+      if (nameEn.toLowerCase().includes('test') || nameTh.toLowerCase().includes('test') || keyStr.includes('test')) {
         return;
       }
 
@@ -95,7 +100,15 @@ function getLocalOverrides(): Record<string, any> {
 function applyOverridesToExecs(execMap: Record<string, ExecutiveDetail>, overrides: Record<string, any>): Record<string, ExecutiveDetail> {
   const result: Record<string, ExecutiveDetail> = {};
   for (const [key, ex] of Object.entries(execMap)) {
-    const ov = overrides[ex.id] || (ex.email ? overrides[ex.email.toLowerCase()] : null) || (ex.name ? overrides[ex.name.trim()] : null);
+    // Look up override specifically matching this executive by id, exact name, or compatible email
+    let ov = overrides[ex.id] || (ex.name ? overrides[ex.name.trim()] : null);
+    if (!ov && ex.email) {
+      const emailOv = overrides[ex.email.toLowerCase()];
+      if (emailOv && isSamePersonnel(ex, emailOv)) {
+        ov = emailOv;
+      }
+    }
+
     if (ov && ov.deleted) continue;
     if (ov) {
       result[key] = {
@@ -331,31 +344,53 @@ export function usePersonnelData() {
         .then(([execRows, deptRows, lecRows, divRows, staffRows]) => {
           if (!isMounted) return;
 
-          // Parse Executives
+          // Parse Executives (Live Sync with Google Sheets)
           if (execRows && execRows.length > 0) {
-            const execMap: Record<string, ExecutiveDetail> = {};
+            const baseExecMap: Record<string, ExecutiveDetail> = { ...EXECUTIVES_DATA };
             for (const r of execRows) {
-              const id = String(r.id || r.name || '').trim();
-              if (!id) continue;
-              execMap[id] = {
-                id,
-                name: String(r.name || ''),
-                position: String(r.position || ''),
-                img: String(r.img || '/img/avatar-placeholder.svg'),
-                email: String(r.email || ''),
-                phone: String(r.phone || ''),
-                mapQuery: String(r.mapQuery || ''),
-                room: String(r.room || ''),
-                dutyStatus: String(r.dutyStatus || 'ปฏิบัติราชการตามปกติ'),
-                workingHours: String(r.workingHours || 'จันทร์ - ศุกร์ (08:30 - 16:30 น.)'),
-                education: String(r.education || '').split('|').map((s) => s.trim()).filter(Boolean),
-                skills: String(r.skills || '').split('|').map((s) => s.trim()).filter(Boolean),
-                works: String(r.works || '').split('|').map((s) => s.trim()).filter(Boolean),
+              const name = String(r.name || r.nameTh || '').trim();
+              const position = String(r.position || '').trim();
+              const email = String(r.email || '').trim().toLowerCase();
+              if (!name && !position && !email) continue;
+
+              // Identify matching executive key in baseExecMap
+              let targetKey = Object.keys(baseExecMap).find((k) => {
+                const ex = baseExecMap[k];
+                if (r.id && ex.id.toLowerCase() === String(r.id).trim().toLowerCase()) return true;
+                if (name && (name.includes('บุญเลิศ') || ex.name.includes('บุญเลิศ')) && ex.id === 'boonlert') return true;
+                if (name && (name.includes('วีรธรรม') || ex.name.includes('วีรธรรม')) && ex.id === 'weeratham') return true;
+                if (name && (name.includes('บุญเยี่ยม') || ex.name.includes('บุญเยี่ยม')) && ex.id === 'boonyiem') return true;
+                if (name && (name.includes('วีระ') || ex.name.includes('วีระ')) && ex.id === 'weera') return true;
+                if (name && (name.includes('สายันต์') || ex.name.includes('สายันต์')) && ex.id === 'sayan') return true;
+                if (position && position.includes('คณบดี') && !position.includes('รอง') && ex.id === 'boonlert') return true;
+                if (name && isSamePersonnel(ex, { name, email })) return true;
+                return false;
+              });
+
+              if (!targetKey) {
+                targetKey = String(r.id || email || `exec-${Object.keys(baseExecMap).length}`);
+              }
+
+              const prev = baseExecMap[targetKey] || ({} as ExecutiveDetail);
+              baseExecMap[targetKey] = {
+                id: prev.id || targetKey,
+                name: name || prev.name || '',
+                position: position || prev.position || '',
+                img: String(r.img || prev.img || '/img/avatar-placeholder.svg'),
+                email: email || prev.email || '',
+                phone: String(r.phone || prev.phone || ''),
+                mapQuery: String(r.mapQuery || prev.mapQuery || ''),
+                room: String(r.room || r.location || prev.room || ''),
+                dutyStatus: String(r.dutyStatus || prev.dutyStatus || 'ปฏิบัติราชการตามปกติ'),
+                workingHours: String(r.workingHours || prev.workingHours || 'จันทร์ - ศุกร์ (08:30 - 16:30 น.)'),
+                education: r.education ? String(r.education).split('|').map((s: string) => s.trim()).filter(Boolean) : (prev.education || []),
+                skills: r.skills ? String(r.skills).split('|').map((s: string) => s.trim()).filter(Boolean) : (prev.skills || []),
+                works: r.works ? String(r.works).split('|').map((s: string) => s.trim()).filter(Boolean) : (prev.works || []),
               };
             }
             const ov = getLocalOverrides();
-            if (Object.keys(execMap).length > 0) {
-              setExecutives(applyOverridesToExecs(execMap, ov));
+            if (Object.keys(baseExecMap).length > 0) {
+              setExecutives(applyOverridesToExecs(baseExecMap, ov));
               setIsLiveSheet(true);
               setSource('google_sheets');
             }

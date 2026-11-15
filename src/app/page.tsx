@@ -15,10 +15,15 @@ export default function HomePage() {
 
   const detailConsoleRef = useRef<HTMLDivElement>(null);
 
-  const dean = executives['boonlert'] || Object.values(executives)[0];
+  const allExecList = Object.values(executives);
+  const dean =
+    allExecList.find(p => p.id === 'boonlert' || (p.position && p.position.includes('คณบดี') && !p.position.includes('รอง')) || p.name.includes('บุญเลิศ')) ||
+    executives['boonlert'] ||
+    allExecList[0];
+
   const viceDeans = useMemo(() => {
-    return Object.values(executives).filter((p) => p.id !== 'boonlert');
-  }, [executives]);
+    return allExecList.filter((p) => p && p !== dean && p.id !== dean?.id && !p.name.includes('บุญเลิศ'));
+  }, [allExecList, dean]);
 
   const term = searchTerm.trim().toLowerCase();
 
