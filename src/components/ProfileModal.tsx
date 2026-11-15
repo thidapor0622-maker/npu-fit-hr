@@ -132,6 +132,21 @@ export default function ProfileModal({
                     <span>{person.phone}</span>
                   </a>
                 )}
+
+                {onEdit && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onEdit(person);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow-sm"
+                    title="แก้ไขข้อมูลอาจารย์ท่านนี้"
+                  >
+                    <i className="fa-solid fa-pen-to-square text-xs"></i>
+                    <span>แก้ไขโปรไฟล์</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -217,10 +232,10 @@ export default function ProfileModal({
                   onClose();
                   onEdit(person);
                 }}
-                className="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-amber-300"
+                className="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-amber-300 shadow-sm"
               >
                 <i className="fa-solid fa-pen-to-square text-amber-600"></i>
-                <span>แก้ไขข้อมูลอาจารย์ (เฉพาะผู้ดูแลระบบ)</span>
+                <span>แก้ไขข้อมูลอาจารย์</span>
               </button>
             )}
 

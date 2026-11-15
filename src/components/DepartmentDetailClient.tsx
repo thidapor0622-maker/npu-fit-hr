@@ -493,7 +493,6 @@ export default function DepartmentDetailClient({
                     index={0}
                     onOpenProfile={(p) => setSelectedProfile(p)}
                     onOpenCalendar={(name) => setCalendarModalName(name)}
-                    onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                   />
                 </div>
               </section>
@@ -524,7 +523,6 @@ export default function DepartmentDetailClient({
                       index={idx + 1}
                       onOpenProfile={(p) => setSelectedProfile(p)}
                       onOpenCalendar={(name) => setCalendarModalName(name)}
-                      onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
                     />
                   ))}
                 </div>
@@ -543,7 +541,7 @@ export default function DepartmentDetailClient({
         deptSlug={department.slug}
         onClose={() => setSelectedProfile(null)}
         onOpenCalendar={(name) => setCalendarModalName(name)}
-        onEdit={isAdmin ? (p) => openEditLecturer(p) : undefined}
+        onEdit={(isAdmin || (userEmail && selectedProfile?.email && userEmail === selectedProfile.email.toLowerCase().trim())) ? (p) => openEditLecturer(p) : undefined}
         onDelete={isAdmin ? (p) => handleDeleteLecturer(p) : undefined}
       />
 
@@ -554,21 +552,21 @@ export default function DepartmentDetailClient({
         onClose={() => setCalendarModalName(null)}
       />
 
-      {/* ─── In-Page Add / Edit Lecturer Modal ─── */}
+      {/* ─── In-Page Add / Edit Lecturer Modal (Well-proportioned size) ─── */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white p-5 flex items-center justify-between sticky top-0 z-10">
+            <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white px-5 py-4 flex items-center justify-between sticky top-0 z-10 flex-shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
-                  <i className={`fa-solid ${editingPerson ? 'fa-pen-to-square' : 'fa-user-plus'}`} />
+                <div className="w-8 h-8 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
+                  <i className={`fa-solid ${editingPerson ? 'fa-pen-to-square text-sm' : 'fa-user-plus text-sm'}`} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-white">
+                  <h3 className="font-bold text-sm sm:text-base text-white">
                     {editingPerson ? 'แก้ไขข้อมูลอาจารย์' : 'เพิ่มอาจารย์ใหม่'}
                   </h3>
-                  <p className="text-xs text-sky-300">{department.title}</p>
+                  <p className="text-[11px] text-sky-300 line-clamp-1">{department.title}</p>
                 </div>
               </div>
               <button
@@ -576,269 +574,267 @@ export default function DepartmentDetailClient({
                 className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition"
                 title="ปิดหน้าต่าง"
               >
-                <i className="fa-solid fa-xmark" />
+                <i className="fa-solid fa-xmark text-sm" />
               </button>
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSaveLecturer} className="p-6 overflow-y-auto space-y-5 flex-grow">
-              {/* Section 1: Basic Information */}
-              <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
-                  <i className="fa-solid fa-id-card text-sky-600" /> ข้อมูลทั่วไป
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      ชื่อ-นามสกุล (ภาษาไทย) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.nameTh}
-                      onChange={(e) => setFormData({ ...formData, nameTh: e.target.value })}
-                      placeholder="ผศ.กาญจน์ กันปัญญา"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      ชื่อ-นามสกุล (ภาษาอังกฤษ)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.nameEn}
-                      onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                      placeholder="Asst. Prof. Karn Kanpanya"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      อีเมล <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="karn@npu.ac.th"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      เบอร์โทรศัพท์
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="042-503-777"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      ตำแหน่ง / ตำแหน่งทางวิชาการ
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.position}
-                      onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                      placeholder="หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      ห้องทำงาน / สถานที่
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder={department.title}
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2 pt-1">
-                    <label className="inline-flex items-center gap-2.5 cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+            <form onSubmit={handleSaveLecturer} className="flex flex-col flex-grow overflow-hidden">
+              <div className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-grow">
+                {/* Section 1: Basic Information */}
+                <div className="bg-slate-50/80 rounded-2xl p-3.5 border border-slate-200/80 space-y-3">
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-1.5">
+                    <i className="fa-solid fa-id-card text-sky-600" /> ข้อมูลทั่วไป
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ชื่อ-นามสกุล (ภาษาไทย) <span className="text-red-500">*</span>
+                      </label>
                       <input
-                        type="checkbox"
-                        checked={formData.isHead}
-                        onChange={(e) => setFormData({ ...formData, isHead: e.target.checked })}
-                        className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                        type="text"
+                        required
+                        value={formData.nameTh}
+                        onChange={(e) => setFormData({ ...formData, nameTh: e.target.value })}
+                        placeholder="ผศ.กาญจน์ กันปัญญา"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
                       />
-                      <span>หัวหน้าหลักสูตร / ประธานสาขาวิชา (แสดงเด่นด้านบนสุดของสาขา)</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Media & Calendar */}
-              <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
-                  <i className="fa-solid fa-photo-film text-purple-600" /> สื่อและตารางงาน
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      URL รูปภาพ (Path หรือ Web URL)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.imageUrl}
-                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                      placeholder="img/ผศ.กาญจน์ กันปัญญา.jpg หรือ https://..."
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
-                    />
-                  </div>
-                  {formData.imageUrl && (
-                    <div className="md:col-span-2 flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200">
-                      <img
-                        src={formData.imageUrl}
-                        alt="Preview"
-                        className="w-14 h-14 rounded-lg object-cover border border-slate-200"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/img/avatar-placeholder.svg'; }}
-                      />
-                      <div className="text-xs text-slate-500">
-                        <span className="font-semibold text-slate-700 block">ตัวอย่างรูปภาพ</span>
-                        รูปจะแสดงบนการ์ดและป๊อปอัปหน้าเว็บ
-                      </div>
                     </div>
-                  )}
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Google Calendar URL (ปฏิทิน/ตารางนัดหมาย)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.calendarUrl}
-                      onChange={(e) => setFormData({ ...formData, calendarUrl: e.target.value })}
-                      placeholder="https://calendar.google.com/calendar/embed?src=..."
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white font-mono"
-                    />
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ชื่อ-นามสกุล (ภาษาอังกฤษ)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.nameEn}
+                        onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                        placeholder="Asst. Prof. Karn Kanpanya"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        อีเมล <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="karn@npu.ac.th"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        เบอร์โทรศัพท์
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="042-503-777"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ตำแหน่ง / ตำแหน่งทางวิชาการ
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.position}
+                        onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                        placeholder="หัวหน้าหลักสูตร / อาจารย์ประจำสาขาวิชา"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ห้องทำงาน / สถานที่
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        placeholder={department.title}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 pt-0.5">
+                      <label className="inline-flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                        <input
+                          type="checkbox"
+                          checked={formData.isHead}
+                          onChange={(e) => setFormData({ ...formData, isHead: e.target.checked })}
+                          className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                        />
+                        <span>หัวหน้าหลักสูตร / ประธานสาขาวิชา (แสดงเด่นด้านบนสุดของสาขา)</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Section 3: Expertise, Education & Skills */}
-              <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-3">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
-                  <i className="fa-solid fa-graduation-cap text-emerald-600" /> ความเชี่ยวชาญ การศึกษา และทักษะ
-                </h4>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                      <span>ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)</span>
-                      <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
-                    </label>
-                    <textarea
-                      value={formData.researchInterests}
-                      onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
-                      placeholder="วิศวกรรมระบบไฟฟ้ากำลัง, การจัดการพลังงานหมุนเวียน (Renewable Energy Systems)"
-                      rows={3}
-                      style={{ resize: 'vertical' }}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[85px] leading-relaxed transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                      <span>ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)</span>
-                      <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
-                    </label>
-                    <textarea
-                      value={formData.education}
-                      onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                      placeholder="Ph.D. Electrical Engineering, Khon Kaen University, 2010&#10;M.Eng. Power Systems, KMUTT, 2005"
-                      rows={3}
-                      style={{ resize: 'vertical' }}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[85px] leading-relaxed font-mono transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                      <span>ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)</span>
-                      <span className="text-[11px] text-slate-400 font-normal">↘ ลากมุมขวาล่างเพื่อขยายช่องได้</span>
-                    </label>
-                    <textarea
-                      value={formData.skills}
-                      onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                      placeholder="Power System Analysis&#10;PLC Programming&#10;Energy Management"
-                      rows={3}
-                      style={{ resize: 'vertical' }}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[85px] leading-relaxed font-mono transition"
-                    />
+                {/* Section 2: Media & Calendar */}
+                <div className="bg-slate-50/80 rounded-2xl p-3.5 border border-slate-200/80 space-y-3">
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-1.5">
+                    <i className="fa-solid fa-photo-film text-purple-600" /> สื่อและตารางงาน
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        URL รูปภาพ (Path หรือ Web URL)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.imageUrl}
+                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        placeholder="img/ผศ.กาญจน์ กันปัญญา.jpg หรือ https://..."
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+                      />
+                    </div>
+                    {formData.imageUrl && (
+                      <div className="md:col-span-2 flex items-center gap-3 p-2 bg-white rounded-xl border border-slate-200">
+                        <img
+                          src={formData.imageUrl}
+                          alt="Preview"
+                          className="w-12 h-12 rounded-lg object-cover border border-slate-200"
+                          onError={(e) => { (e.target as HTMLImageElement).src = '/img/avatar-placeholder.svg'; }}
+                        />
+                        <div className="text-[11px] text-slate-500">
+                          <span className="font-semibold text-slate-700 block">ตัวอย่างรูปภาพ</span>
+                          รูปจะแสดงบนการ์ดและป๊อปอัปหน้าเว็บ
+                        </div>
+                      </div>
+                    )}
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Google Calendar URL (ปฏิทิน/ตารางนัดหมาย)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.calendarUrl}
+                        onChange={(e) => setFormData({ ...formData, calendarUrl: e.target.value })}
+                        placeholder="https://calendar.google.com/calendar/embed?src=..."
+                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white font-mono"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Save Feedback & Form Buttons */}
-              <div className="space-y-3 pt-2 border-t border-slate-100">
+                {/* Section 3: Expertise, Education & Skills */}
+                <div className="bg-slate-50/80 rounded-2xl p-3.5 border border-slate-200/80 space-y-3">
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-1.5">
+                    <i className="fa-solid fa-graduation-cap text-emerald-600" /> ความเชี่ยวชาญ การศึกษา และทักษะ
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ความสนใจและงานวิจัยที่เชี่ยวชาญ (Research interests)
+                      </label>
+                      <textarea
+                        value={formData.researchInterests}
+                        onChange={(e) => setFormData({ ...formData, researchInterests: e.target.value })}
+                        placeholder="วิศวกรรมระบบไฟฟ้ากำลัง, การจัดการพลังงานหมุนเวียน (Renewable Energy Systems)"
+                        rows={2}
+                        style={{ resize: 'vertical' }}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[60px] leading-relaxed transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ประวัติการศึกษา (แต่ละบรรทัด = 1 วุฒิการศึกษา)
+                      </label>
+                      <textarea
+                        value={formData.education}
+                        onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                        placeholder="Ph.D. Electrical Engineering, Khon Kaen University, 2010&#10;M.Eng. Power Systems, KMUTT, 2005"
+                        rows={2}
+                        style={{ resize: 'vertical' }}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[60px] leading-relaxed font-mono transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        ทักษะและความเชี่ยวชาญ (แต่ละบรรทัด = 1 ทักษะ)
+                      </label>
+                      <textarea
+                        value={formData.skills}
+                        onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                        placeholder="Power System Analysis&#10;PLC Programming&#10;Energy Management"
+                        rows={2}
+                        style={{ resize: 'vertical' }}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white min-h-[60px] leading-relaxed font-mono transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Feedback Alert if active */}
                 {saveMsg.text && (
                   <div
-                    className={`p-3.5 rounded-xl text-xs font-bold flex items-center gap-2.5 shadow-sm transition-all animate-fadeIn ${
+                    className={`p-3 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all animate-fadeIn ${
                       saveMsg.ok
                         ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
                         : 'bg-red-50 text-red-800 border border-red-300'
                     }`}
                   >
-                    <i className={`fa-solid ${saveMsg.ok ? 'fa-circle-check text-emerald-600 text-sm' : 'fa-circle-exclamation text-red-600 text-sm'}`} />
+                    <i className={`fa-solid ${saveMsg.ok ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-red-600'}`} />
                     <span>{saveMsg.text}</span>
                   </div>
                 )}
+              </div>
 
-                <div className="flex items-center justify-between gap-2.5">
-                  <div>
-                    {editingPerson && (
-                      <button
-                        type="button"
-                        onClick={handleDeleteLecturer}
-                        disabled={saving}
-                        className="px-3.5 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition flex items-center gap-1.5 shadow-sm"
-                        title="ลบอาจารย์ท่านนี้ออกจากสาขาวิชา"
-                      >
-                        <i className="fa-solid fa-trash-can text-xs" />
-                        <span>ลบอาจารย์ท่านนี้</span>
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2.5">
+              {/* Sticky Save Footer (Perfect Size & Accessible) */}
+              <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between sticky bottom-0 z-10 flex-shrink-0">
+                <div>
+                  {editingPerson && isAdmin && (
                     <button
                       type="button"
-                      onClick={() => setShowEditModal(false)}
-                      className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-                    >
-                      ยกเลิก
-                    </button>
-                    <button
-                      type="submit"
+                      onClick={() => handleDeleteLecturer()}
                       disabled={saving}
-                      className="px-6 py-2.5 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition flex items-center gap-2 shadow-md disabled:opacity-50"
+                      className="px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition flex items-center gap-1.5 shadow-sm"
+                      title="ลบอาจารย์ท่านนี้ออกจากสาขาวิชา"
                     >
-                      {saving ? (
-                        <>
-                          <i className="fa-solid fa-spinner fa-spin" />
-                          <span>กำลังบันทึกข้อมูล...</span>
-                        </>
-                      ) : (
-                        <>
-                          <i className="fa-solid fa-floppy-disk" />
-                          <span>บันทึกข้อมูล</span>
-                        </>
-                      )}
+                      <i className="fa-solid fa-trash-can text-xs" />
+                      <span>ลบอาจารย์</span>
                     </button>
-                  </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition flex items-center gap-2 shadow-md disabled:opacity-50"
+                  >
+                    {saving ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin text-xs" />
+                        <span>กำลังบันทึก...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-floppy-disk text-xs" />
+                        <span>บันทึกข้อมูล</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </form>

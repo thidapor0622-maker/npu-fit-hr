@@ -159,24 +159,8 @@ export default function PersonnelCard({
           </p>
         </div>
 
-        {/* 3. Action Buttons Row (Right under the name/id): [Email Icon] [Profile Button] [Edit Button if authorized] */}
-        <div className="flex items-center justify-end gap-2 mb-4 flex-wrap">
-          {/* Edit Button */}
-          {onEdit && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit(person);
-              }}
-              className="px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
-              title="แก้ไขข้อมูลอาจารย์ท่านนี้"
-            >
-              <i className="fa-solid fa-pen-to-square text-xs" />
-              <span>แก้ไข</span>
-            </button>
-          )}
-
+        {/* 3. Action Buttons Row (Right under the name/id): [Email Icon] [Profile Button] */}
+        <div className="flex items-center justify-end gap-2 mb-4">
           {/* Square Email Button */}
           {person.email && (
             <a
@@ -193,7 +177,7 @@ export default function PersonnelCard({
           <button
             type="button"
             onClick={handleProfileClick}
-            className="px-3.5 py-2 rounded-xl border-2 border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all"
+            className="flex-grow px-3.5 py-2 rounded-xl border-2 border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all"
             title="เปิดดูประวัติและผลงาน (Profile)"
           >
             <i className="fa-regular fa-id-badge text-sm"></i>
