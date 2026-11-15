@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [personnel, setPersonnel] = useState<PersonnelEntry[]>([]);
   const [searchQ, setSearchQ] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
+  const [filterDept, setFilterDept] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editEntry, setEditEntry] = useState<PersonnelEntry | null>(null);
   const [formData, setFormData] = useState<Partial<PersonnelEntry>>({});
@@ -114,44 +115,64 @@ export default function AdminPage() {
         id: ex.id,
         role: 'executive',
         nameTh: ex.name,
+        nameEn: ex.calendarName || ex.name,
         position: ex.position,
         email: ex.email,
         phone: ex.phone,
         department: 'คณะผู้บริหาร',
+        departmentSlug: 'executives',
+        isHead: true,
         imageUrl: ex.img,
         location: ex.room,
+        calendarUrl: '',
+        education: ex.education || [],
+        skills: ex.skills || [],
+        updatedAt: new Date().toISOString(),
       });
     });
     DEPARTMENTS_DATA.forEach((d) => {
       d.allCards?.forEach((p, idx) => {
         list.push({
-          id: `${d.slug}-${idx}`,
+          id: p.email || `${d.slug}-${idx}`,
           role: 'teacher',
           nameTh: p.name,
-          nameEn: p.nameEn,
-          position: p.position,
+          nameEn: p.calendarName || p.nameEn || p.name,
+          position: p.position || 'อาจารย์ประจำสาขาวิชา',
           email: p.email,
           phone: p.phone,
           department: d.title,
           departmentSlug: d.slug,
+          isHead: p.isHead || false,
           imageUrl: p.img,
-          location: p.location,
+          location: p.location || d.title,
+          calendarUrl: p.calendarUrl || '',
+          researchInterests: p.researchInterests || '',
+          education: p.education || [],
+          skills: p.skills || [],
+          updatedAt: new Date().toISOString(),
         });
       });
     });
     STAFF_DIVISIONS_DATA.forEach((div) => {
       div.allCards?.forEach((p, idx) => {
         list.push({
-          id: `${div.slug}-${idx}`,
+          id: p.email || `${div.slug}-${idx}`,
           role: 'staff',
           nameTh: p.name,
-          position: p.position,
+          nameEn: p.calendarName || p.nameEn || p.name,
+          position: p.position || 'บุคลากร',
           email: p.email,
           phone: p.phone,
           department: div.title,
           departmentSlug: div.slug,
+          isHead: p.isHead || false,
           imageUrl: p.img,
-          location: p.location,
+          location: p.location || div.title,
+          calendarUrl: p.calendarUrl || '',
+          researchInterests: p.researchInterests || '',
+          education: p.education || [],
+          skills: p.skills || [],
+          updatedAt: new Date().toISOString(),
         });
       });
     });
@@ -167,85 +188,219 @@ export default function AdminPage() {
         fetchClientGViz(targetSheetId, 'Staff').catch(() => null),
       ]);
 
+      // 1. Initialize complete base list (5 executives, 90 lecturers, 39 staff = 134 total)
       const list: PersonnelEntry[] = [];
 
+      // 1.1 Base Executives (5)
+      Object.values(EXECUTIVES_DATA).forEach((ex) => {
+        list.push({
+          id: ex.id,
+          role: 'executive',
+          nameTh: ex.name,
+          nameEn: ex.calendarName || ex.name,
+          position: ex.position,
+          email: ex.email,
+          password: 'admin1234',
+          phone: ex.phone,
+          department: 'คณะผู้บริหาร',
+          departmentSlug: 'executives',
+          isHead: true,
+          imageUrl: ex.img,
+          location: ex.room,
+          calendarUrl: '',
+          researchInterests: '',
+          education: ex.education || [],
+          skills: ex.skills || [],
+          updatedAt: new Date().toISOString(),
+        });
+      });
+
+      // 1.2 Base Lecturers (90 across 15 departments)
+      DEPARTMENTS_DATA.forEach((d) => {
+        d.allCards?.forEach((p, idx) => {
+          list.push({
+            id: p.email || `${d.slug}-${idx}`,
+            role: 'teacher',
+            nameTh: p.name,
+            nameEn: p.calendarName || p.nameEn || p.name,
+            position: p.position || 'อาจารย์ประจำสาขาวิชา',
+            email: p.email,
+            password: 'npu1234',
+            phone: p.phone,
+            department: d.title,
+            departmentSlug: d.slug,
+            isHead: p.isHead || false,
+            imageUrl: p.img,
+            location: p.location || d.title,
+            calendarUrl: p.calendarUrl || '',
+            researchInterests: p.researchInterests || '',
+            education: p.education || [],
+            skills: p.skills || [],
+            updatedAt: new Date().toISOString(),
+          });
+        });
+      });
+
+      // 1.3 Base Staff (39 across 4 divisions)
+      STAFF_DIVISIONS_DATA.forEach((div) => {
+        div.allCards?.forEach((p, idx) => {
+          list.push({
+            id: p.email || `${div.slug}-${idx}`,
+            role: 'staff',
+            nameTh: p.name,
+            nameEn: p.calendarName || p.nameEn || p.name,
+            position: p.position || 'บุคลากร',
+            email: p.email,
+            password: 'npu1234',
+            phone: p.phone,
+            department: div.title,
+            departmentSlug: div.slug,
+            isHead: p.isHead || false,
+            imageUrl: p.img,
+            location: p.location || div.title,
+            calendarUrl: p.calendarUrl || '',
+            researchInterests: p.researchInterests || '',
+            education: p.education || [],
+            skills: p.skills || [],
+            updatedAt: new Date().toISOString(),
+          });
+        });
+      });
+
+      // 2. Real-time update from Google Sheets in-place
+      // 2.1 Sync Executives
       if (execRows && execRows.length > 0) {
         execRows.forEach((r) => {
-          if (!r.name && !r.id) return;
-          list.push({
-            id: String(r.id || r.name),
-            role: 'executive',
-            nameTh: String(r.name || ''),
-            nameEn: String(r.calendarName || r.nameEn || ''),
+          if (!r.name && !r.id && !r.email) return;
+          const matchIdx = list.findIndex(p => p.role === 'executive' && (
+            (r.id && p.id === String(r.id)) ||
+            (r.email && p.email?.toLowerCase() === String(r.email).toLowerCase()) ||
+            (r.name && isSamePersonnel(p, { name: r.name, email: r.email }))
+          ));
+          const updated: Partial<PersonnelEntry> = {
+            nameTh: String(r.name || r.nameTh || ''),
+            nameEn: String(r.calendarName || r.nameEn || r.name || ''),
             position: String(r.position || ''),
             email: String(r.email || ''),
-            password: String(r.passwd || r.password || 'admin1234'),
             phone: String(r.phone || ''),
-            department: 'คณะผู้บริหาร',
-            departmentSlug: 'executives',
-            isHead: true,
-            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            imageUrl: String(r.img || ''),
             location: String(r.room || r.location || ''),
             calendarUrl: String(r.calendarUrl || ''),
             researchInterests: String(r.researchInterests || r.interest || ''),
             education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             updatedAt: new Date().toISOString(),
-          });
+          };
+          if (matchIdx >= 0) {
+            list[matchIdx] = {
+              ...list[matchIdx],
+              ...Object.fromEntries(Object.entries(updated).filter(([_, v]) => v !== '' && (!Array.isArray(v) || v.length > 0))),
+            };
+          } else {
+            list.push({
+              id: String(r.id || r.email || `exec-${list.length}`),
+              role: 'executive',
+              department: 'คณะผู้บริหาร',
+              departmentSlug: 'executives',
+              isHead: true,
+              password: 'admin1234',
+              ...updated,
+            } as PersonnelEntry);
+          }
         });
       }
 
+      // 2.2 Sync Lecturers (match with base 90 lecturers)
       if (lecRows && lecRows.length > 0) {
         lecRows.forEach((r, idx) => {
           const name = String(r.name || r.nameTh || r['ชื่อ-นามสกุล'] || r['ชื่อ'] || r.calendarName || r.nameEn || '').trim();
           const email = String(r.email || r['อีเมล'] || '').trim();
           if (!name && !email) return;
-          list.push({
-            id: String(r.id || email || `lec-${idx}`),
-            role: 'teacher',
-            nameTh: name || 'อาจารย์ประจำสาขาวิชา',
-            nameEn: String(r.calendarName || r.nameEn || name),
-            position: String(r.position || 'อาจารย์ประจำ'),
-            email: email,
-            password: String(r.passwd || r.password || 'npu1234'),
+
+          const matchIdx = list.findIndex(p => p.role === 'teacher' && (
+            (email && p.email?.toLowerCase() === email.toLowerCase()) ||
+            (name && isSamePersonnel(p, { name, email }))
+          ));
+
+          const deptSlug = String(r.departmentSlug || r.location || '');
+          const updated: Partial<PersonnelEntry> = {
+            nameTh: name || undefined,
+            nameEn: String(r.calendarName || r.nameEn || name || ''),
+            position: String(r.position || 'อาจารย์ประจำสาขาวิชา'),
+            email: email || undefined,
             phone: String(r.phone || ''),
-            department: String(r.departmentSlug || r.location || 'อาจารย์ประจำสาขาวิชา'),
-            departmentSlug: String(r.departmentSlug || ''),
-            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
-            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            imageUrl: String(r.img || ''),
+            departmentSlug: deptSlug || undefined,
+            department: deptSlug ? (DEPARTMENTS_DATA.find(d => d.slug === deptSlug || d.title.includes(deptSlug))?.title || deptSlug) : undefined,
             location: String(r.location || ''),
             calendarUrl: String(r.calendarUrl || ''),
             researchInterests: String(r.researchInterests || r.interest || ''),
             education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
             updatedAt: new Date().toISOString(),
-          });
+          };
+
+          if (matchIdx >= 0) {
+            list[matchIdx] = {
+              ...list[matchIdx],
+              ...Object.fromEntries(Object.entries(updated).filter(([_, v]) => v !== undefined && v !== '' && (!Array.isArray(v) || v.length > 0))),
+            };
+          } else {
+            list.push({
+              id: String(r.id || email || `lec-${idx}`),
+              role: 'teacher',
+              password: String(r.passwd || r.password || 'npu1234'),
+              ...updated,
+            } as PersonnelEntry);
+          }
         });
       }
 
+      // 2.3 Sync Staff (match with base 39 staff)
       if (staffRows && staffRows.length > 0) {
         staffRows.forEach((r, idx) => {
-          if (!r.name && !r.email) return;
-          list.push({
-            id: String(r.email || `staff-${idx}`),
-            role: 'staff',
-            nameTh: String(r.name || ''),
-            nameEn: String(r.calendarName || r.nameEn || ''),
+          const name = String(r.name || r.nameTh || r['ชื่อ-นามสกุล'] || r['ชื่อ'] || '').trim();
+          const email = String(r.email || r['อีเมล'] || '').trim();
+          if (!name && !email) return;
+
+          const matchIdx = list.findIndex(p => p.role === 'staff' && (
+            (email && p.email?.toLowerCase() === email.toLowerCase()) ||
+            (name && isSamePersonnel(p, { name, email }))
+          ));
+
+          const divSlug = String(r.divisionSlug || r.location || '');
+          const updated: Partial<PersonnelEntry> = {
+            nameTh: name || undefined,
+            nameEn: String(r.calendarName || r.nameEn || name || ''),
             position: String(r.position || 'บุคลากร'),
-            email: String(r.email || ''),
-            password: String(r.passwd || r.password || 'npu1234'),
+            email: email || undefined,
             phone: String(r.phone || ''),
-            department: String(r.divisionSlug || r.location || 'สายสนับสนุน'),
-            departmentSlug: String(r.divisionSlug || ''),
-            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
-            imageUrl: String(r.img || '/img/avatar-placeholder.svg'),
+            imageUrl: String(r.img || ''),
+            departmentSlug: divSlug || undefined,
+            department: divSlug ? (STAFF_DIVISIONS_DATA.find(div => div.slug === divSlug || div.title.includes(divSlug))?.title || divSlug) : undefined,
             location: String(r.location || ''),
             calendarUrl: String(r.calendarUrl || ''),
             researchInterests: String(r.researchInterests || ''),
             education: String(r.education || '').split('|').map((s: string) => s.trim()).filter(Boolean),
             skills: String(r.skills || '').split('|').map((s: string) => s.trim()).filter(Boolean),
+            isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
             updatedAt: new Date().toISOString(),
-          });
+          };
+
+          if (matchIdx >= 0) {
+            list[matchIdx] = {
+              ...list[matchIdx],
+              ...Object.fromEntries(Object.entries(updated).filter(([_, v]) => v !== undefined && v !== '' && (!Array.isArray(v) || v.length > 0))),
+            };
+          } else {
+            list.push({
+              id: String(r.id || email || `staff-${idx}`),
+              role: 'staff',
+              password: String(r.passwd || r.password || 'npu1234'),
+              ...updated,
+            } as PersonnelEntry);
+          }
         });
       }
 
@@ -518,7 +673,7 @@ export default function AdminPage() {
   const filteredPersonnel = personnel.filter((p) => {
     const matchSearch =
       !searchQ ||
-      (p.nameTh || '').includes(searchQ) ||
+      (p.nameTh || '').toLowerCase().includes(searchQ.toLowerCase()) ||
       (p.nameEn || '').toLowerCase().includes(searchQ.toLowerCase()) ||
       (p.email || '').toLowerCase().includes(searchQ.toLowerCase()) ||
       (p.department || '').toLowerCase().includes(searchQ.toLowerCase()) ||
@@ -526,15 +681,20 @@ export default function AdminPage() {
 
     if (!matchSearch) return false;
 
-    if (filterRole === 'all') return true;
-    if (filterRole === 'executive') return p.role === 'executive' || p.department === 'คณะผู้บริหาร';
-    if (filterRole === 'teacher') return p.role === 'teacher';
-    if (filterRole === 'staff') return p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน');
+    // Role filtering
+    if (filterRole === 'executive' && !(p.role === 'executive' || p.department === 'คณะผู้บริหาร')) return false;
+    if (filterRole === 'teacher' && p.role !== 'teacher') return false;
+    if (filterRole === 'staff' && !(p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน'))) return false;
 
-    return (
-      p.departmentSlug === filterRole ||
-      (p.department || '').toLowerCase().includes(filterRole.toLowerCase())
-    );
+    // Department / Division sub-filtering
+    if (filterDept !== 'all') {
+      const matchDept =
+        p.departmentSlug === filterDept ||
+        (p.department || '').toLowerCase().includes(filterDept.toLowerCase());
+      if (!matchDept) return false;
+    }
+
+    return true;
   });
 
   // ─── TABS ───
@@ -606,10 +766,10 @@ export default function AdminPage() {
             {/* Stats grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'ผู้บริหาร', value: String(personnel.filter((p) => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length || 5), icon: 'fa-user-tie', color: 'sky' },
-                { label: 'สาขาวิชา', value: '15', icon: 'fa-building-columns', color: 'indigo' },
+                { label: 'ผู้บริหาร', value: `${personnel.filter((p) => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length || 5} ท่าน`, icon: 'fa-user-tie', color: 'sky' },
+                { label: 'สาขาวิชา', value: '15 สาขา', icon: 'fa-building-columns', color: 'indigo' },
                 { label: 'อาจารย์ประจำ', value: `${Math.max(personnel.filter((p) => p.role === 'teacher').length, 90)} ท่าน`, icon: 'fa-chalkboard-user', color: 'violet' },
-                { label: 'บุคลากรสายสนับสนุน', value: `${personnel.filter((p) => p.role === 'staff').length || 34} ท่าน`, icon: 'fa-users', color: 'emerald' },
+                { label: 'บุคลากรสายสนับสนุน', value: `${Math.max(personnel.filter((p) => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length, 39)} ท่าน`, icon: 'fa-users', color: 'emerald' },
               ].map((s) => (
                 <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
                   <div className={`w-10 h-10 rounded-xl bg-${s.color}-100 text-${s.color}-600 flex items-center justify-center mb-3`}>
@@ -767,47 +927,156 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* Search and Category Filter */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
-              <div className="relative flex-1 w-full">
-                <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
-                <input
-                  type="text"
-                  value={searchQ}
-                  onChange={(e) => setSearchQ(e.target.value)}
-                  placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา..."
-                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
-                />
+            {/* ─── Interactive Quick Filter Tabs & Search Bar (มีลูกเล่นน่าสนใจ) ─── */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+              {/* Category Pills Bar */}
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  {
+                    id: 'all',
+                    label: 'ทั้งหมด',
+                    count: personnel.length,
+                    icon: 'fa-users',
+                    activeClass: 'bg-gradient-to-r from-sky-600 via-sky-700 to-blue-700 text-white shadow-md shadow-sky-500/20 border-transparent',
+                    inactiveClass: 'bg-slate-100 hover:bg-slate-200/80 text-slate-700 border-slate-200/60',
+                    badgeActiveClass: 'bg-white/25 text-white',
+                    badgeInactiveClass: 'bg-white text-slate-700 border border-slate-200/60',
+                  },
+                  {
+                    id: 'executive',
+                    label: 'คณะผู้บริหาร',
+                    count: personnel.filter(p => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length,
+                    icon: 'fa-user-tie',
+                    activeClass: 'bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-white shadow-md shadow-amber-500/20 border-transparent',
+                    inactiveClass: 'bg-amber-50/70 hover:bg-amber-100 text-amber-900 border-amber-200/70',
+                    badgeActiveClass: 'bg-white/25 text-white',
+                    badgeInactiveClass: 'bg-amber-100 text-amber-900',
+                  },
+                  {
+                    id: 'teacher',
+                    label: 'อาจารย์ประจำสาขาวิชา',
+                    count: personnel.filter(p => p.role === 'teacher').length,
+                    icon: 'fa-chalkboard-user',
+                    activeClass: 'bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 text-white shadow-md shadow-indigo-500/20 border-transparent',
+                    inactiveClass: 'bg-indigo-50/70 hover:bg-indigo-100 text-indigo-900 border-indigo-200/70',
+                    badgeActiveClass: 'bg-white/25 text-white',
+                    badgeInactiveClass: 'bg-indigo-100 text-indigo-900',
+                  },
+                  {
+                    id: 'staff',
+                    label: 'บุคลากร / ฝ่ายสนับสนุน',
+                    count: personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length,
+                    icon: 'fa-briefcase',
+                    activeClass: 'bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 text-white shadow-md shadow-emerald-500/20 border-transparent',
+                    inactiveClass: 'bg-emerald-50/70 hover:bg-emerald-100 text-emerald-900 border-emerald-200/70',
+                    badgeActiveClass: 'bg-white/25 text-white',
+                    badgeInactiveClass: 'bg-emerald-100 text-emerald-900',
+                  },
+                ].map((cat) => {
+                  const isActive = filterRole === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        setFilterRole(cat.id);
+                        setFilterDept('all');
+                      }}
+                      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold border transition-all duration-200 cursor-pointer select-none active:scale-95 ${
+                        isActive ? cat.activeClass : cat.inactiveClass
+                      }`}
+                    >
+                      <i className={`fa-solid ${cat.icon} text-xs`} />
+                      <span>{cat.label}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-black transition ${
+                        isActive ? cat.badgeActiveClass : cat.badgeInactiveClass
+                      }`}>
+                        {cat.count}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Category / Role Filter Selector on the right */}
-              <div className="relative w-full sm:w-auto min-w-[240px]">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <i className="fa-solid fa-filter text-xs" />
+              {/* Search Bar & Sub-Filters Row */}
+              <div className="flex flex-col md:flex-row gap-3 items-center justify-between pt-1">
+                {/* Search Bar */}
+                <div className="relative flex-1 w-full">
+                  <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                  <input
+                    type="text"
+                    value={searchQ}
+                    onChange={(e) => setSearchQ(e.target.value)}
+                    placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา..."
+                    className="w-full pl-10 pr-24 py-2.5 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50/60 hover:bg-white focus:bg-white transition"
+                  />
+                  {searchQ && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQ('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    >
+                      <i className="fa-solid fa-circle-xmark text-sm" />
+                    </button>
+                  )}
+                  <div className="absolute right-9 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400 hidden sm:block pointer-events-none">
+                    พบ {filteredPersonnel.length} คน
+                  </div>
                 </div>
-                <select
-                  value={filterRole}
-                  onChange={(e) => setFilterRole(e.target.value)}
-                  className="w-full pl-9 pr-9 py-2.5 text-sm font-bold border border-slate-200 rounded-xl bg-slate-50 hover:bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400 transition cursor-pointer appearance-none shadow-sm"
-                >
-                  <option value="all">👥 ทั้งหมด ({personnel.length})</option>
-                  <option value="executive">👔 คณะผู้บริหาร ({personnel.filter(p => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length})</option>
-                  <option value="teacher">🎓 อาจารย์ประจำสาขาวิชา ({personnel.filter(p => p.role === 'teacher').length})</option>
-                  <option value="staff">💼 บุคลากร / ฝ่ายสนับสนุน ({personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length})</option>
-                  <optgroup label="── แยกตามสาขาวิชา ──">
-                    {DEPARTMENTS_DATA.map((d) => {
-                      const count = personnel.filter(p => p.role === 'teacher' && (p.departmentSlug === d.slug || (p.department || '').includes(d.title))).length;
-                      return (
-                        <option key={d.slug} value={d.slug}>
-                          {d.title} ({count})
-                        </option>
-                      );
-                    })}
-                  </optgroup>
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
-                  <i className="fa-solid fa-chevron-down" />
-                </div>
+
+                {/* Sub-Filter for Departments (shown if all or teacher is selected) */}
+                {(filterRole === 'all' || filterRole === 'teacher') && (
+                  <div className="relative w-full md:w-auto min-w-[260px]">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-indigo-500">
+                      <i className="fa-solid fa-graduation-cap text-xs" />
+                    </div>
+                    <select
+                      value={filterDept}
+                      onChange={(e) => setFilterDept(e.target.value)}
+                      className="w-full pl-9 pr-9 py-2.5 text-xs sm:text-sm font-bold border border-indigo-200 rounded-2xl bg-indigo-50/40 hover:bg-indigo-50 text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition cursor-pointer appearance-none shadow-sm"
+                    >
+                      <option value="all">🎓 ทุกสาขาวิชา ({personnel.filter(p => p.role === 'teacher').length} คน)</option>
+                      {DEPARTMENTS_DATA.map((d) => {
+                        const count = personnel.filter(p => p.role === 'teacher' && (p.departmentSlug === d.slug || (p.department || '').includes(d.title))).length;
+                        return (
+                          <option key={d.slug} value={d.slug}>
+                            {d.title} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-indigo-400 text-xs">
+                      <i className="fa-solid fa-chevron-down" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-Filter for Staff Divisions (shown if staff is selected) */}
+                {filterRole === 'staff' && (
+                  <div className="relative w-full md:w-auto min-w-[260px]">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-500">
+                      <i className="fa-solid fa-briefcase text-xs" />
+                    </div>
+                    <select
+                      value={filterDept}
+                      onChange={(e) => setFilterDept(e.target.value)}
+                      className="w-full pl-9 pr-9 py-2.5 text-xs sm:text-sm font-bold border border-emerald-200 rounded-2xl bg-emerald-50/40 hover:bg-emerald-50 text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition cursor-pointer appearance-none shadow-sm"
+                    >
+                      <option value="all">💼 ทุกฝ่ายสนับสนุน ({personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length} คน)</option>
+                      {STAFF_DIVISIONS_DATA.map((div) => {
+                        const count = personnel.filter(p => (p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')) && (p.departmentSlug === div.slug || (p.department || '').includes(div.title))).length;
+                        return (
+                          <option key={div.slug} value={div.slug}>
+                            {div.title} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-emerald-400 text-xs">
+                      <i className="fa-solid fa-chevron-down" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -816,51 +1085,87 @@ export default function AdminPage() {
               {filteredPersonnel.length === 0 ? (
                 <div className="p-12 text-center text-slate-400">
                   <i className="fa-solid fa-users text-4xl mb-3 block" />
-                  <p className="font-semibold">ยังไม่มีข้อมูลบุคลากรในระบบ</p>
-                  <p className="text-sm mt-1">กดปุ่ม "เพิ่มบุคลากรใหม่" เพื่อเริ่มต้น</p>
+                  <p className="font-semibold">ไม่พบข้อมูลบุคลากรที่ค้นหา</p>
+                  <p className="text-sm mt-1">ลองเปลี่ยนคำค้นหา หรือกดเลือกหมวดหมู่อื่น</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-slate-50 border-b border-slate-200">
                       <tr>
-                        <th className="text-left px-5 py-3 font-bold text-slate-600 text-xs uppercase tracking-wide">ชื่อ</th>
-                        <th className="text-left px-5 py-3 font-bold text-slate-600 text-xs uppercase tracking-wide hidden md:table-cell">อีเมล</th>
-                        <th className="text-left px-5 py-3 font-bold text-slate-600 text-xs uppercase tracking-wide hidden lg:table-cell">สาขา/ฝ่าย</th>
-                        <th className="text-left px-5 py-3 font-bold text-slate-600 text-xs uppercase tracking-wide hidden lg:table-cell">อัพเดทล่าสุด</th>
-                        <th className="text-right px-5 py-3 font-bold text-slate-600 text-xs uppercase tracking-wide">จัดการ</th>
+                        <th className="text-left px-5 py-3.5 font-bold text-slate-600 text-xs uppercase tracking-wide">ชื่อ - สกุล / ข้อมูล</th>
+                        <th className="text-left px-5 py-3.5 font-bold text-slate-600 text-xs uppercase tracking-wide hidden md:table-cell">อีเมล</th>
+                        <th className="text-left px-5 py-3.5 font-bold text-slate-600 text-xs uppercase tracking-wide hidden lg:table-cell">สาขา / ฝ่าย</th>
+                        <th className="text-left px-5 py-3.5 font-bold text-slate-600 text-xs uppercase tracking-wide hidden lg:table-cell">อัพเดทล่าสุด</th>
+                        <th className="text-right px-5 py-3.5 font-bold text-slate-600 text-xs uppercase tracking-wide">จัดการ</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {filteredPersonnel.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-50 transition">
-                          <td className="px-5 py-4">
-                            <div className="font-bold text-slate-900">{p.nameEn || p.email || p.id}</div>
-                            {p.nameTh && <div className="text-xs text-slate-500 mt-0.5">{p.nameTh}</div>}
-                          </td>
-                          <td className="px-5 py-4 hidden md:table-cell text-slate-600">{p.email || '-'}</td>
-                          <td className="px-5 py-4 hidden lg:table-cell text-slate-600">{p.department || '-'}</td>
-                          <td className="px-5 py-4 hidden lg:table-cell text-xs text-slate-400">
-                            {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('th-TH') : '-'}
-                          </td>
-                          <td className="px-5 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => openEdit(p)}
-                                className="inline-flex items-center gap-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 px-3 py-1.5 rounded-lg text-xs font-bold transition border border-sky-200"
-                              >
-                                <i className="fa-solid fa-pen" /> แก้ไข
-                              </button>
-                              <button
-                                onClick={() => handleDelete(p.id, p.nameEn || p.email || p.id)}
-                                className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold transition border border-red-200"
-                              >
-                                <i className="fa-solid fa-trash" /> ลบ
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {filteredPersonnel.map((p) => {
+                        const isExec = p.role === 'executive' || p.department === 'คณะผู้บริหาร';
+                        const isTeacher = p.role === 'teacher';
+                        return (
+                          <tr key={p.id} className="hover:bg-slate-50/80 transition group">
+                            <td className="px-5 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200/80 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                  {p.imageUrl && p.imageUrl !== '/img/avatar-placeholder.svg' ? (
+                                    <img src={getAssetPath(p.imageUrl)} alt="" className="w-full h-full object-cover" />
+                                  ) : (
+                                    <i className={`fa-solid ${isExec ? 'fa-user-tie text-amber-500' : isTeacher ? 'fa-chalkboard-user text-indigo-500' : 'fa-briefcase text-emerald-500'} text-sm`} />
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+                                    <span>{p.nameTh || p.nameEn || p.email || p.id}</span>
+                                    {isExec && (
+                                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-200">
+                                        ผู้บริหาร
+                                      </span>
+                                    )}
+                                    {isTeacher && (
+                                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-100 text-indigo-800 border border-indigo-200">
+                                        อาจารย์
+                                      </span>
+                                    )}
+                                    {!isExec && !isTeacher && (
+                                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                        สายสนับสนุน
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-slate-500 truncate mt-0.5">{p.position || p.department}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-5 py-4 hidden md:table-cell text-slate-600 font-mono text-xs">{p.email || '-'}</td>
+                            <td className="px-5 py-4 hidden lg:table-cell">
+                              <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/80">
+                                {p.department || '-'}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 hidden lg:table-cell text-xs text-slate-400">
+                              {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('th-TH') : '-'}
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => openEdit(p)}
+                                  className="inline-flex items-center gap-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 px-3 py-1.5 rounded-xl text-xs font-bold transition border border-sky-200 shadow-sm cursor-pointer active:scale-95"
+                                >
+                                  <i className="fa-solid fa-pen" /> แก้ไข
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(p.id, p.nameTh || p.nameEn || p.email || p.id)}
+                                  className="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-xl text-xs font-bold transition border border-red-200 shadow-sm cursor-pointer active:scale-95"
+                                >
+                                  <i className="fa-solid fa-trash" /> ลบ
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

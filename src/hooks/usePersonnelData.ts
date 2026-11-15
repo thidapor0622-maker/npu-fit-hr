@@ -410,7 +410,18 @@ export function usePersonnelData() {
             const parsedDepts: Department[] = baseDepts.map((d: any) => {
               const slug = d.slug;
               const sheetCards = lecByDept[slug] || [];
-              const rawCards = sheetCards.length > 0 ? sheetCards : (d.allCards || []);
+              const baseCards: Personnel[] = d.allCards || [];
+              // Merge base cards with sheet cards to preserve all 90 lecturers while syncing live updates
+              const mergedCards = baseCards.map((bp) => {
+                const matchedSheetCard = sheetCards.find((sc) => isSamePersonnel(sc, bp));
+                return matchedSheetCard ? { ...bp, ...matchedSheetCard } : bp;
+              });
+              sheetCards.forEach((sc) => {
+                if (!mergedCards.some((mc) => isSamePersonnel(mc, sc))) {
+                  mergedCards.push(sc);
+                }
+              });
+              const rawCards = mergedCards.length > 0 ? mergedCards : baseCards;
               const allCards = applyOverridesToPersonnel(rawCards, ov, slug);
               const { head, members } = splitHeadAndMembers(allCards);
               return {
@@ -455,20 +466,35 @@ export function usePersonnelData() {
             }
 
             const ov = getLocalOverrides();
-            const parsedDivs: StaffDivision[] = divRows.map((d: any) => {
-              const slug = String(d.slug || '').trim();
-              const rawCards = staffByDiv[slug] || [];
+            const parsedDivs: StaffDivision[] = STAFF_DIVISIONS_DATA.map((baseDiv) => {
+              const slug = baseDiv.slug;
+              const sheetDiv = divRows ? divRows.find((d: any) => String(d.slug || '').trim().toLowerCase() === slug.toLowerCase()) : null;
+              const sheetCards = staffByDiv[slug] || [];
+              const baseCards: Personnel[] = baseDiv.allCards || [];
+              // Merge base cards with sheet cards to preserve all 39 staff while syncing live updates
+              const mergedCards = baseCards.map((bp) => {
+                const matchedSheetCard = sheetCards.find((sc) => isSamePersonnel(sc, bp));
+                return matchedSheetCard ? { ...bp, ...matchedSheetCard } : bp;
+              });
+              sheetCards.forEach((sc) => {
+                if (!mergedCards.some((mc) => isSamePersonnel(mc, sc))) {
+                  mergedCards.push(sc);
+                }
+              });
+              const rawCards = mergedCards.length > 0 ? mergedCards : baseCards;
               const allCards = applyOverridesToPersonnel(rawCards, ov, slug);
               const { head, members } = splitHeadAndMembers(allCards);
               return {
-                slug,
-                title: String(d.title || slug),
-                description: String(d.description || ''),
-                icon: String(d.icon || 'fa-solid fa-briefcase'),
-                badge: String(d.badge || d.title || ''),
-                head,
-                members,
-                allCards,
+                ...baseDiv,
+                ...(sheetDiv ? {
+                  title: String(sheetDiv.title || baseDiv.title),
+                  description: String(sheetDiv.description || baseDiv.description),
+                  icon: String(sheetDiv.icon || baseDiv.icon),
+                  badge: String(sheetDiv.badge || baseDiv.badge),
+                } : {}),
+                head: head || baseDiv.head,
+                members: members.length > 0 ? members : baseDiv.members,
+                allCards: allCards.length > 0 ? allCards : baseDiv.allCards,
               };
             });
 
