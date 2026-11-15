@@ -1043,6 +1043,33 @@ export default function AdminPage() {
                     </div>
                   </div>
                 )}
+
+                {/* แถบฝ่ายทั้งหมดทั้ง 4 ฝ่าย ข้างๆ ช่องค้นหา ขนาดกะทัดรัด (แสดงเฉพาะหน้ารายชื่อบุคลากร / ฝ่ายสนับสนุนเท่านั้น) */}
+                {filterRole === 'staff' && (
+                  <div className="relative w-full sm:w-auto sm:min-w-[210px] sm:max-w-[240px]">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-600 text-xs">
+                      <i className="fa-solid fa-briefcase" />
+                    </div>
+                    <select
+                      value={filterDept}
+                      onChange={(e) => setFilterDept(e.target.value)}
+                      className="w-full pl-8 pr-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold border border-emerald-200 rounded-2xl bg-emerald-50/60 hover:bg-emerald-100/70 text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition cursor-pointer appearance-none shadow-sm truncate"
+                    >
+                      <option value="all">💼 ทุกฝ่ายสนับสนุน ({personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length} คน)</option>
+                      {STAFF_DIVISIONS_DATA.map((div) => {
+                        const count = personnel.filter(p => (p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')) && (p.departmentSlug === div.slug || (p.department || '').includes(div.title))).length;
+                        return (
+                          <option key={div.slug} value={div.slug}>
+                            {div.title} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-emerald-400 text-xs">
+                      <i className="fa-solid fa-chevron-down" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
