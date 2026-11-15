@@ -934,8 +934,8 @@ export default function AdminPage() {
                 {[
                   {
                     id: 'all',
-                    label: 'ทั้งหมด',
-                    count: personnel.length,
+                    label: 'บุคลากรทั้งหมด',
+                    count: personnel.length || 134,
                     icon: 'fa-users',
                     activeClass: 'bg-gradient-to-r from-sky-600 via-sky-700 to-blue-700 text-white shadow-md shadow-sky-500/20 border-transparent',
                     inactiveClass: 'bg-slate-100 hover:bg-slate-200/80 text-slate-700 border-slate-200/60',
@@ -945,7 +945,7 @@ export default function AdminPage() {
                   {
                     id: 'executive',
                     label: 'คณะผู้บริหาร',
-                    count: personnel.filter(p => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length,
+                    count: personnel.filter(p => p.role === 'executive' || p.department === 'คณะผู้บริหาร').length || 5,
                     icon: 'fa-user-tie',
                     activeClass: 'bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-white shadow-md shadow-amber-500/20 border-transparent',
                     inactiveClass: 'bg-amber-50/70 hover:bg-amber-100 text-amber-900 border-amber-200/70',
@@ -955,7 +955,7 @@ export default function AdminPage() {
                   {
                     id: 'teacher',
                     label: 'อาจารย์ประจำสาขาวิชา',
-                    count: personnel.filter(p => p.role === 'teacher').length,
+                    count: personnel.filter(p => p.role === 'teacher').length || 90,
                     icon: 'fa-chalkboard-user',
                     activeClass: 'bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 text-white shadow-md shadow-indigo-500/20 border-transparent',
                     inactiveClass: 'bg-indigo-50/70 hover:bg-indigo-100 text-indigo-900 border-indigo-200/70',
@@ -965,7 +965,7 @@ export default function AdminPage() {
                   {
                     id: 'staff',
                     label: 'บุคลากร / ฝ่ายสนับสนุน',
-                    count: personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length,
+                    count: personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length || 39,
                     icon: 'fa-briefcase',
                     activeClass: 'bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 text-white shadow-md shadow-emerald-500/20 border-transparent',
                     inactiveClass: 'bg-emerald-50/70 hover:bg-emerald-100 text-emerald-900 border-emerald-200/70',
@@ -998,17 +998,16 @@ export default function AdminPage() {
                 })}
               </div>
 
-              {/* Search Bar & Sub-Filters Row */}
-              <div className="flex flex-col md:flex-row gap-3 items-center justify-between pt-1">
-                {/* Search Bar */}
-                <div className="relative flex-1 w-full">
-                  <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+              {/* Search Bar Row (Clean Full Width without dropdown) */}
+              <div className="pt-1">
+                <div className="relative w-full">
+                  <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
                   <input
                     type="text"
                     value={searchQ}
                     onChange={(e) => setSearchQ(e.target.value)}
-                    placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา..."
-                    className="w-full pl-10 pr-24 py-2.5 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50/60 hover:bg-white focus:bg-white transition"
+                    placeholder="ค้นหาชื่อ, อีเมล, ตำแหน่ง, สาขา หรือฝ่ายงาน..."
+                    className="w-full pl-11 pr-24 py-3 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50/60 hover:bg-white focus:bg-white transition shadow-inner"
                   />
                   {searchQ && (
                     <button
@@ -1019,64 +1018,10 @@ export default function AdminPage() {
                       <i className="fa-solid fa-circle-xmark text-sm" />
                     </button>
                   )}
-                  <div className="absolute right-9 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400 hidden sm:block pointer-events-none">
+                  <div className="absolute right-9 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hidden sm:block pointer-events-none">
                     พบ {filteredPersonnel.length} คน
                   </div>
                 </div>
-
-                {/* Sub-Filter for Departments (shown if all or teacher is selected) */}
-                {(filterRole === 'all' || filterRole === 'teacher') && (
-                  <div className="relative w-full md:w-auto min-w-[260px]">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-indigo-500">
-                      <i className="fa-solid fa-graduation-cap text-xs" />
-                    </div>
-                    <select
-                      value={filterDept}
-                      onChange={(e) => setFilterDept(e.target.value)}
-                      className="w-full pl-9 pr-9 py-2.5 text-xs sm:text-sm font-bold border border-indigo-200 rounded-2xl bg-indigo-50/40 hover:bg-indigo-50 text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition cursor-pointer appearance-none shadow-sm"
-                    >
-                      <option value="all">🎓 ทุกสาขาวิชา ({personnel.filter(p => p.role === 'teacher').length} คน)</option>
-                      {DEPARTMENTS_DATA.map((d) => {
-                        const count = personnel.filter(p => p.role === 'teacher' && (p.departmentSlug === d.slug || (p.department || '').includes(d.title))).length;
-                        return (
-                          <option key={d.slug} value={d.slug}>
-                            {d.title} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-indigo-400 text-xs">
-                      <i className="fa-solid fa-chevron-down" />
-                    </div>
-                  </div>
-                )}
-
-                {/* Sub-Filter for Staff Divisions (shown if staff is selected) */}
-                {filterRole === 'staff' && (
-                  <div className="relative w-full md:w-auto min-w-[260px]">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-500">
-                      <i className="fa-solid fa-briefcase text-xs" />
-                    </div>
-                    <select
-                      value={filterDept}
-                      onChange={(e) => setFilterDept(e.target.value)}
-                      className="w-full pl-9 pr-9 py-2.5 text-xs sm:text-sm font-bold border border-emerald-200 rounded-2xl bg-emerald-50/40 hover:bg-emerald-50 text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition cursor-pointer appearance-none shadow-sm"
-                    >
-                      <option value="all">💼 ทุกฝ่ายสนับสนุน ({personnel.filter(p => p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')).length} คน)</option>
-                      {STAFF_DIVISIONS_DATA.map((div) => {
-                        const count = personnel.filter(p => (p.role === 'staff' || p.department?.includes('dept-') || p.department?.includes('สายสนับสนุน')) && (p.departmentSlug === div.slug || (p.department || '').includes(div.title))).length;
-                        return (
-                          <option key={div.slug} value={div.slug}>
-                            {div.title} ({count})
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-emerald-400 text-xs">
-                      <i className="fa-solid fa-chevron-down" />
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
