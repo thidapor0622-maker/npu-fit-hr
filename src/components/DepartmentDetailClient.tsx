@@ -170,28 +170,25 @@ export default function DepartmentDetailClient({
     const curName = (info.name || '').toLowerCase().trim();
 
     const pEmail = String(p.email || '').toLowerCase().trim();
-    const pName = String(p.name || '').toLowerCase().trim();
-    const pCalName = String(p.calendarName || '').toLowerCase().trim();
+    const pName = String(p.name || '').trim();
+    const pCalName = String(p.calendarName || p.nameEn || '').trim();
+    const pFull = `${pEmail} ${pName} ${pCalName}`.toLowerCase();
 
-    // 1. Specific Kowit match guarantee
-    if ((curUser.includes('kowit') || curEmail.includes('kowit') || curName.includes('kowit')) &&
-        (pName.includes('โกวิท') || pCalName.includes('โกวิท') || pEmail.includes('kowit'))) {
-      return true;
-    }
-
-    // 2. Direct email matching
+    // 1. Direct email matching
     if (curEmail && pEmail && (curEmail === pEmail || curEmail.split('@')[0] === pEmail.split('@')[0])) return true;
 
-    // 3. Username matching (e.g. 'kowit' matching 'kowit@npu.ac.th')
-    if (curUser && pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
-    if (curUser && (pName.includes(curUser) || pCalName.includes(curUser))) return true;
+    // 2. Username matching (e.g. 'somyos', 'kowit')
+    if (curUser && curUser.length >= 3) {
+      if (pEmail && (pEmail === `${curUser}@npu.ac.th` || pEmail.startsWith(`${curUser}@`))) return true;
+      if (pFull.includes(curUser)) return true;
+    }
 
-    // 4. Name matching
+    // 3. Name matching
     if (curName) {
-      const cleanCur = curName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
-      const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+      const cleanCur = curName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim().toLowerCase();
+      const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim().toLowerCase();
       if (cleanCur && cleanP && (cleanP.includes(cleanCur) || cleanCur.includes(cleanP))) return true;
-      if (isSamePersonnel(p, { name: info.name, email: info.email })) return true;
+      if (isSamePersonnel(p, { name: curName, email: curEmail })) return true;
     }
 
     return false;

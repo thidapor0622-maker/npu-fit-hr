@@ -51,15 +51,61 @@ export default function PersonnelCard({
     }
     if (typeof window !== 'undefined') {
       try {
-        const raw = (localStorage.getItem('hr_user_session') || '').toLowerCase();
+        const raw = localStorage.getItem('hr_user_session');
         if (raw) {
+          let uEmail = '';
+          let uUser = '';
+          let uName = '';
+          if (raw.startsWith('{')) {
+            const parsed = JSON.parse(raw);
+            uEmail = String(parsed.email || '').toLowerCase().trim();
+            uUser = String(parsed.user || parsed.username || parsed.id || '').toLowerCase().trim();
+            uName = String(parsed.name || parsed.nameTh || '').toLowerCase().trim();
+          } else {
+            const clean = raw.replace(/^"|"$/g, '').toLowerCase().trim();
+            uUser = clean.includes('@') ? clean.split('@')[0] : clean;
+            uEmail = clean.includes('@') ? clean : `${clean}@npu.ac.th`;
+            uName = clean;
+          }
+
           const pEmail = String(person.email || '').toLowerCase().trim();
-          const pName = String(person.name || '');
-          const pCal = String(person.calendarName || '');
-          if (raw.includes('kowit') && (pName.includes('โกวิท') || pCal.includes('โกวิท') || pEmail.includes('kowit'))) {
+          const pName = String(person.name || '').trim();
+          const pCal = String(person.calendarName || person.nameEn || '').trim();
+          const pFull = `${pEmail} ${pName} ${pCal}`.toLowerCase();
+
+          // 1. Email exact or prefix match
+          if (uEmail && pEmail && (uEmail === pEmail || uEmail.split('@')[0] === pEmail.split('@')[0])) {
             setIsSelf(true);
-          } else if (pEmail && raw.includes(pEmail.split('@')[0])) {
+            return;
+          }
+          if (uUser && pEmail && (pEmail === `${uUser}@npu.ac.th` || pEmail.startsWith(`${uUser}@`))) {
             setIsSelf(true);
+            return;
+          }
+
+          // 2. Username in personnel info
+          if (uUser && uUser.length >= 3 && pFull.includes(uUser)) {
+            setIsSelf(true);
+            return;
+          }
+
+          // 3. Thai Name Matching (clean prefixes)
+          const cleanU = uName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+          const cleanP = pName.replace(/^(ผศ\.|รศ\.|ศ\.|ดร\.|นาย|นาง|นางสาว|อาจารย์)\s*/g, '').trim();
+          if (cleanU && cleanP && (cleanP.includes(cleanU) || cleanU.includes(cleanP))) {
+            setIsSelf(true);
+            return;
+          }
+
+          // 4. Raw string contains check
+          const rawLower = raw.toLowerCase();
+          if (pEmail && rawLower.includes(pEmail.split('@')[0])) {
+            setIsSelf(true);
+            return;
+          }
+          if (cleanP && cleanP.length >= 4 && rawLower.includes(cleanP.toLowerCase())) {
+            setIsSelf(true);
+            return;
           }
         }
       } catch {}
