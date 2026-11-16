@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAssetPath } from '@/lib/assetHelper';
 import { Personnel } from '@/data/departments';
 import {
