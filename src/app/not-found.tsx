@@ -1,6 +1,38 @@
+'use client';
+
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { getAssetPath } from '@/lib/assetHelper';
 
 export default function NotFound() {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const path = decodeURIComponent(window.location.pathname || '').toLowerCase();
+        if (path.includes('บริหาร') || path.includes('dept-admin') || path.includes('admin') || path.includes('สำนักงานคณบดี')) {
+          window.location.replace(getAssetPath('/staff/dept-admin/'));
+          return;
+        }
+        if (path.includes('วิชาการ') || path.includes('dept-academic')) {
+          window.location.replace(getAssetPath('/staff/dept-academic/'));
+          return;
+        }
+        if (path.includes('วิจัย') || path.includes('dept-finance') || path.includes('แผนงาน') || path.includes('งบประมาณ')) {
+          window.location.replace(getAssetPath('/staff/dept-finance/'));
+          return;
+        }
+        if (path.includes('พัฒนา') || path.includes('dept-facility') || path.includes('อาคาร') || path.includes('บริการการศึกษา')) {
+          window.location.replace(getAssetPath('/staff/dept-facility/'));
+          return;
+        }
+        if (path.includes('สนับสนุน') || path.includes('staff')) {
+          window.location.replace(getAssetPath('/staff/'));
+          return;
+        }
+      } catch {}
+    }
+  }, []);
+
   return (
     <div className="flex-grow flex items-center justify-center p-6 text-center">
       <div className="bg-white/80 backdrop-blur-md max-w-md w-full p-8 rounded-3xl shadow-lg border border-slate-200">
@@ -11,7 +43,7 @@ export default function NotFound() {
           ไม่พบหน้าที่คุณต้องการ
         </h2>
         <p className="text-sm text-slate-500 mb-6">
-          หน้าเว็บที่คุณกำลังเรียกดูอาจถูกย้าย หรือไม่มีอยู่ในระบบ
+          หน้าเว็บที่คุณกำลังเรียกดูอาจถูกย้าย หรือไม่มีอยู่ในระบบ กำลังนำท่านกลับสู่หน้าหลัก...
         </p>
         <Link
           href="/"
