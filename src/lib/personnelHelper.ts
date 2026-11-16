@@ -225,16 +225,32 @@ export function isSamePersonnel(
 ): boolean {
   if (!a || !b) return false;
 
-  const strippedA = stripThaiTitle(a.nameTh || a.name);
-  const strippedB = stripThaiTitle(b.nameTh || b.name);
+  const emailA = (a.email || '').toLowerCase().trim();
+  const emailB = (b.email || '').toLowerCase().trim();
 
-  // If both have non-empty names and their stripped names are DIFFERENT,
-  // they CANNOT be the same person! (Prevents shared placeholder emails/generic IDs from merging)
-  if (strippedA && strippedB && strippedA !== strippedB) {
-    return false;
+  // Guard against generic / placeholder emails matching random people
+  const isGenericEmail = (e: string) =>
+    !e ||
+    e.includes('example.com') ||
+    e.includes('placeholder') ||
+    e === 'admin@npu.ac.th' ||
+    e === 'info@npu.ac.th';
+
+  // 1. Direct Email Match (Highest priority for personal university email)
+  if (emailA && emailB && emailA === emailB && !isGenericEmail(emailA)) {
+    // Executive protection guard: Prevent Boonlert and Weeratham from ever colliding
+    const strA = ((a.nameTh || a.name || '') + ' ' + (a.id || '')).toLowerCase();
+    const strB = ((b.nameTh || b.name || '') + ' ' + (b.id || '')).toLowerCase();
+    if (
+      (strA.includes('บุญเลิศ') && strB.includes('วีรธรรม')) ||
+      (strA.includes('วีรธรรม') && strB.includes('บุญเลิศ'))
+    ) {
+      return false;
+    }
+    return true;
   }
 
-  // 1. By ID if both exist (ignore generic auto-generated IDs or emails)
+  // 2. By ID if both exist (ignore generic auto-generated IDs or emails)
   if (
     a.id &&
     b.id &&
@@ -246,19 +262,49 @@ export function isSamePersonnel(
     return true;
   }
 
-  // 2. By exact normalized Thai name (ignoring spaces)
+  // 3. By exact normalized Thai name (ignoring spaces)
   const nameA = normalizeThaiNameForMatch(a.nameTh || a.name);
   const nameB = normalizeThaiNameForMatch(b.nameTh || b.name);
   if (nameA && nameB && nameA === nameB) return true;
 
-  // 3. By title-stripped name
+  // 4. By title-stripped name
+  const strippedA = stripThaiTitle(a.nameTh || a.name);
+  const strippedB = stripThaiTitle(b.nameTh || b.name);
   if (strippedA && strippedB && strippedA.length >= 4 && strippedA === strippedB) return true;
 
-  // 4. By Email (case-insensitive) - ONLY if names match or one is missing
-  const emailA = (a.email || '').toLowerCase().trim();
-  const emailB = (b.email || '').toLowerCase().trim();
-  if (emailA && emailB && emailA === emailB) {
-    return true;
+  // 5. By First Name match + Email prefix match (handles surname typo or spelling variations)
+  // e.g. "สุวัฒน์ วงค์ตาผา" vs "สุวัฒน์ วงค์ดาผา" with email "suwat@npu.ac.th"
+  if (strippedA && strippedB && strippedA.length >= 4 && strippedB.length >= 4) {
+    const firstA = strippedA.slice(0, 5);
+    const firstB = strippedB.slice(0, 5);
+    if (firstA === firstB) {
+      if (emailA && emailB && emailA === emailB) return true;
+      if (emailA && emailA.startsWith(firstA)) return true;
+      if (emailB && emailB.startsWith(firstB)) return true;
+      // If stripped names differ by at most 2 characters (e.g. ตาผา vs ดาผา)
+      if (Math.abs(strippedA.length - strippedB.length) <= 1) {
+        let diffCount = 0;
+        const maxLen = Math.max(strippedA.length, strippedB.length);
+        for (let i = 0; i < maxLen; i++) {
+          if (strippedA[i] !== strippedB[i]) diffCount++;
+        }
+        if (diffCount <= 2) return true;
+      }
+    }
+  }
+
+  // 6. By matching email username to Thai/English name prefix if one email is missing
+  if (emailA && !isGenericEmail(emailA) && strippedB) {
+    const userA = emailA.split('@')[0];
+    if (userA.length >= 4 && (strippedB.includes(userA) || (userA === 'suwat' && strippedB.includes('สุวัฒน์')))) {
+      return true;
+    }
+  }
+  if (emailB && !isGenericEmail(emailB) && strippedA) {
+    const userB = emailB.split('@')[0];
+    if (userB.length >= 4 && (strippedA.includes(userB) || (userB === 'suwat' && strippedA.includes('สุวัฒน์')))) {
+      return true;
+    }
   }
 
   return false;

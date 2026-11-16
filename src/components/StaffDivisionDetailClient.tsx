@@ -182,9 +182,19 @@ export default function StaffDivisionDetailClient({
             <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-sky-900/90 to-blue-900/90 border border-sky-400/30 text-sky-300 text-xs px-3.5 py-1 rounded-full font-bold uppercase tracking-wider shadow-md">
               <i className={division.icon}></i> {division.badge || division.title}
             </span>
-
-
           </div>
+
+          {currentUser && (
+            <div className="pt-1 flex items-center justify-center gap-2">
+              <Link
+                href="/profile/edit"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-md transition hover:scale-105"
+              >
+                <i className="fa-solid fa-user-pen" />
+                <span>แก้ไขข้อมูลโปรไฟล์ของฉัน ({currentUser.name || currentUser.user || currentUser.email})</span>
+              </Link>
+            </div>
+          )}
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading">
             ทำเนียบบุคลากร

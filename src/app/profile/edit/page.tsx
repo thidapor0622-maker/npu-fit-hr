@@ -4,7 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAssetPath } from '@/lib/assetHelper';
-import { fetchClientGViz } from '@/hooks/usePersonnelData';
+import { fetchClientGViz, resolveStaffDivisionSlug } from '@/hooks/usePersonnelData';
+import { STAFF_DIVISIONS_DATA } from '@/data/staff-divisions';
+import { DEPARTMENTS_DATA } from '@/data/departments';
+import { EXECUTIVES_DATA } from '@/data/executives';
+import { isSamePersonnel } from '@/lib/personnelHelper';
 
 interface ProfileData {
   nameEn?: string;
@@ -14,6 +18,7 @@ interface ProfileData {
   position?: string;
   department?: string;
   departmentSlug?: string;
+  divisionSlug?: string;
   isHead?: boolean;
   phone?: string;
   location?: string;
@@ -24,83 +29,104 @@ interface ProfileData {
   calendarUrl?: string;
 }
 
+const DEPT_MAP: Record<string, string> = {
+  'electrical-power': 'electrical-power',
+  'สาขาวิชาไฟฟ้ากำลัง': 'electrical-power',
+  'ไฟฟ้ากำลัง': 'electrical-power',
+  'electronics-robotics': 'electronics-robotics',
+  'สาขาวิชาอิเล็กทรอนิกส์': 'electronics-robotics',
+  'อิเล็กทรอนิกส์': 'electronics-robotics',
+  'automotive-ev': 'automotive-ev',
+  'สาขาวิชายานยนต์และเครื่องกล': 'automotive-ev',
+  'ยานยนต์': 'automotive-ev',
+  'industrial-technology': 'industrial-technology',
+  'สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต': 'industrial-technology',
+  'เทคนิคการผลิต': 'industrial-technology',
+  'civil-engineering': 'civil-engineering',
+  'สาขาวิชาเทคโนโลยีโยธา': 'civil-engineering',
+  'โยธา': 'civil-engineering',
+  'welding-metallurgy': 'welding-metallurgy',
+  'สาขาวิชาเทคโนโลยีการเชื่อมและโลหะ': 'welding-metallurgy',
+  'เชื่อมและโลหะ': 'welding-metallurgy',
+  'computer-technology': 'computer-technology',
+  'สาขาวิชาเทคโนโลยีสารสนเทศ/คอมพิวเตอร์': 'computer-technology',
+  'คอมพิวเตอร์': 'computer-technology',
+  'architecture-design': 'architecture-design',
+  'สาขาวิชาสถาปัตยกรรมและการออกแบบ': 'architecture-design',
+  'สถาปัตยกรรม': 'architecture-design',
+  'business-computer': 'business-computer',
+  'สาขาวิชาคอมพิวเตอร์ธุรกิจ': 'business-computer',
+  'คอมพิวเตอร์ธุรกิจ': 'business-computer',
+  'accounting': 'accounting',
+  'สาขาวิชาการบัญชี': 'accounting',
+  'การบัญชี': 'accounting',
+  'marketing': 'marketing',
+  'สาขาวิชาการตลาด': 'marketing',
+  'การตลาด': 'marketing',
+  'management': 'management',
+  'สาขาวิชาการจัดการ': 'management',
+  'การจัดการ': 'management',
+  'hotel-tourism': 'hotel-tourism',
+  'สาขาวิชาการท่องเที่ยวและการโรงแรม': 'hotel-tourism',
+  'ท่องเที่ยว': 'hotel-tourism',
+  'logistics-supply-chain': 'logistics-supply-chain',
+  'สาขาวิชาการจัดการโลจิสติกส์': 'logistics-supply-chain',
+  'โลจิสติกส์': 'logistics-supply-chain',
+  'industrial-crafts': 'industrial-crafts',
+  'สาขาวิชาหัตถกรรมอุตสาหกรรม': 'industrial-crafts',
+  'หัตถกรรม': 'industrial-crafts',
+};
+
 function getPersonnelTargetUrl(departmentSlug?: string, department?: string): string {
   const raw = String(departmentSlug || department || '').toLowerCase().trim();
+  const rawDept = String(department || '').toLowerCase().trim();
 
   // 1. Staff divisions
+  if (
+    raw.includes('admin') || raw.includes('บริหารทั่วไป') || raw.includes('ฝ่ายบริหาร') || raw.includes('สำนักงานคณบดี') ||
+    raw === 'dept-admin' || rawDept.includes('บริหารทั่วไป') || rawDept.includes('ฝ่ายบริหาร')
+  ) {
+    return getAssetPath('/staff/dept-admin/');
+  }
+  if (
+    raw.includes('academic') || raw.includes('วิชาการ') || raw === 'dept-academic' ||
+    rawDept.includes('วิชาการ')
+  ) {
+    return getAssetPath('/staff/dept-academic/');
+  }
+  if (
+    raw.includes('finance') || raw.includes('วิจัย') || raw.includes('แผนงาน') || raw.includes('งบประมาณ') || raw.includes('ประกัน') ||
+    raw === 'dept-finance' || rawDept.includes('วิจัย') || rawDept.includes('แผนงาน')
+  ) {
+    return getAssetPath('/staff/dept-finance/');
+  }
+  if (
+    raw.includes('facility') || raw.includes('พัฒนา') || raw.includes('อาคาร') || raw.includes('บริการการศึกษา') ||
+    raw === 'dept-facility' || rawDept.includes('พัฒนา') || rawDept.includes('อาคาร')
+  ) {
+    return getAssetPath('/staff/dept-facility/');
+  }
   if (raw.startsWith('dept-') || raw.includes('สนับสนุน') || raw.includes('staff')) {
-    if (raw.includes('admin') || raw.includes('คณบดี') || raw.includes('บริหารทั่วไป')) return getAssetPath('/staff/dept-admin/');
-    if (raw.includes('academic') || raw.includes('วิชาการ')) return getAssetPath('/staff/dept-academic/');
-    if (raw.includes('finance') || raw.includes('แผนงาน') || raw.includes('งบประมาณ')) return getAssetPath('/staff/dept-finance/');
-    if (raw.includes('facility') || raw.includes('อาคาร')) return getAssetPath('/staff/dept-facility/');
-    return getAssetPath(`/staff/${raw}/`);
+    return getAssetPath('/staff/');
   }
 
   // 2. Executives
-  if (raw.includes('exec') || raw.includes('ผู้บริหาร')) {
+  if (raw.includes('exec') || raw.includes('ผู้บริหาร') || rawDept.includes('ผู้บริหาร')) {
     return getAssetPath('/');
   }
 
   // 3. Lecturer departments
-  const DEPT_MAP: Record<string, string> = {
-    'electrical-power': 'electrical-power',
-    'สาขาวิชาไฟฟ้ากำลัง': 'electrical-power',
-    'ไฟฟ้ากำลัง': 'electrical-power',
-    'electronics-robotics': 'electronics-robotics',
-    'สาขาวิชาอิเล็กทรอนิกส์': 'electronics-robotics',
-    'อิเล็กทรอนิกส์': 'electronics-robotics',
-    'automotive-ev': 'automotive-ev',
-    'สาขาวิชายานยนต์และเครื่องกล': 'automotive-ev',
-    'ยานยนต์': 'automotive-ev',
-    'industrial-technology': 'industrial-technology',
-    'สาขาวิชาช่างกลโรงงาน/สาขาวิชาเทคนิคการผลิต': 'industrial-technology',
-    'เทคนิคการผลิต': 'industrial-technology',
-    'civil-engineering': 'civil-engineering',
-    'สาขาวิชาเทคโนโลยีโยธา': 'civil-engineering',
-    'โยธา': 'civil-engineering',
-    'welding-metallurgy': 'welding-metallurgy',
-    'สาขาวิชาเทคโนโลยีการเชื่อมและโลหะ': 'welding-metallurgy',
-    'เชื่อมและโลหะ': 'welding-metallurgy',
-    'computer-technology': 'computer-technology',
-    'สาขาวิชาเทคโนโลยีสารสนเทศ/คอมพิวเตอร์': 'computer-technology',
-    'คอมพิวเตอร์': 'computer-technology',
-    'architecture-design': 'architecture-design',
-    'สาขาวิชาสถาปัตยกรรมและการออกแบบ': 'architecture-design',
-    'สถาปัตยกรรม': 'architecture-design',
-    'business-computer': 'business-computer',
-    'สาขาวิชาคอมพิวเตอร์ธุรกิจ': 'business-computer',
-    'คอมพิวเตอร์ธุรกิจ': 'business-computer',
-    'accounting': 'accounting',
-    'สาขาวิชาการบัญชี': 'accounting',
-    'การบัญชี': 'accounting',
-    'marketing': 'marketing',
-    'สาขาวิชาการตลาด': 'marketing',
-    'การตลาด': 'marketing',
-    'management': 'management',
-    'สาขาวิชาการจัดการ': 'management',
-    'การจัดการ': 'management',
-    'hotel-tourism': 'hotel-tourism',
-    'สาขาวิชาการท่องเที่ยวและการโรงแรม': 'hotel-tourism',
-    'ท่องเที่ยว': 'hotel-tourism',
-    'logistics-supply-chain': 'logistics-supply-chain',
-    'สาขาวิชาการจัดการโลจิสติกส์': 'logistics-supply-chain',
-    'โลจิสติกส์': 'logistics-supply-chain',
-    'industrial-crafts': 'industrial-crafts',
-    'สาขาวิชาหัตถกรรมอุตสาหกรรม': 'industrial-crafts',
-    'หัตถกรรม': 'industrial-crafts',
-  };
-
   for (const [key, slug] of Object.entries(DEPT_MAP)) {
-    if (raw.includes(key)) {
+    if (raw.includes(key) || rawDept.includes(key)) {
       return getAssetPath(`/lecturers/${slug}/`);
     }
   }
 
-  if (raw && !raw.includes('สาขาวิชา')) {
+  if (raw && !raw.includes('สาขาวิชา') && !raw.includes('ฝ่าย')) {
     return getAssetPath(`/lecturers/${raw}/`);
   }
 
-  return getAssetPath('/lecturers/electrical-power/');
+  return getAssetPath('/staff/');
 }
 
 export default function TeacherEditPage() {
@@ -142,7 +168,7 @@ export default function TeacherEditPage() {
       } catch {}
     }
 
-    // Load from Google Sheets live data
+    // Load from Google Sheets live data + fallback to static data
     Promise.all([
       fetchClientGViz(targetSheetId, 'Executives').catch(() => []),
       fetchClientGViz(targetSheetId, 'Lecturers').catch(() => []),
@@ -150,26 +176,97 @@ export default function TeacherEditPage() {
     ])
       .then(([execs, lecs, staffs]) => {
         const all = [...execs, ...lecs, ...staffs];
-        const found = all.find((item) => {
+        let found: any = all.find((item) => {
           const itemEmail = String(item.email || '').toLowerCase().trim();
-          const itemName = String(item.name || '').trim();
+          const itemName = String(item.name || item.nameTh || '').trim();
           const itemId = String(item.id || '').toLowerCase().trim();
           return (
             (userEmail && itemEmail === userEmail) ||
             (u.name && itemName.includes(u.name)) ||
-            (u.user && itemId === u.user.toLowerCase())
+            (u.user && (itemId === u.user.toLowerCase() || itemEmail.startsWith(u.user.toLowerCase())))
           );
         });
 
+        // Fallback to static staff divisions if not found in GViz
+        if (!found) {
+          for (const div of STAFF_DIVISIONS_DATA) {
+            const match = div.allCards.find((c) =>
+              (userEmail && c.email?.toLowerCase().trim() === userEmail) ||
+              (u.name && c.name?.includes(u.name)) ||
+              (u.user && (c.email?.toLowerCase().includes(u.user) || c.name?.includes(u.user)))
+            );
+            if (match) {
+              found = { ...match, divisionSlug: div.slug, departmentSlug: div.slug, department: div.title };
+              break;
+            }
+          }
+        }
+
+        // Fallback to static departments if still not found
+        if (!found) {
+          for (const dept of DEPARTMENTS_DATA) {
+            const match = dept.allCards.find((c) =>
+              (userEmail && c.email?.toLowerCase().trim() === userEmail) ||
+              (u.name && c.name?.includes(u.name)) ||
+              (u.user && (c.email?.toLowerCase().includes(u.user) || c.name?.includes(u.user)))
+            );
+            if (match) {
+              found = { ...match, departmentSlug: dept.slug, department: dept.title };
+              break;
+            }
+          }
+        }
+
+        // Fallback to executives if still not found
+        if (!found) {
+          for (const [k, ex] of Object.entries(EXECUTIVES_DATA)) {
+            if (
+              (userEmail && ex.email?.toLowerCase().trim() === userEmail) ||
+              (u.name && ex.name?.includes(u.name)) ||
+              (u.user && ex.id.toLowerCase() === u.user.toLowerCase())
+            ) {
+              found = { ...ex, department: 'คณะผู้บริหาร', departmentSlug: 'executives' };
+              break;
+            }
+          }
+        }
+
         if (found) {
+          // Accurately deduce department and slug for staff vs lecturer
+          let initialSlug = found.divisionSlug || found.departmentSlug || '';
+          let initialDept = found.department || '';
+
+          // Auto-detect staff division from position, location, or email
+          const checkStr = (initialDept + ' ' + (found.position || '') + ' ' + (found.location || '') + ' ' + (found.room || '') + ' ' + userEmail).toLowerCase();
+          if (
+            initialSlug === 'dept-admin' || checkStr.includes('บริหารทั่วไป') || checkStr.includes('เจ้าหน้าที่บริหาร') ||
+            checkStr.includes('สำนักงานคณบดี') || userEmail.includes('suwat')
+          ) {
+            initialSlug = 'dept-admin';
+            if (!initialDept || initialDept.includes('ไฟฟ้า')) initialDept = 'ฝ่ายบริหารทั่วไป';
+          } else if (initialSlug === 'dept-academic' || (checkStr.includes('วิชาการ') && !checkStr.includes('สาขาวิชา'))) {
+            initialSlug = 'dept-academic';
+            if (!initialDept || initialDept.includes('ไฟฟ้า')) initialDept = 'ฝ่ายวิชาการ';
+          } else if (initialSlug === 'dept-finance' || checkStr.includes('ฝ่ายวิจัย') || checkStr.includes('แผนงาน') || checkStr.includes('งบประมาณ')) {
+            initialSlug = 'dept-finance';
+            if (!initialDept || initialDept.includes('ไฟฟ้า')) initialDept = 'ฝ่ายวิจัย';
+          } else if (initialSlug === 'dept-facility' || checkStr.includes('ฝ่ายพัฒนา') || checkStr.includes('อาคารสถานที่') || checkStr.includes('บริการการศึกษา')) {
+            initialSlug = 'dept-facility';
+            if (!initialDept || initialDept.includes('ไฟฟ้า')) initialDept = 'ฝ่ายพัฒนา';
+          }
+
+          if (!initialSlug) initialSlug = 'electrical-power';
+          if (!initialDept) initialDept = 'สาขาวิชาไฟฟ้ากำลัง';
+
           const loadedProfile: ProfileData = {
             nameTh: found.name || found.nameTh || '',
             nameEn: found.calendarName || found.nameEn || '',
             email: found.email || userEmail,
             password: found.passwd || found.password || u.currentPassword || 'npu1234',
             position: found.position || '',
-            department: found.departmentSlug || found.divisionSlug || found.department || 'สาขาวิชาไฟฟ้ากำลัง',
-            departmentSlug: found.departmentSlug || found.divisionSlug || 'electrical-power',
+            department: initialDept,
+            departmentSlug: initialSlug,
+            divisionSlug: initialSlug,
             isHead: String(found.isHead).toLowerCase() === 'true' || found.isHead === true,
             phone: found.phone || '',
             location: found.location || found.room || '',
@@ -190,6 +287,7 @@ export default function TeacherEditPage() {
             position: prev.position || loadedProfile.position,
             department: prev.department || loadedProfile.department,
             departmentSlug: prev.departmentSlug || loadedProfile.departmentSlug,
+            divisionSlug: prev.divisionSlug || loadedProfile.divisionSlug,
             location: prev.location || loadedProfile.location,
             imageUrl: prev.imageUrl || loadedProfile.imageUrl,
             calendarUrl: prev.calendarUrl || loadedProfile.calendarUrl,
@@ -221,9 +319,36 @@ export default function TeacherEditPage() {
     setMsg({ text: '', ok: true });
     try {
       const activeEmail = (profile.email || email).trim().toLowerCase();
+      const deptText = String(profile.department || '').trim();
+      const posText = String(profile.position || '').trim();
+
+      // Resolve finalSlug accurately
+      let finalSlug = profile.departmentSlug || '';
+      if (
+        deptText.includes('บริหารทั่วไป') || deptText.includes('admin') || deptText.includes('สำนักงานคณบดี') ||
+        posText.includes('บริหารงานทั่วไป') || activeEmail.includes('suwat') || deptText === 'ฝ่ายบริหารทั่วไป'
+      ) {
+        finalSlug = 'dept-admin';
+      } else if (deptText.includes('วิชาการ') || deptText.includes('academic') || deptText === 'ฝ่ายวิชาการ') {
+        finalSlug = 'dept-academic';
+      } else if (deptText.includes('วิจัย') || deptText.includes('finance') || deptText.includes('แผนงาน') || deptText.includes('งบประมาณ') || deptText.includes('ประกัน')) {
+        finalSlug = 'dept-finance';
+      } else if (deptText.includes('พัฒนา') || deptText.includes('facility') || deptText.includes('อาคาร') || deptText.includes('บริการการศึกษา')) {
+        finalSlug = 'dept-facility';
+      } else if (!finalSlug || finalSlug === 'electrical-power' || finalSlug.startsWith('dept-')) {
+        for (const [k, s] of Object.entries(DEPT_MAP)) {
+          if (deptText.includes(k)) {
+            finalSlug = s;
+            break;
+          }
+        }
+      }
+
       const payload: ProfileData = {
         ...profile,
         email: activeEmail,
+        departmentSlug: finalSlug,
+        divisionSlug: finalSlug,
         education: educationText.split('\n').map((s) => s.trim()).filter(Boolean),
         skills: skillsText.split('\n').map((s) => s.trim()).filter(Boolean),
       };
@@ -252,7 +377,8 @@ export default function TeacherEditPage() {
           password: profile.password,
           phone: profile.phone,
           department: profile.department,
-          departmentSlug: profile.departmentSlug || profile.department,
+          departmentSlug: finalSlug,
+          divisionSlug: finalSlug,
           isHead: Boolean(profile.isHead),
           location: profile.location,
           imageUrl: profile.imageUrl,
@@ -284,7 +410,8 @@ export default function TeacherEditPage() {
               name: profile.nameTh,
               nameTh: profile.nameTh,
               nameEn: profile.nameEn,
-              departmentSlug: profile.departmentSlug || profile.department,
+              departmentSlug: finalSlug,
+              divisionSlug: finalSlug,
               department: profile.department,
               data: {
                 nameTh: profile.nameTh,
@@ -293,7 +420,8 @@ export default function TeacherEditPage() {
                 password: profile.password || 'npu1234',
                 position: profile.position,
                 department: profile.department,
-                departmentSlug: profile.departmentSlug || profile.department,
+                departmentSlug: finalSlug,
+                divisionSlug: finalSlug,
                 isHead: Boolean(profile.isHead),
                 phone: profile.phone,
                 location: profile.location,
@@ -327,16 +455,22 @@ export default function TeacherEditPage() {
         body: JSON.stringify(payload),
       }).catch(() => {});
 
-      const targetUrl = getPersonnelTargetUrl(payload.departmentSlug, payload.department);
+      const targetUrl = getPersonnelTargetUrl(finalSlug, payload.department);
       setMsg({
-        text: '✓ บันทึกข้อมูลสำเร็จ! ระบบกำลังนำท่านกลับไปยังหน้าสาขา/ฝ่ายงานของคุณทันที...',
+        text: '✓ บันทึกข้อมูลสำเร็จ! ระบบกำลังนำท่านกลับไปยังหน้าฝ่ายงาน/สาขาของคุณทันที...',
         ok: true,
       });
 
       // Smoothly redirect to their department/division page after brief visual confirmation
       setTimeout(() => {
         window.location.href = targetUrl;
-      }, 1200);
+      }, 1000);
+    } catch (e: any) {
+      setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
+    } finally {
+      setSaving(false);
+    }
+  };
     } catch (e: any) {
       setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
     } finally {
@@ -549,6 +683,12 @@ export default function TeacherEditPage() {
             </div>
 
             <datalist id="profile-dept-options">
+              <option value="ฝ่ายบริหารทั่วไป" />
+              <option value="ฝ่ายวิชาการ" />
+              <option value="ฝ่ายวิจัย" />
+              <option value="ฝ่ายพัฒนา" />
+              <option value="สายสนับสนุน" />
+              <option value="คณะผู้บริหาร" />
               <option value="สาขาวิชาไฟฟ้ากำลัง" />
               <option value="สาขาวิชาอิเล็กทรอนิกส์" />
               <option value="สาขาวิชายานยนต์และเครื่องกล" />
@@ -564,8 +704,6 @@ export default function TeacherEditPage() {
               <option value="สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล" />
               <option value="สาขาวิชาการโรงแรม" />
               <option value="สาขาวิชาพื้นฐานประยุกต์" />
-              <option value="คณะผู้บริหาร" />
-              <option value="สายสนับสนุน" />
             </datalist>
           </div>
 

@@ -6,10 +6,22 @@ import { DEPARTMENTS_DATA, Department, Personnel } from '@/data/departments';
 import { STAFF_DIVISIONS_DATA, StaffDivision } from '@/data/staff-divisions';
 import { isSamePersonnel, normalizeThaiNameForMatch } from '@/lib/personnelHelper';
 
-// Parse GViz response from Google Sheets directly in browser (CORS-friendly)
+// Resolve any department or division string to standard staff division slug
+export function resolveStaffDivisionSlug(raw?: string): string {
+  const str = String(raw || '').toLowerCase().trim();
+  if (!str) return '';
+  if (str === 'dept-admin' || str.includes('admin') || str.includes('บริหาร') || str.includes('คณบดี') || str.includes('สารบรรณ')) return 'dept-admin';
+  if (str === 'dept-academic' || str.includes('academic') || str.includes('วิชาการ')) return 'dept-academic';
+  if (str === 'dept-finance' || str.includes('finance') || str.includes('วิจัย') || str.includes('แผนงาน') || str.includes('งบประมาณ') || str.includes('ประกัน')) return 'dept-finance';
+  if (str === 'dept-facility' || str.includes('facility') || str.includes('พัฒนา') || str.includes('อาคาร') || str.includes('บริการการศึกษา')) return 'dept-facility';
+  return str;
+}
+
+// Parse GViz response from Google Sheets directly in browser (CORS-friendly with real-time cache-busting)
 export async function fetchClientGViz(sheetId: string, sheetName: string): Promise<Record<string, any>[]> {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  const res = await fetch(url);
+  const ts = Date.now();
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&tq=&_=${ts}`;
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error('Fetch failed');
   const text = await res.text();
   const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/);
@@ -273,8 +285,9 @@ export function applyOverridesToPersonnel(list: Personnel[], overrides: Record<s
     Object.entries(overrides).forEach(([key, ov]) => {
       if (!ov || ov.deleted || consumedKeys.has(key)) return;
 
-      const targetSlug = String(ov.departmentSlug || ov.department || ov.divisionSlug || '').toLowerCase().trim();
-      const isDeptMatch = targetSlug && (targetSlug === currentSlug || targetSlug.includes(currentSlug) || currentSlug.includes(targetSlug));
+      const rawTarget = String(ov.departmentSlug || ov.department || ov.divisionSlug || '').toLowerCase().trim();
+      const resolvedTarget = resolveStaffDivisionSlug(rawTarget) || rawTarget;
+      const isDeptMatch = resolvedTarget && (resolvedTarget === currentSlug || resolvedTarget.includes(currentSlug) || currentSlug.includes(resolvedTarget));
       if (!isDeptMatch) return;
 
       // CRITICAL: Check if this person is already in result!
@@ -564,42 +577,53 @@ export function usePersonnelData() {
             }
           }
 
-          // Parse Staff Divisions & Staff
-          if (divRows && divRows.length > 0 && staffRows) {
+          // Parse Staff Divisions & Staff (Live Sync with Google Sheets)
+          if (staffRows && staffRows.length > 0) {
             const staffByDiv: Record<string, Personnel[]> = {};
             for (const r of staffRows) {
-              const divSlug = String(r.divisionSlug || '').trim();
-              if (!divSlug) continue;
+              const rawDiv = r.divisionSlug || r.departmentSlug || r.department || r.division || r.location || '';
+              let divSlug = resolveStaffDivisionSlug(rawDiv);
+              if (!divSlug) {
+                // If division is not explicitly specified, check which division this person belongs to in base data
+                for (const baseDiv of STAFF_DIVISIONS_DATA) {
+                  if (baseDiv.allCards.some((c) => isSamePersonnel(c, r))) {
+                    divSlug = baseDiv.slug;
+                    break;
+                  }
+                }
+              }
+              if (!divSlug) divSlug = 'dept-admin';
               if (!staffByDiv[divSlug]) staffByDiv[divSlug] = [];
               const edu = r.education ? String(r.education).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
               const sk = r.skills ? String(r.skills).split('|').map((s: string) => s.trim()).filter(Boolean) : [];
               staffByDiv[divSlug].push({
-                name: String(r.name || ''),
-                nameEn: String(r.calendarName || r.nameEn || ''),
+                name: String(r.name || r.nameTh || ''),
+                nameEn: String(r.calendarName || r.nameEn || r.name || ''),
                 position: String(r.position || ''),
-                img: String(r.img || '/img/avatar-placeholder.svg'),
+                img: String(r.img || r.imageUrl || '/img/avatar-placeholder.svg'),
                 email: String(r.email || ''),
                 phone: String(r.phone || ''),
-                location: String(r.location || ''),
+                location: String(r.location || r.room || ''),
                 calendarName: String(r.calendarName || r.name || ''),
                 calendarUrl: String(r.calendarUrl || ''),
-                researchInterests: String(r.researchInterests || ''),
+                researchInterests: String(r.researchInterests || r.interest || ''),
                 education: edu,
                 skills: sk,
                 isHead: String(r.isHead).toLowerCase() === 'true' || r.isHead === true,
-              });
+                departmentSlug: divSlug,
+              } as any);
             }
 
             const ov = getLocalOverrides();
             const parsedDivs: StaffDivision[] = STAFF_DIVISIONS_DATA.map((baseDiv) => {
               const slug = baseDiv.slug;
-              const sheetDiv = divRows ? divRows.find((d: any) => String(d.slug || '').trim().toLowerCase() === slug.toLowerCase()) : null;
+              const sheetDiv = divRows && divRows.length > 0 ? divRows.find((d: any) => String(d.slug || '').trim().toLowerCase() === slug.toLowerCase()) : null;
               const sheetCards = staffByDiv[slug] || [];
               const baseCards: Personnel[] = baseDiv.allCards || [];
-              // Merge base cards with sheet cards to preserve all 39 staff while syncing live updates
+              // Merge base cards with sheet cards to preserve all staff while syncing live updates
               const mergedCards = baseCards.map((bp) => {
                 const matchedSheetCard = sheetCards.find((sc) => isSamePersonnel(sc, bp));
-                return matchedSheetCard ? { ...bp, ...matchedSheetCard } : bp;
+                return matchedSheetCard ? { ...bp, ...matchedSheetCard, departmentSlug: slug } : { ...bp, departmentSlug: slug };
               });
               sheetCards.forEach((sc) => {
                 if (!mergedCards.some((mc) => isSamePersonnel(mc, sc))) {
