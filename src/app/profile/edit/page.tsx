@@ -392,16 +392,15 @@ export default function TeacherEditPage() {
         window.dispatchEvent(new Event('hr_personnel_updated'));
       }
 
-      // 1. Send directly to Google Apps Script Web App to sync into Google Sheets
+      // 1. Send directly to Google Apps Script Web App to sync into Google Sheets (with keepalive for instant background sync)
       const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwlkKm94MbwsFcL0s-KTqnEV3hIyEbo-1GSXd7tIQKM-uAW1lpKbfs4sSXimK-ZQaOCrQ/exec';
       const scriptUrl = (typeof window !== 'undefined' && localStorage.getItem('hr_sheet_api_url')) || process.env.NEXT_PUBLIC_SHEET_API_URL || DEFAULT_APPS_SCRIPT_URL;
-      let syncedToGoogle = false;
-      let permissionWarning = false;
 
       if (scriptUrl) {
         try {
-          const res = await fetch(scriptUrl, {
+          fetch(scriptUrl, {
             method: 'POST',
+            keepalive: true,
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
               action: 'updateProfile',
@@ -432,18 +431,7 @@ export default function TeacherEditPage() {
                 skills: payload.skills,
               },
             }),
-          });
-          const textRes = await res.text();
-          try {
-            const result = JSON.parse(textRes);
-            if (result && result.success) {
-              syncedToGoogle = true;
-            }
-          } catch {
-            if (textRes.includes('ต้องมีสิทธิ์เข้าถึง') || textRes.includes('accounts.google.com')) {
-              permissionWarning = true;
-            }
-          }
+          }).catch((err) => console.log('Background sync err:', err));
         } catch (scriptErr) {
           console.log('Sync to Google Apps Script:', scriptErr);
         }
@@ -457,14 +445,14 @@ export default function TeacherEditPage() {
 
       const targetUrl = getPersonnelTargetUrl(finalSlug, payload.department);
       setMsg({
-        text: '✓ บันทึกข้อมูลสำเร็จ! ระบบกำลังนำท่านกลับไปยังหน้าฝ่ายงาน/สาขาของคุณทันที...',
+        text: '✓ บันทึกข้อมูลสำเร็จ! ระบบกำลังนำท่านกลับไปยังหน้าฝ่ายงานทันที...',
         ok: true,
       });
 
-      // Smoothly redirect to their department/division page after brief visual confirmation
+      // Immediate smooth redirect to division page (no waiting for slow Google servers)
       setTimeout(() => {
         window.location.href = targetUrl;
-      }, 1000);
+      }, 600);
     } catch (e: any) {
       setMsg({ text: e.message || 'เกิดข้อผิดพลาด', ok: false });
     } finally {

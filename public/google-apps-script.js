@@ -150,41 +150,41 @@ function doPost(e) {
         }
 
         if (isMatch) {
+          const rowData = [...values[rowIdx]];
           headers.forEach((h, colIdx) => {
-            const cell = sheet.getRange(rowIdx + 1, colIdx + 1);
-
             if ((h.includes("nameen") || h.includes("calendarname") || h.includes("ภาษาอังกฤษ")) && (data.nameEn !== undefined || postData.nameEn !== undefined)) {
-              cell.setValue(data.nameEn || postData.nameEn);
+              rowData[colIdx] = data.nameEn || postData.nameEn;
             } else if ((h === "name" || h.includes("nameth") || h.includes("ชื่อ")) && (data.nameTh !== undefined || data.name !== undefined || postData.nameTh !== undefined)) {
-              cell.setValue(data.nameTh || data.name || postData.nameTh);
+              rowData[colIdx] = data.nameTh || data.name || postData.nameTh;
             } else if ((h.includes("position") || h.includes("ตำแหน่ง")) && data.position !== undefined) {
-              cell.setValue(data.position);
+              rowData[colIdx] = data.position;
             } else if ((h.includes("departmentslug") || h.includes("divisionslug") || h.includes("สาขา")) && (data.departmentSlug !== undefined || postData.departmentSlug !== undefined || data.department !== undefined)) {
-              cell.setValue(data.departmentSlug || postData.departmentSlug || data.department);
+              rowData[colIdx] = data.departmentSlug || postData.departmentSlug || data.department;
             } else if (h.includes("ishead") && (data.isHead !== undefined || postData.isHead !== undefined)) {
-              cell.setValue(Boolean(data.isHead !== undefined ? data.isHead : postData.isHead));
+              rowData[colIdx] = Boolean(data.isHead !== undefined ? data.isHead : postData.isHead);
             } else if ((h.includes("phone") || h.includes("โทร")) && data.phone !== undefined) {
-              cell.setValue(data.phone);
+              rowData[colIdx] = data.phone;
             } else if ((h.includes("room") || h.includes("location") || h.includes("ห้อง")) && (data.location !== undefined || data.room !== undefined)) {
-              cell.setValue(data.location || data.room);
+              rowData[colIdx] = data.location || data.room;
             } else if ((h.includes("img") || h.includes("image") || h.includes("รูป")) && (data.imageUrl !== undefined || data.img !== undefined)) {
-              cell.setValue(data.imageUrl || data.img);
+              rowData[colIdx] = data.imageUrl || data.img;
             } else if ((h.includes("pass") || h.includes("รหัสผ่าน")) && (data.password !== undefined || data.passwd !== undefined)) {
-              cell.setValue(data.password || data.passwd);
+              rowData[colIdx] = data.password || data.passwd;
             } else if (h.includes("email") && (data.email !== undefined || postData.email !== undefined)) {
-              cell.setValue(data.email || postData.email);
+              rowData[colIdx] = data.email || postData.email;
             } else if (h.includes("calendarurl") && data.calendarUrl !== undefined) {
-              cell.setValue(data.calendarUrl);
+              rowData[colIdx] = data.calendarUrl;
             } else if (h.includes("education") || h.includes("การศึกษา")) {
               const edu = Array.isArray(data.education) ? data.education.join(" | ") : data.education;
-              if (edu !== undefined) cell.setValue(edu);
+              if (edu !== undefined) rowData[colIdx] = edu;
             } else if (h.includes("skill") || h.includes("ความเชี่ยวชาญ")) {
               const sk = Array.isArray(data.skills) ? data.skills.join(" | ") : data.skills;
-              if (sk !== undefined) cell.setValue(sk);
+              if (sk !== undefined) rowData[colIdx] = sk;
             } else if (h.includes("interest") || h.includes("งานวิจัย") || h.includes("research")) {
-              if (data.researchInterests !== undefined) cell.setValue(data.researchInterests);
+              if (data.researchInterests !== undefined) rowData[colIdx] = data.researchInterests;
             }
           });
+          sheet.getRange(rowIdx + 1, 1, 1, rowData.length).setValues([rowData]);
           found = true;
           updatedSheetName = sheetsToCheck[s];
           break;
